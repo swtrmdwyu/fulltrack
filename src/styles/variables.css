@@ -1,0 +1,32 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap');
+
+:root {
+    /* cores da aplicação */
+    --primary-color: #26333B;
+    --secondary-color: #FF5656;
+
+    --blue-color-darker: #263F80;
+    --blue-color-dark: #3251A6;
+    --blue-color-medium: #3972EE;
+    --blue-color-lighter: #E5EEFF;
+
+    --green-color-darker: #0A6249;
+    --green-color-dark: #00694D;
+    --green-color-medium: #12B285;
+    --green-color-lighter: #E6F4F0;
+
+    --grey-color-darker: #6B757C;
+    --grey-color-dark: #8E969B;
+    --grey-color-light: #D5D8DA;
+
+    --red-color-darker: #942B35;
+    --red-color-ligther: #FAEAEC;
+
+    --orange-color-darker: #6C3D18;
+    --orange-color-dark: #9E5D28;
+    --orange-color-medium: #CE7C3A;
+    --orange-color-lighter: #FFF7DA;
+
+    /* fontes da aplicação */
+    --primary-font: "Inter", sans-serif;    
+}
