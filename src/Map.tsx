@@ -44,7 +44,7 @@ export default function Map({ apikey }: MapProps) {
             });
       
             // Add panning and zooming behavior to the map
-            const behavior = new H.mapevents.Behavior(
+            new H.mapevents.Behavior(
               new H.mapevents.MapEvents(newMap)
             );
       
