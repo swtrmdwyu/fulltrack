@@ -5,7 +5,7 @@ export const MenuContainer = styled.aside`
     display: flex;
     flex-direction: column;
     gap: 1.5rem;
-    height: calc(100vh - 1rem);
+    min-height: calc(100vh - 1rem);
     padding: .5rem;
     width: calc(3.5rem - 1rem);
     transition: width .2s ease-in-out;
@@ -20,6 +20,10 @@ export const LogoContainer = styled.div`
     display: flex;
     gap: .5rem;
 
+    img {
+        width: 2.5rem;
+    }
+
     h1 {
         color: var(--quartiary-color);
         font-family: var(--primary-font);
@@ -32,11 +36,17 @@ export const LogoContainer = styled.div`
         border: none;
         margin: 0;
         padding: 0;
+
+        img {
+            width: 0.625rem;
+        }
     }
 `;
 
-export const LinksContainer = styled.div`
+export const LinksContainer = styled.ul`
     display: flex;
     flex-direction: column;
     gap: .5rem;
+    list-style: none;
+    padding: 0;
 `;

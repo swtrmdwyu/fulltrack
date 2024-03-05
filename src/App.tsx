@@ -3,12 +3,26 @@ import "./styles/variables.css";
 // import Map from "./Map";
 import Menu from "./Components/Menu";
 import { MenuLink } from "./types/MenuLink";
+import Navbar from "./Components/Navbar";
 
 const StyledDiv = styled.div`
-  background-color: $primary-color;
+  display: grid;
+  grid-template-columns: auto 1fr;
+  grid-template-rows: auto 1fr;
   height: 100vh;
   width: 100%;
+
 `
+
+const MenuContainer = styled.div`
+  grid-column: 1;
+  grid-row: 1 / 2;
+`
+
+const NavContainer = styled.div`
+  grid-column: 2;
+`
+
 
 const menu: MenuLink[] = [
   { label: 'Dashboard', href: '#', icon: 'dashboard' },
@@ -25,9 +39,16 @@ const menu: MenuLink[] = [
 export default function App() {
   return (
     <StyledDiv>
-      <Menu 
-        menuLinks={menu}
-      />
+      <NavContainer>
+      <Navbar />
+      </NavContainer>
+        
+        <MenuContainer>
+          <Menu 
+          menuLinks={menu}
+          />
+        </MenuContainer>
+      
       {/* <Map 
         apikey="aXUSISrcnZnWoa7594NLwAB_s881RBkkEXwxXGNMn1A"
       /> */}

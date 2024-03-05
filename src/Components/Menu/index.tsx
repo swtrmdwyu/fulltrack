@@ -28,7 +28,9 @@ export default function Menu({ menuLinks }: MenuProps) {
      * Define o estado 'expanded' como falso, indicando que o menu não está mais expandido.
      */
     const handleMouseLeave = () => {
-        setExpanded(false);
+        setTimeout(() => {
+            setExpanded(false);
+        }, 100)
     }
     
     /**
@@ -54,14 +56,15 @@ export default function Menu({ menuLinks }: MenuProps) {
             </LogoContainer>
             <LinksContainer>
                 {menuLinks && menuLinks.map((menuLink: MenuLink, idx: number)=> (
-                    <LinkButton
-                        key={idx}
-                        $active={idx === selected}
-                        icon={menuLink.icon}
-                        text={expanded ? menuLink.label : ""}
-                        href={'#'}
-                        onClick={() => handleLinkClick(idx)}
-                    />
+                    <li key={idx}>
+                        <LinkButton
+                            $active={idx === selected}
+                            icon={menuLink.icon}
+                            text={expanded ? menuLink.label : ""}
+                            href={'#'}
+                            onClick={() => handleLinkClick(idx)}
+                        />
+                    </li> 
                 ))}
             </LinksContainer>
             

@@ -40,6 +40,7 @@ export default function LinkButton({
             onClick={onClick}
         > 
             <MenuIcons
+                size="1.5rem"
                 name={icon?? ""}
             />
             {text}
