@@ -6,17 +6,15 @@ interface SidebarContentProps {
 
 export const SidebarContainer = styled.div`
     box-shadow: 0px 8px 16px 0px #6B757C52;
-    max-height: calc(100vh - 3.563rem);
     min-height: calc(100vh - 3.563rem);
     position: relative;
 
 `;
 
 export const SidebarContent = styled.div<SidebarContentProps>`
-    overflow: hidden;
-    white-space: nowrap;
-    width: ${(props: SidebarContentProps) => props.$expanded ? "25rem" : "0"};
+    max-height: calc(100vh - 3.563rem);
     transition: width .4s ease-in-out;
+    width: ${(props: SidebarContentProps) => props.$expanded ? "25rem" : "0"};
 `;
 
 export const ToggleSideBarButton = styled.button<SidebarContentProps>`

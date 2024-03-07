@@ -28,7 +28,6 @@ export const Header = styled.div`
 
         h2, h3 {
             font-size: .875rem;
-            text-transform: uppercase;
         }
         
         h2 {
@@ -38,6 +37,7 @@ export const Header = styled.div`
         h3 {
             color: var(--gray-color-dark);
             font-weight: 500;
+            text-transform: uppercase;
         }
     }
 

@@ -4,16 +4,16 @@ import { CardContainer, Header, Locale, Tags } from "./style";
 import signal from "../../assets/icons/signal.svg";
 
 export interface VehicleCardProps {
-    vehicles?: Vehicle[],
+    vehicle?: Vehicle,
 }
 
-export default function VehicleCard({}: VehicleCardProps) {
+export default function VehicleCard({ vehicle }: VehicleCardProps) {
     return(
         <CardContainer>
             <Header>
                 <div>
-                    <h2>VOLVO VM 270 6X2R</h2>
-                    <h3>OYF4425</h3>
+                    <h2>{vehicle?.ativo.ativo_name}</h2>
+                    <h3>{vehicle?.ativo.plate}</h3>
                 </div>
 
                 <span><img src={signal} />há 1 hora</span> 
@@ -22,20 +22,39 @@ export default function VehicleCard({}: VehicleCardProps) {
             <address>Praça Itália, 3-9 - Centro, Bauru, São Paulo, ...</address>
 
             <Tags>
-                <Tag text="ignition-moving" type="ignition-moving" />
-                <Tag text="ignition-stopped" type="ignition-stopped" />
-                <Tag text="ignition-off" type="ignition-off" />
-                <Tag text="speed-moving" type="speed-moving" />
-                <Tag text="speed-stopped" type="speed-stopped" />
-                <Tag text="badge-fance-on" type="badge-fance-on" />
-                <Tag text="badge-no-signal" type="badge-no-signal" />
-                <Tag text="badge-block" type="badge-block" />
-                <Tag text="sensor-cool" type="sensor-cool" />
-                <Tag text="battery-good" type="battery-good" />
-                <Tag text="battery-attention" type="battery-attention" />
-                <Tag text="battery-danger" type="battery-danger" />
-                <Tag text="driver" type="driver" />
+                {/* {vehicle && (
+                    vehicle.ignition === 0 ? 
+                    <Tag type="ignition-off"/> : 
+                        vehicle.speed.val === 0 ? 
+                            <Tag type="ignition-stopped"/> : 
+                            <Tag type="ignition-moving"/>
+                )} */}
 
+                {/* renderiza a tag de status da realcionado a ignição */}
+                {vehicle && (() => {
+                    if(vehicle.ignition === 0) {
+                        return <Tag type="ignition-off"/>
+                    }
+
+                    if(vehicle.speed.val === 0) {
+                        return <Tag type="ignition-stopped"/>
+                    }
+
+                    return <Tag type="ignition-moving"/>
+                })()}
+
+                {/* renderiza a tag de velocidade */}
+                {vehicle && (
+                    vehicle.speed.val === 0 ? 
+                        <Tag 
+                            text={`${vehicle.speed.val} ${vehicle.speed.unit_measurement}`} 
+                            type="speed-stopped"
+                        /> : 
+                        <Tag 
+                            text={`${vehicle.speed.val} ${vehicle.speed.unit_measurement}`} 
+                            type="speed-moving"
+                        />
+                )}
             </Tags>
 
             <Locale>Walmart</Locale>

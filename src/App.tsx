@@ -9,6 +9,7 @@ import DividerBox from "./Components/DividerBox";
 import VehicleCard from "./Components/VehicleCard";
 import { useState } from "react";
 import Sidebar from "./Components/Sidebar";
+import Vehicle from "./interfaces/Vehicle";
 
 const StyledDiv = styled.div`
   display: grid;
@@ -37,6 +38,13 @@ const SideBarContainer = styled.div`
 const MapContainer = styled.div`
   grid-area: map;
 `;
+
+
+const VehiclesCardsContainer = styled.div`
+    max-height: calc(100vh -  8.126rem);
+    overflow-y: auto;
+    white-space: nowrap;
+`;
 const menu: MenuLink[] = [
   { label: 'Dashboard', href: '#', icon: 'dashboard' },
   { label: 'Mapa geral', href: '#', icon: "world" },
@@ -58,6 +66,36 @@ export default function App() {
   }
   
   const handleSearch = () => console.log(searchValue);
+    const vehicle: Vehicle = {
+      speed: {
+        val: 200,
+        unit_measurement: "km/h"
+      },
+      direction: 0,
+      dt_gps: "07/10/2022 06:32:01",
+      ignition: 1,
+      validate: 1,
+      client_id: 22647,
+      lat_lng: [
+        -22.212162,
+        -49.729614
+      ],
+      is_bloqued: 0,
+      ativo_id: 45048,
+      ativo: {
+        type: 1,
+        horimeter: 542155,
+        odometer: 1963814,
+        model: "sedan",
+        plate: "CZE2042",
+        description: "",
+        consume: 12,
+        ativo_name: "Parati Track Field",
+        producer: "",
+        fuel: "ga",
+        color: "branco"
+      }
+    }
 
   return (
     <StyledDiv>
@@ -65,33 +103,37 @@ export default function App() {
       <Navbar />
       </NavContainer>
         
-        <MenuContainer>
-          <Menu 
-          menuLinks={menu}
-          />
-        </MenuContainer>
+      <MenuContainer>
+        <Menu 
+        menuLinks={menu}
+        />
+      </MenuContainer>
+
       <SideBarContainer>
         <Sidebar>
-        <DividerBox>
-          <Searchbar 
-            placeholder="Pesquisar..." 
-            value={searchValue}
-            onChange={handleSearchChange}
-            handleSearch={handleSearch}
-          />
-        </DividerBox>
-        <DividerBox>
-          <VehicleCard></VehicleCard>
-        </DividerBox>
-        <DividerBox>
-          <VehicleCard></VehicleCard>
-        </DividerBox>
+          <DividerBox>
+            <Searchbar 
+              placeholder="Pesquisar..." 
+              value={searchValue}
+              onChange={handleSearchChange}
+              handleSearch={handleSearch}
+            />
+          </DividerBox>
+
+          <VehiclesCardsContainer>
+            <DividerBox>
+              <VehicleCard vehicle={vehicle}></VehicleCard>
+            </DividerBox>
+          </VehiclesCardsContainer>
+
+          
         </Sidebar>
       </SideBarContainer>
+
      <MapContainer>
-      <Map 
-        apikey="aXUSISrcnZnWoa7594NLwAB_s881RBkkEXwxXGNMn1A"
-      /> 
+        <Map 
+          apikey="aXUSISrcnZnWoa7594NLwAB_s881RBkkEXwxXGNMn1A"
+        /> 
      </MapContainer>
       
     </StyledDiv>
