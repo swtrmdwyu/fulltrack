@@ -27,7 +27,7 @@ export const LogoContainer = styled.div`
     h1 {
         color: var(--quartiary-color);
         font-family: var(--primary-font);
-        font-size: 0.938rem;
+        font-size: .938rem;
         font-weight: 600;
     }
 
@@ -38,7 +38,7 @@ export const LogoContainer = styled.div`
         padding: 0;
 
         img {
-            width: 0.625rem;
+            width: .625rem;
         }
     }
 `;

@@ -12,6 +12,7 @@ export default function Avatar({ src }: AvatarProps) {
     return(
         <StyledAvatar 
             src={src ? src : defaultAvatar}
+            alt="Avatar de perfil do usuário"
         />
     );
 }

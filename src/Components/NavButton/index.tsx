@@ -3,7 +3,13 @@ import supportHeadphone from "../../assets/icons/support-headphones.svg";
 import question from "../../assets/icons/question.svg";
 
 interface NavButtonProps {
+    /**
+     * Ícone exibido no botão
+     */
     icon?: "support" | "question"
+    /**
+     * Função disparada quando o botão for clicado.
+     */
     onClick?: () => void
 }
 

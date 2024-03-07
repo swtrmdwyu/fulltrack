@@ -1,4 +1,4 @@
-export type MenuLink = {
+export default interface MenuLink {
     icon?: string,
     label: string,
     href: string,

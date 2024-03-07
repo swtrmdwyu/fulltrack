@@ -1,9 +1,10 @@
-import { MenuLink } from "../../types/MenuLink";
+
 import LinkButton from "../LinkButton";
 import { LinksContainer, LogoContainer, MenuContainer } from "./style";
 import fulltimeLogo from "../../assets/img/logo-fulltime.png";
 import arrowDown from "../../assets/icons/arrow-down.svg";
 import { useState } from "react";
+import MenuLink from "../../interfaces/MenuLink";
 
 export interface MenuProps {
     menuLinks?: MenuLink[],

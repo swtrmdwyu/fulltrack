@@ -37,10 +37,10 @@ export default function Map({ apikey }: MapProps) {
             const newMap = new H.Map(mapRef.current!, rasterTileLayer, {
               pixelRatio: window.devicePixelRatio,
               center: {
-                lat: 64.144,
-                lng: -21.94,
+                lat: -22.215345726608412,            
+                lng: -49.65385461158809,
               },
-              zoom: 14,
+              zoom: 17,
             });
       
             // Add panning and zooming behavior to the map
@@ -57,6 +57,6 @@ export default function Map({ apikey }: MapProps) {
       );
       
       // Return a div element to hold the map
-      return <div style={ { width: "100%", height: "100vh" } } ref={mapRef} />;
+      return <div style={ { width: "100%", height: "calc(100vh - 3.563rem) " } } ref={mapRef} />;
       
 }
