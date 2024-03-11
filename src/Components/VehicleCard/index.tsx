@@ -8,6 +8,11 @@ export interface VehicleCardProps {
 }
 
 export default function VehicleCard({ vehicle }: VehicleCardProps) {
+    const ignitionType = 
+        vehicle?.ignition === 0 ? 
+            "ignition-off" : vehicle?.speed.val === 0 ? 
+                "ignition-stopped" : "ignition-moving";
+
     return(
         <CardContainer>
             <Header>
@@ -22,27 +27,7 @@ export default function VehicleCard({ vehicle }: VehicleCardProps) {
             <address>Praça Itália, 3-9 - Centro, Bauru, São Paulo, ...</address>
 
             <Tags>
-                {/* {vehicle && (
-                    vehicle.ignition === 0 ? 
-                    <Tag type="ignition-off"/> : 
-                        vehicle.speed.val === 0 ? 
-                            <Tag type="ignition-stopped"/> : 
-                            <Tag type="ignition-moving"/>
-                )} */}
-
-                {/* renderiza a tag de status da realcionado a ignição */}
-                {vehicle && (() => {
-                    if(vehicle.ignition === 0) {
-                        return <Tag type="ignition-off"/>
-                    }
-
-                    if(vehicle.speed.val === 0) {
-                        return <Tag type="ignition-stopped"/>
-                    }
-
-                    return <Tag type="ignition-moving"/>
-                })()}
-
+                <Tag type={ignitionType}/>
                 {/* renderiza a tag de velocidade */}
                 {vehicle && (
                     vehicle.speed.val === 0 ? 

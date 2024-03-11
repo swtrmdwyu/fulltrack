@@ -10,6 +10,8 @@ import VehicleCard from "./Components/VehicleCard";
 import { useState } from "react";
 import Sidebar from "./Components/Sidebar";
 import Vehicle from "./interfaces/Vehicle";
+import VehicleMarker from "./Components/VehicleMarker";
+import { Cluster } from "./Components/Cluster";
 
 const StyledDiv = styled.div`
   display: grid;
@@ -68,12 +70,12 @@ export default function App() {
   const handleSearch = () => console.log(searchValue);
     const vehicle: Vehicle = {
       speed: {
-        val: 200,
+        val: 0,
         unit_measurement: "km/h"
       },
       direction: 0,
       dt_gps: "07/10/2022 06:32:01",
-      ignition: 1,
+      ignition: 0,
       validate: 1,
       client_id: 22647,
       lat_lng: [
@@ -126,7 +128,13 @@ export default function App() {
             </DividerBox>
           </VehiclesCardsContainer>
 
-          
+
+          <DividerBox>
+            <Cluster quantity={99}/>
+          </DividerBox>
+
+            <VehicleMarker type="no-signal"/>
+
         </Sidebar>
       </SideBarContainer>
 
