@@ -3,6 +3,7 @@
 :root {
     /* cores da aplicação */
     --primary-color: #26333B;
+    --primary-color-medium: #3B485B;
     --secondary-color: rgba(255, 255, 255, 0.64);
     --tertiary-color: #FF5656;
     --quartiary-color: #FFFFFF;
@@ -19,6 +20,7 @@
 
     --gray-color-darker: #6B757C;
     --gray-color-dark: #8E969B;
+    --gray-color-medium: #B1B7BB;
     --gray-color-light: #D5D8DA;
     --gray-color-lighter: #F5F5F5;    
 

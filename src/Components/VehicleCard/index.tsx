@@ -1,4 +1,4 @@
-import Vehicle from "../../interfaces/Vehicle";
+import Vehicle from "../../interfaces/IVehicle";
 import Tag from "../Tag/Index";
 import { CardContainer, Header, Locale, Tags } from "./style";
 import signal from "../../assets/icons/signal.svg";

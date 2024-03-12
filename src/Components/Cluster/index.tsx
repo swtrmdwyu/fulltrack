@@ -1,13 +1,13 @@
 import { ClusterContainer } from "./style";
 
 export interface ClusterProps {
-    quantity?: number,
+    $quantity?: number,
 }
 
-export function Cluster({ quantity }: ClusterProps) {
+export function Cluster({ $quantity }: ClusterProps) {
     return (
-        <ClusterContainer quantity={quantity}>
-            {quantity}
+        <ClusterContainer $quantity={$quantity}>
+            {$quantity}
         </ClusterContainer>
     )
 }
