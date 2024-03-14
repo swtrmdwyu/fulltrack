@@ -1,0 +1,14 @@
+{
+  "menu_names": {
+    "dashboard": "Dashboard",
+    "general_map": "Mapa General",
+    "mosaic": "Mosaico",
+    "relatories": "Informes",
+    "logistic": "Logística",
+    "driver_behavior": "Driver Behavior",
+    "administrative_panel": "Panel Administrativo",
+    "registers": "Registros",
+    "settings": "Configuraciones"
+  }
+  
+}

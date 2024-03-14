@@ -1,6 +1,9 @@
 import { BoxContainer } from "./style";
 
 export interface DividerBoxProps {
+    /**
+     * Recebe elementos filhos.
+     */
     children?: React.ReactNode,
 }
 

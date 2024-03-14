@@ -21,7 +21,8 @@ export interface SearchbarProps {
 }
 
 export default function Searchbar({ handleSearch, onChange, placeholder, value }: SearchbarProps) {
-    
+
+    // verifica se a tecla enter foi pressionada para efetuar a pesquisa.
     const handleOnKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
         if(event.code !== "Enter") {
             return;

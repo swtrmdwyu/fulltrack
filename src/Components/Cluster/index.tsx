@@ -1,6 +1,9 @@
 import { ClusterContainer } from "./style";
 
 export interface ClusterProps {
+    /**
+     * Valor de quantos markers estão agrupados no cluster
+     */
     $quantity?: number,
 }
 

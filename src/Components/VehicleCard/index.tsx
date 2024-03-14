@@ -4,6 +4,9 @@ import { CardContainer, Header, Locale, Tags } from "./style";
 import signal from "../../assets/icons/signal.svg";
 
 export interface VehicleCardProps {
+    /**
+     * Recebe um objeto que representa um veiculo e suas informções.
+     */
     vehicle?: Vehicle,
 }
 

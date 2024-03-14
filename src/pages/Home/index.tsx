@@ -7,31 +7,26 @@ import Sidebar from "../../Components/Sidebar";
 import DividerBox from "../../Components/DividerBox";
 import Searchbar from "../../Components/Searchbar";
 import VehicleCard from "../../Components/VehicleCard";
-import { Cluster } from "../../Components/Cluster";
-import VehicleMarker from "../../Components/VehicleMarker";
 import Map from "../../Map";
 import { MapContainer, MenuContainer, NavContainer, SideBarContainer, StyledDiv, VehiclesCardsContainer } from "./style";
-import '../../i18n/config';
-import { useTranslation } from 'react-i18next'
-import formatDate from "../../utils/formatDate";
-
-const menu: MenuLink[] = [
-  { label: 'Dashboard', href: '#', icon: 'dashboard' },
-  { label: 'Mapa geral', href: '#', icon: "world" },
-  { label: 'Mosaico', href: '#', icon: "interface" },
-  { label: 'Relatórios', href: '#', icon: "chart" },
-  { label: 'Logística', href: '#', icon: "navigation" },
-  { label: 'Driver behavior', href: '#', icon: "direction" },
-  { label: 'Painel administrativo', href: '#', icon: "briefcase" },
-  { label: 'Cadastros', href: '#', icon: "add" },
-  { label: 'Configurações', href: '#', icon: "settings" },
-];
+import "../../i18n/config";
+import { useTranslation } from "react-i18next"
 
 export default function Home() {
   const { t } = useTranslation();
+  const menu: MenuLink[] = [
+    { label: t("menu_names.dashboard"), href: "#", icon: "dashboard" },
+    { label: t("menu_names.general_map"), href: "#", icon: "world" },
+    { label: t("menu_names.mosaic"), href: "#", icon: "interface" },
+    { label: t("menu_names.relatories"), href: "#", icon: "chart" },
+    { label: t("menu_names.logistic"), href: "#", icon: "navigation" },
+    { label: t("menu_names.driver_behavior"), href: "#", icon: "direction" },
+    { label: t("menu_names.administrative_panel"), href: "#", icon: "briefcase" },
+    { label: t("menu_names.registers"), href: "#", icon: "add" },
+    { label: t("menu_names.settings"), href: "#", icon: "settings" },
+  ];
 
   const [searchValue, setSearchValue ] = useState("");
-
   const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const newSearchValue = event.target.value;
     setSearchValue(newSearchValue);
@@ -98,19 +93,8 @@ export default function Home() {
             </DividerBox>
           </VehiclesCardsContainer>
 
-              <div>
-                <p>{t('title', { name: 'John' })}</p>
-                <p>{t('description.part1')}</p>
-                <p>{t('description.part2')}</p>
-
-              </div>
-
-            <p>
-              {formatDate("11/03/2024 15:41:01")}
-            </p>
         </Sidebar>
       </SideBarContainer>
-
      <MapContainer>
         <Map 
           apikey="aXUSISrcnZnWoa7594NLwAB_s881RBkkEXwxXGNMn1A"

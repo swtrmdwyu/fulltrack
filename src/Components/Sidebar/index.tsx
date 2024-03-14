@@ -3,6 +3,9 @@ import arrow from "../../assets/icons/arrow.svg";
 import { useState } from "react";
 
 export interface SideBarProps {
+    /**
+     * Reecebe todos os elementos filhos da sidebar.
+     */
     children?: React.ReactNode,
 }
 

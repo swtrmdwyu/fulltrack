@@ -4,10 +4,25 @@ import { MarkerContainer, MarkerPoint, MarkerVehicle, VehicleStatus } from "./st
 
 
 export interface VehicleMarkerProps {
+    /**
+     * Define qual imagem será exibida dentro do marker.
+     */
     image?:  string,
+    /**
+     * Define qual variação de tipo o marker deve ser.
+     */
     type?: MarkerTypeName,
+    /**
+     * Revebe um objeto com informções do veículo que o marker representa.
+     */
     vehicle?: {
+        /**
+         * Recebe a placa do veiculo.
+         */
         plate?: string,
+        /**
+         * Recebe a velocidade do veículo.
+         */
         speed?: string
     }
 }

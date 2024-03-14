@@ -4,8 +4,14 @@ import { StyledTag } from "./style";
 
 
 export interface TagProps {
-    type?: TagType,
+    /**
+     * Define o texto exibido dentro da tag.
+     */
     text?: string,
+    /**
+     * Define qual é a varição de tema da tag.
+     */
+    type?: TagType,
 }
 
 
