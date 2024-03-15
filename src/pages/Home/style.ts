@@ -28,7 +28,6 @@ export const MapContainer = styled.div`
   grid-area: map;
 `;
 
-
 export const VehiclesCardsContainer = styled.div`
     max-height: calc(100vh -  8.126rem);
     overflow-y: auto;

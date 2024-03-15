@@ -7,13 +7,15 @@ export interface SideBarProps {
      * Reecebe todos os elementos filhos da sidebar.
      */
     children?: React.ReactNode,
+    onClick?: () => void,
 }
 
-export default function Sidebar({ children }: SideBarProps) {
+export default function Sidebar({ children, onClick }: SideBarProps) {
     const [ expanded, setExpanded ] = useState(true);
  
     const toggleSideBar = () => {
         setExpanded((previous) => !previous);
+        if(onClick) onClick();
     }
 
     return(

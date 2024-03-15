@@ -4,27 +4,11 @@ import Input from "../../Components/Input";
 import { ButtonContainer, LoginContainer } from "./style";
 import logo from "../../assets/img/logo.svg";
 import { useState } from "react";
-import { IUser } from "../../interfaces/IUser";
-import api from "../../config/api";
+import getToken from "../../services/getToken";
 
 export default function Login() {
-    const [ token, setToken ] = useState(null);
-    const [ user, setUser ] = useState<IUser | null>(null);
-    const [ email, setEmail ] = useState("");
-    const [ password, setPassword ] = useState("");
-
-    const params = {
-        grant_type: "session_credentials",
-        client_id: "web_fulltrack_3",
-        client_secret: "6648ee7559e05d1549afb7d1694b6d822dd2a831",
-        user_id: 104317 
-    };
-
-    const getToken = () => {
-        api.get("token", {params})
-            .then((res) => { console.log(res)})
-            .catch((err) => console.log(err))
-    }
+    const [email, setEmail] = useState("");
+    const [password, setPassword] = useState("");  
 
     const onChangeEmail = (event: React.ChangeEvent<HTMLInputElement>) => {
         const newEmailValue = event.target.value;
@@ -36,10 +20,10 @@ export default function Login() {
         setPassword(newPasswordValue);
     }
 
-    const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+    const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
-
-        getToken();
+        const token = await getToken();
+        console.log(token)
     }
 
     return( 

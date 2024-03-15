@@ -6,18 +6,21 @@ interface MapProps {
      * Recebe a APIkey da API do HERE.
      */
     apikey: string
+	resize?: boolean,
 }
 
-export default function Map({ apikey }: MapProps) {
+export default function Map({ apikey, resize }: MapProps) {
     const mapRef = useRef<HTMLDivElement | null>(null);
     const map = useRef<H.Map | null>(null);
     const platform = useRef<H.service.Platform | null>(null);
+
+	
 
     useEffect(
         () => {
 			if (!map.current) {
 				platform.current = new H.service.Platform({ apikey });
-				// Create a new Raster Tile service instance
+
 				const rasterTileService = platform.current.getRasterTileService({
 					queryParams: {
 						style: "explore.day",
@@ -25,29 +28,26 @@ export default function Map({ apikey }: MapProps) {
 					},
 				});
 
-				// Creates a new instance of the H.service.rasterTile.Provider class
-				// The class provides raster tiles for a given tile layer ID and pixel format
 				const rasterTileProvider = new H.service.rasterTile.Provider(
 					rasterTileService
 				);
-				// Create a new Tile layer with the Raster Tile provider
+
 				const rasterTileLayer = new H.map.layer.TileLayer(rasterTileProvider);
-				// Create a new map instance with the Tile layer, center and zoom level
+
 				const newMap = new H.Map(mapRef.current!, rasterTileLayer, {
 					pixelRatio: window.devicePixelRatio,
 					center: {
 						lat: -22.215345726608412,            
 						lng: -49.65385461158809,
 					},
-					zoom: 17,
+					zoom: 16,
 				});
       
-				// Add panning and zooming behavior to the map
+
 				new H.mapevents.Behavior(
 					new H.mapevents.MapEvents(newMap)
 				);
       
-				// Set the map object to the reference
 				map.current = newMap;
 
 				const icon = getMarkerIcon();
@@ -73,25 +73,21 @@ export default function Map({ apikey }: MapProps) {
 						map.current.getViewPort().resize();
 					}
 				});
-				map.current.addEventListener("resize", () => {
-					if(map.current) {
-						map.current.getViewPort().resize();
-					}
-				})
+
+				mapRef.current?.addEventListener("resize", () => console.log("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"))
 			}
 		},
         	// Dependencies array
 			[apikey]
 		);
-		
-		const handleResize = () => console.log('')
 
+		
       // Return a div element to hold the map
-      return <div onClick={() => "klasdjflkdjflksdj"} onResize={handleResize} style={ {display:'flex', height: "calc(100vh - 3.563rem) " } } ref={mapRef} />;
+	  const div = <div style={ { height: "calc(100vh - 3.563rem) " } } ref={mapRef} />;
+
+      return div;
 
 }
-
-
 
 function getMarkerIcon(): H.map.Icon {
   const svgCircle =`<svg width="72" height="126" viewBox="0 0 72 126" fill="none" xmlns="http://www.w3.org/2000/svg">

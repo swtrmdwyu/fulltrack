@@ -13,6 +13,7 @@ import "../../i18n/config";
 import { useTranslation } from "react-i18next"
 
 export default function Home() {
+  const [resizeMap, setResizeMap] = useState(false)
   const { t } = useTranslation();
   const menu: MenuLink[] = [
     { label: t("menu_names.dashboard"), href: "#", icon: "dashboard" },
@@ -64,6 +65,11 @@ export default function Home() {
       }
     }
 
+    const handleToggleSidebar = () => {
+      const ne = !resizeMap
+      setResizeMap(previous => !previous);
+      console.log(ne)
+    }
   return (
     <StyledDiv>
       <NavContainer>
@@ -77,7 +83,7 @@ export default function Home() {
       </MenuContainer>
 
       <SideBarContainer>
-        <Sidebar>
+        <Sidebar onClick={handleToggleSidebar}>
           <DividerBox>
             <Searchbar 
               placeholder="Pesquisar..." 
@@ -98,6 +104,7 @@ export default function Home() {
      <MapContainer>
         <Map 
           apikey="aXUSISrcnZnWoa7594NLwAB_s881RBkkEXwxXGNMn1A"
+          resize={resizeMap}
         /> 
      </MapContainer>
       

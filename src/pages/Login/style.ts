@@ -9,7 +9,6 @@ export const LoginContainer = styled.div`
 
     form {
         width: 30%;
-
     }
     
     img {

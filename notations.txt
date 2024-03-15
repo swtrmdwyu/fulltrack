@@ -1,0 +1,222 @@
+token: f4f34f0fc52ec7061d620b2783ba058b3fc8517d,
+refresh: "de35303f37abd3ac2c130534281df1420be54aa7"
+
+
+const form = new FormData();
+    form.append('grant_type', GRANT_TYPE);
+    form.append('client_id', CLIENT_ID);
+    form.append('client_secret', CLIENT_SECRET);
+    form.append('user_id', USER_ID);
+15h03
+fazer uma tela que contenha:
+DOCUMENTATION FIGMA -> https://www.figma.com/file/1s7olLRAOd5bQpTB5v4Zwp/Fulltrack?type=design&node-id=0%3A1&mode=dev&t=2Sk7RZxEkV000oOM-1
+login -> validar se é email
+end point pra buscar o token e o refresh token
+https://dev.api-fulltrack4.ftdata.com.br/token
+https://api-fulltrack4.ftdata.com.br/token/refresh
+ menu
+fazer menu igual do figma, só com os icones
+ navbar
+troca de linguagem (i18n))
+icone de perfil do usuario
+sidebar
+listagem de veiculos -> https://mapageral.ops.fulltrackapp.com/maps/v2/last-positions/?ignitions=on,off,moving
+utilizar moment js
+ao clicar no veiculo mostar pontos de referencia do usuario -> buscar esses pontos no localStorage
+utilizar react query nas requests
+barra de pesquisa
+mapa
+cluster dos markers -> https://developer.here.com/documentation/examples/maps-js/clustering/custom-cluster-theme (documentation)
+cadastro de ponto de referencia -> salvar no localStorage
+cadastro de cerca ( so aquela redonda mesmo com descrição) -> salvar no localStorage
+camadas -> so as do here mesmo
+markers dos veiculos no mapa - > usar os dados do end point de busca dos veiculos
+popup ao clicar no marker (mostrar endereço, velocidade, nome do veiculo, base do figma )
+END POINT DE ENDEREÇO -> https://mapageral.ops.fulltrackapp.com/address/v1/reverse/
+END POINT DE CLIENTES -> https://mapageral.ops.fulltrackapp.com/plataform/clients/
+VARIAVEIS DE AMBIENTE
+TOKEN HERE -> v3XFar3gKIuWv7fn4sNSVWtQy9MD9-yq5rCh5f0tpfA
+REACT_APP_API_USER_ID=104317
+API_GRANT_TYPE=session_credentials
+API_CLIENT_ID=web_fulltrack_3
+API_CLIENT_SECRET=6648ee7559e05d1549afb7d1694b6d822dd2a831
+BASE_API_URL=https://api-fulltrack4.ftdata.com.br/
+FigmaFigma
+Fulltrack
+Created with Figma (84 kB)
+https://www.figma.com/file/1s7olLRAOd5bQpTB5v4Zwp/Fulltrack?type=design&node-id=0%3A1&mode=dev&t=2Sk7RZxEkV000oOM-1
+
+HERE DeveloperHERE Developer
+Marker Clustering with Custom Theme - Maps API for JavaScript - HERE Developer
+Cluster multiple markers and customize the theme (6 kB)
+https://developer.here.com/documentation/examples/maps-js/clustering/custom-cluster-theme
+
+
+
+Lucas Conceição
+  15h09
+[
+  {
+    "speed": {
+      "val": 0,
+      "unit_measurement": "km/h"
+    },
+    "direction": 0,
+    "dt_gps": "07/10/2022 06:32:01",
+    "ignition": 0,
+    "validate": 1,
+    "client_id": 22647,
+    "lat_lng": [
+      -22.212162,
+      -49.729614
+    ],
+    "is_bloqued": 0,
+    "ativo_id": 45048,
+    "ativo": {
+      "type": 1,
+      "horimeter": 542155,
+      "odometer": 1963814,
+      "model": "sedan",
+      "plate": "CZE2042",
+      "description": "",
+      "consume": 12,
+      "ativo_name": "Parati Track Field",
+      "producer": "",
+      "fuel": "ga",
+      "color": "branco"
+    }
+  },
+  {
+    "speed": {
+      "val": 0,
+      "unit_measurement": "km/h"
+    },
+    "direction": 22,
+    "dt_gps": "07/10/2022 06:30:03",
+    "ignition": 0,
+    "validate": 1,
+    "client_id": 72724,
+    "lat_lng": [
+      -22.215057,
+      -49.65246
+    ],
+    "is_bloqued": 0,
+    "ativo_id": 156167,
+    "ativo": {
+      "type": 1,
+      "horimeter": 3283244,
+      "odometer": 30957703,
+      "model": "ETIOS",
+      "plate": "GV50 - Eti",
+      "description": "GV50 - Etios JEAN",
+      "consume": 0,
+      "ativo_name": "GV50 - Etios Fulltime",
+      "producer": "Toyota",
+      "fuel": "4",
+      "color": ""
+    }
+  },
+  {
+    "speed": {
+      "val": 0,
+      "unit_measurement": "km/h"
+    },
+    "direction": 261,
+    "dt_gps": "06/10/2022 19:00:20",
+    "ignition": 0,
+    "validate": 0,
+    "client_id": 72724,
+    "lat_lng": [
+      -22.159155,
+      -49.717935
+    ],
+    "is_bloqued": 0,
+    "ativo_id": 157718,
+    "ativo": {
+      "type": 5,
+      "horimeter": 1872419,
+      "odometer": 1621029,
+      "model": "",
+      "plate": "A850",
+      "description": "Trator A850",
+      "consume": 0,
+      "ativo_name": "Trator A850",
+      "producer": "",
+      "fuel": "1",
+      "color": ""
+    }
+  },
+  {
+    "speed": {
+      "val": 0,
+      "unit_measurement": "km/h"
+    },
+    "direction": 274,
+    "dt_gps": "27/07/2022 17:16:17",
+    "ignition": 1,
+    "validate": 1,
+    "client_id": 96237,
+    "lat_lng": [
+      -22.215312,
+      -49.654295
+    ],
+    "is_bloqued": 0,
+    "ativo_id": 234756,
+    "ativo": {
+      "type": 1,
+      "horimeter": 0,
+      "odometer": 0,
+      "model": "",
+      "plate": "GV300N",
+      "description": "GV300N",
+      "consume": 0,
+      "ativo_name": "GV300N",
+      "producer": "",
+      "fuel": "1",
+      "color": ""
+    }
+  },
+  {
+    "speed": {
+      "val": 0,
+      "unit_measurement": "km/h"
+    },
+    "direction": 0,
+    "dt_gps": "07/10/2022 06:22:57",
+    "ignition": 0,
+    "validate": 1,
+    "client_id": 127696,
+    "lat_lng": [
+      -22.213566,
+      -49.663933
+    ],
+    "is_bloqued": 0,
+    "ativo_id": 313346,
+    "ativo": {
+      "type": 3,
+      "horimeter": 3821176,
+      "odometer": 16825776,
+      "model": "",
+      "plate": "DLC 8058",
+      "description": "Corolla_Vinicius",
+      "consume": 0,
+      "ativo_name": "Corolla_Vinicius",
+      "producer": "",
+      "fuel": "1",
+      "color": ""
+    }
+  },
+  {
+    "speed": {
+      "val": 0,
+      "unit_measurement": "km/h"
+    },
+    "direction": 57,
+    "dt_gps": "30/09/2022 17:03:41",
+    "ignition": 1,
+    "validate": 1,
+    "client_id": 132788,
+    "lat_lng": [
+      -22.215587,
+      -49.654106
+    ],
