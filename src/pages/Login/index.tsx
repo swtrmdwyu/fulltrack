@@ -5,10 +5,12 @@ import { ButtonContainer, LoginContainer } from "./style";
 import logo from "../../assets/img/logo.svg";
 import { useState } from "react";
 import getToken from "../../services/getToken";
+import IAuthRespose from "../../interfaces/IAuthResponse";
 
 export default function Login() {
     const [email, setEmail] = useState("");
-    const [password, setPassword] = useState("");  
+    const [password, setPassword] = useState("");
+    const [auth, setAuth] = useState<IAuthRespose | null>(null);
 
     const onChangeEmail = (event: React.ChangeEvent<HTMLInputElement>) => {
         const newEmailValue = event.target.value;
@@ -22,8 +24,9 @@ export default function Login() {
 
     const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
-        const token = await getToken();
-        console.log(token)
+        const auth = await getToken();
+        setAuth(auth);
+        localStorage.setItem("auth", JSON.stringify(auth));
     }
 
     return( 

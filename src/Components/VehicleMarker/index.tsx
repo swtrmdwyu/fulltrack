@@ -4,6 +4,7 @@ import { MarkerContainer, MarkerPoint, MarkerVehicle, VehicleStatus } from "./st
 
 
 export interface VehicleMarkerProps {
+    $showInfo?: boolean,
     /**
      * Define qual imagem será exibida dentro do marker.
      */
@@ -24,11 +25,17 @@ export interface VehicleMarkerProps {
          * Recebe a velocidade do veículo.
          */
         speed?: string
-    }
+    },
+
+    
 }
 
-export default function VehicleMarker({ image, type }: VehicleMarkerProps) {
+export default function VehicleMarker({ image, type, $showInfo }: VehicleMarkerProps) {
     const [ isVisible, setIsVisible ] = useState(false);
+
+    if($showInfo) {
+        setIsVisible($showInfo);
+    }
 
     const toggleStatusVisiblity = () => {
         setIsVisible((previous) => !previous);
