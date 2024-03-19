@@ -1,25 +1,24 @@
 import { useState } from "react";
 import MenuLink from "../../interfaces/IMenuLink";
-import Vehicle from "../../interfaces/IVehicle";
 import Navbar from "../../Components/Navbar";
 import Menu from "../../Components/Menu";
 import Sidebar from "../../Components/Sidebar";
 import DividerBox from "../../Components/DividerBox";
 import Searchbar from "../../Components/Searchbar";
 import VehicleCard from "../../Components/VehicleCard";
-import Map from "../../Map";
 import { MapContainer, MenuContainer, NavContainer, SideBarContainer, StyledDiv, VehiclesCardsContainer } from "./style";
 import "../../i18n/config";
 import { useTranslation } from "react-i18next"
-import MapControl from "../../Components/MapControl";
+
 import IVehicle from "../../interfaces/IVehicle";
-import axios from "axios";
+import Map from "../../Components/Map";
 
 export default function Home() {
-  const [resizeMap, setResizeMap] = useState(false);
-  const [vehicles, setVehicles] = useState<IVehicle[] | []>([]);
+  const { t } = useTranslation();
 
-  setVehicles([
+  const [resizeMap, setResizeMap] = useState(false);
+  const [searchValue, setSearchValue ] = useState("");
+  const [vehicles, setVehicles] = useState<IVehicle[] | []>([
     {
       "speed": {
         "val": 0,
@@ -170,98 +169,8 @@ export default function Home() {
         "color": ""
       }
     },
-    {
-      "speed": {
-        "val": 0,
-        "unit_measurement": "km/h"
-      },
-      "direction": 57,
-      "dt_gps": "30/09/2022 17:03:41",
-      "ignition": 1,
-      "validate": 1,
-      "client_id": 132788,
-      "lat_lng": [
-        -22.215587,
-        -49.654106
-      ],
-      "is_bloqued": 1,
-      "ativo_id": 345619,
-      "ativo": {
-        "type": 1,
-        "horimeter": 0,
-        "odometer": 0,
-        "model": "",
-        "plate": "user123",
-        "description": "",
-        "consume": 0,
-        "ativo_name": "user carro",
-        "producer": "",
-        "fuel": "1",
-        "color": ""
-      }
-    },
-    {
-      "speed": {
-        "val": 0,
-        "unit_measurement": "km/h"
-      },
-      "direction": 0,
-      "dt_gps": "30/06/2022 17:03:54",
-      "ignition": 0,
-      "validate": 1,
-      "client_id": 139309,
-      "lat_lng": [
-        -22.2152796,
-        -49.654169
-      ],
-      "is_bloqued": 0,
-      "ativo_id": 381358,
-      "ativo": {
-        "type": 3,
-        "horimeter": 259200,
-        "odometer": 567001,
-        "model": "",
-        "plate": "YOKOTA CEL",
-        "description": "YOKOTA CELL 2 (Não Deletar)",
-        "consume": 0,
-        "ativo_name": "YOKOTA CELL 2 (Não Deletar)",
-        "producer": "",
-        "fuel": "2",
-        "color": "azul"
-      }
-    },
-    {
-      "speed": {
-        "val": 0,
-        "unit_measurement": "km/h"
-      },
-      "direction": 114,
-      "dt_gps": "06/10/2022 23:26:37",
-      "ignition": 0,
-      "validate": 0,
-      "client_id": 22647,
-      "lat_lng": [
-        -22.212137,
-        -49.728982
-      ],
-      "is_bloqued": 1,
-      "ativo_id": 619130,
-      "ativo": {
-        "type": 1,
-        "horimeter": 0,
-        "odometer": 0,
-        "model": "",
-        "plate": "DMQ-1077",
-        "description": "DMQ-1077",
-        "consume": 0,
-        "ativo_name": "Palio",
-        "producer": "Acura",
-        "fuel": "1",
-        "color": ""
-      }
-    },
-  ])
-  const { t } = useTranslation();
+  ]);
+
   const menu: MenuLink[] = [
     { label: t("menu_names.dashboard"), href: "#", icon: "dashboard" },
     { label: t("menu_names.general_map"), href: "#", icon: "world" },
@@ -274,19 +183,18 @@ export default function Home() {
     { label: t("menu_names.settings"), href: "#", icon: "settings" },
   ];
 
-  const [searchValue, setSearchValue ] = useState("");
+  
   const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const newSearchValue = event.target.value;
+
+  const newSearchValue = event.target.value;
     setSearchValue(newSearchValue);
   }
-  
+
   const handleSearch = () => console.log(searchValue);
 
-    const handleToggleSidebar = () => {
-      const ne = !resizeMap
-      setResizeMap(previous => !previous);
-      console.log(ne)
-    }
+  const handleToggleSidebar = () => {
+    setResizeMap(previous => !previous);
+  }
 
   return (
     <StyledDiv>
@@ -313,17 +221,16 @@ export default function Home() {
 
           <VehiclesCardsContainer>
             {vehicles.map((vehicle: IVehicle) => 
-                <DividerBox>
+                <DividerBox key={vehicle.ativo_id}>
                   <VehicleCard vehicle={vehicle}></VehicleCard>
                 </DividerBox>
-            )}
-            
+            )}  
           </VehiclesCardsContainer>
-            <MapControl />  
         </Sidebar>
       </SideBarContainer>
      <MapContainer>
         <Map 
+          size={resizeMap}
           apikey="aXUSISrcnZnWoa7594NLwAB_s881RBkkEXwxXGNMn1A"
           vehicles={vehicles}
         /> 

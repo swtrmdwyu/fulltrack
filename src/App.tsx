@@ -3,9 +3,9 @@ import "moment/dist/locale/pt-br";
 import "moment/dist/locale/es";
 import "./styles/variables.css";
 import checkUserLanguage from "./utils/checkUserlanguage";
-import Login from "./pages/Login";
-import Home from "./pages/Home";
-
+import AppRoutes from "./Routes/AppRoutes";
+import AuthProvider, { AuthContext } from "./hooks/AuthContext";
+import { useContext } from "react";
 
 export default function App() {
   const userLanguage = checkUserLanguage()
@@ -14,10 +14,12 @@ export default function App() {
   const token = localStorage.getItem("token");
 
   if(!token) {
-    console.log("ir para login");
-  }
 
+  }
   return (
-    <Home />
-  )
+    <AuthProvider>
+      <AppRoutes />
+    </AuthProvider>
+
+  );
 }
