@@ -1,5 +1,5 @@
 import { useState } from "react";
-import MenuLink from "../../interfaces/IMenuLink";
+import MenuLink from  "../../interfaces/MenuLink";
 import Navbar from "../../Components/Navbar";
 import Menu from "../../Components/Menu";
 import Sidebar from "../../Components/Sidebar";
@@ -9,16 +9,16 @@ import VehicleCard from "../../Components/VehicleCard";
 import { MapContainer, MenuContainer, NavContainer, SideBarContainer, StyledDiv, VehiclesCardsContainer } from "./style";
 import "../../i18n/config";
 import { useTranslation } from "react-i18next"
-
-import IVehicle from "../../interfaces/IVehicle";
+import Vehicle from "../../interfaces/Vehicle";
 import Map from "../../Components/Map";
+
 
 export default function Home() {
   const { t } = useTranslation();
 
   const [resizeMap, setResizeMap] = useState(false);
   const [searchValue, setSearchValue ] = useState("");
-  const [vehicles, setVehicles] = useState<IVehicle[] | []>([
+  const [vehicles, setVehicles] = useState<Vehicle[] | []>([
     {
       "speed": {
         "val": 0,
@@ -220,7 +220,7 @@ export default function Home() {
           </DividerBox>
 
           <VehiclesCardsContainer>
-            {vehicles.map((vehicle: IVehicle) => 
+            {vehicles.map((vehicle: Vehicle) => 
                 <DividerBox key={vehicle.ativo_id}>
                   <VehicleCard vehicle={vehicle}></VehicleCard>
                 </DividerBox>

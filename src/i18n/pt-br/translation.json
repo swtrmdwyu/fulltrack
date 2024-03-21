@@ -9,5 +9,18 @@
     "administrative_panel":" Painel administrativo",
     "registers": "Cadastros",
     "settings": "Configurações"
-  }
+  },
+  "login": {
+    "form_field": {
+      "email": {
+        "placeholder": "Digite seu email"
+      },
+      "password": {
+        "placeholder": "Digite sua senha",
+        "label": "Senha:"
+      }
+    },
+    "login_button": "Entrar"
+  },
+  "fulltime_logo_alt": "Logo Fulltime"
 }

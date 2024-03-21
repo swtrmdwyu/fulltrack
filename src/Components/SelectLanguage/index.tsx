@@ -1,19 +1,15 @@
-import { useState } from "react";
+import { useContext } from "react";
 import { StyledSelect } from "./style";
-import i18next from "i18next";
-import checkUserLanguage from "../../utils/checkUserlanguage";
-import moment from "moment";
+import { LanguageContext } from "../../Contexts/LanguageContext";
+import LanguageType from "../../types/LanguageType";
 
 export default function SelectLanguage() {
-    const userLanguage = checkUserLanguage();
-    const [ language, setLanguage ] = useState(userLanguage);
+    const {language, changeLanguage} = useContext(LanguageContext);
+
 
     const selectLanguage = (event: React.ChangeEvent<HTMLSelectElement>) => {
-        const newLanguage = event.target.value;
-        setLanguage(newLanguage);
-        i18next.changeLanguage(newLanguage);
-        console.log(newLanguage)
-        moment.locale(newLanguage)
+        const newLanguage = event.target.value as LanguageType;
+        changeLanguage(newLanguage)
     }
     
     return(

@@ -1,4 +1,4 @@
-export default interface IVehicle {
+export default interface Vehicle {
     speed: {
         val: number,
         unit_measurement: string

@@ -4,7 +4,7 @@ import { LinksContainer, LogoContainer, MenuContainer } from "./style";
 import fulltimeLogo from "../../assets/img/logo.svg";
 import arrowDown from "../../assets/icons/arrow-down.svg";
 import { useState } from "react";
-import MenuLink from "../../interfaces/IMenuLink";
+import MenuLink from "../../interfaces/MenuLink";
 
 export interface MenuProps {
     menuLinks?: MenuLink[],

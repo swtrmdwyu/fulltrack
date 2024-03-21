@@ -1,20 +1,90 @@
 @import './styles/variables.css';
 @import './styles/reset.css';
 
-.button-here {
-    background-image: url("../src/assets/icons/Target.svg");
+.button-control-here {
+    align-items: center;
     background-color: var(--quartiary-color);
     background-repeat: no-repeat;
     background-position: center;
     border: none;
     border-radius: 4px;
     box-shadow: 0px 2px 4px 0px #6B757C52;
-    height: 2rem;
-    width: 2rem;
+    cursor: pointer;
     display: flex;
-    align-items: center;
+    height: 2rem;
     justify-content: center ;
-    z-index: 2;
+    margin: 1rem;
+    width: 2rem;
     position: absolute;
-    margin: 1.5rem;
+}
+
+.H_overlay {
+    display: none;
+}
+
+.H_overlay::before {
+    border-width: 10px 10px 10px 0;
+    border-color: transparent #fff transparent transparent;
+    left: -10px;
+}
+
+.map-settings-control-here {
+    background-image: url("../src/assets/icons/Layers.svg");
+    top: 8rem;
+}
+
+.agroup-control-here {
+    background-image: url("../src/assets/icons/Target.svg");
+    top: 0;
+}
+
+.agroup-control-here:hover {
+    background-image: url("../src/assets/icons/Target-hover.svg");
+}
+
+.H_zoom {
+    background-color: var(--quartiary-color);
+    background-repeat: no-repeat;
+    background-position: center;
+    border-radius: 4px;
+    box-shadow: 0px 2px 4px 0px #6B757C52;
+    position: absolute;
+    top: 3rem;
+    margin: 1rem;
+}
+
+.H_zoom .H_btn {
+    align-items: center;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    height: 2rem;
+    justify-content: center ;
+    width: 2rem;
+}
+
+.H_zoom .zoom-out {
+    background-image: url("../src/assets/icons/zoom-out.svg");
+    background-repeat: no-repeat;
+    background-position: center;
+    border-top: 1px solid var(--gray-color-light);
+}
+
+.H_zoom .zoom-in {
+    background-image: url("../src/assets/icons/zoom-in.svg");
+    background-repeat: no-repeat;
+    background-position: center;
+    margin-bottom: 1px solid var(--gray-color-light);
+}
+
+.H_zoom svg {
+    display: none;
+}
+
+.H_zoom .zoom-out:hover {
+    background-image: url("../src/assets/icons/zoom-out-hover.svg");
+}
+
+.H_zoom .zoom-in:hover {
+    background-image: url("../src/assets/icons/zoom-in-hover.svg");
 }

@@ -1,16 +1,20 @@
 import { useEffect, useRef } from 'react';
 import H from '@here/maps-api-for-javascript';
 import { renderToString } from 'react-dom/server';
-import IVehicle from '../../interfaces/IVehicle';
+import Vehicle from '../../interfaces/Vehicle';
 import MarkerTypeName from '../../types/MarkerTypeName';
 import VehicleMarker from '../VehicleMarker';
+import AgroupControl from '../MapControls/AgroupControl';
+import ZoomControl from '../MapControls/ZoomControl';
+import MapSettingsControl from '../MapControls/MapSettingsControl';
+
 
 interface MapProps {
     /**
      * Recebe a APIkey da API do HERE.
      */
     apikey: string,
-	vehicles: IVehicle[] | [],
+	vehicles: Vehicle[] | [],
 	size: boolean;
 }
 
@@ -62,7 +66,7 @@ export default function Map({ apikey, vehicles, size }: MapProps) {
 
 				let markers: H.map.DomMarker[] = [];
 
-				vehicles.forEach((vehicle: IVehicle) => {
+				vehicles.forEach((vehicle: Vehicle) => {
 					const coords = {
 						lat: vehicle.lat_lng[0],            
 						lng: vehicle.lat_lng[1],
@@ -81,15 +85,12 @@ export default function Map({ apikey, vehicles, size }: MapProps) {
 					}
 				});
 
-				const button = new H.ui.base.Button();
-				
-
-				const control = new H.ui.Control();
-				control.addChild(button);
+				const defaultLayers = platform.current.createDefaultLayers();
 
 				const ui = new H.ui.UI(map.current);
-				ui.addControl("group", control);
-				ui.getControl("group")?.addClass("button-here")
+				ui.addControl("agroupControl", AgroupControl({onStateChange: () => {}}));
+				ui.addControl("zoomControl", ZoomControl());
+				ui.addControl("mapSettingsControl", MapSettingsControl(defaultLayers));
 			}
 
 			if(map.current) {
@@ -103,12 +104,12 @@ export default function Map({ apikey, vehicles, size }: MapProps) {
 			[apikey, size]
 	);
 
-    return <div style={ { height: "calc(100vh - 3.563rem) " } } ref={mapRef} />;
+    return <div style={ { height: "calc(100vh - 3.563rem)" } } ref={mapRef} />;
 
 }
 
 
-function markerType(vehicle: IVehicle): MarkerTypeName {
+function markerType(vehicle: Vehicle): MarkerTypeName {
 	if(vehicle.is_bloqued) {
 		return "block";
 	}

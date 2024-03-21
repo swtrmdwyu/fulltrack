@@ -40,13 +40,15 @@ export const Header = styled.div`
             text-transform: uppercase;
         }
     }
+`;
 
-    span {
+export const DateContainer = styled.div`
         align-items: center;
         display: flex;
+        height: 1.125rem;
         gap: .5rem;
         font-size: .75rem;
-    }
+        justify-content: center
 `;
 
 export const Tags = styled.div`

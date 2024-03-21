@@ -9,5 +9,18 @@
         "administrative_panel": "Administrative Panel",
         "registers": "Registers",
         "settings": "Settings"
-    }
+    },
+    "login": {
+        "form_field": {
+          "email": {
+            "placeholder": "Type your email"
+          },
+          "password": {
+            "placeholder": "Type your password",
+            "label": "Password:"
+          }
+        },
+        "login_button": "Login"
+      },
+      "fulltime_logo_alt": "Fulltime Logo"
 }

@@ -1,12 +1,10 @@
 import axios from "axios";
 
 const tokenAPI = axios.create({
-    baseURL: "https://dev.api-fulltrack4.ftdata.com.br/token",
+    baseURL: import.meta.env.VITE_BASE_TOKEN_API_URL,
     headers: {
         "Content-Type": "application/json"
     }
 })
-
-tokenAPI.interceptors.response.use();
 
 export default tokenAPI;

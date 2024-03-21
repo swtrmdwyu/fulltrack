@@ -1,6 +1,6 @@
-import Vehicle from "../../interfaces/IVehicle";
+import Vehicle from "../../interfaces/Vehicle";
 import Tag from "../Tag/Index";
-import { CardContainer, Header, Locale, Tags } from "./style";
+import { CardContainer, DateContainer, Header, Locale, Tags } from "./style";
 import signal from "../../assets/icons/signal.svg";
 import formatDate from "../../utils/formatDate";
 
@@ -28,7 +28,10 @@ export default function VehicleCard({ onClick, vehicle }: VehicleCardProps) {
                     <h3>{vehicle?.ativo.plate}</h3>
                 </div>
 
-                <span><img src={signal} />{vehicle && formatDate(vehicle.dt_gps)}</span> 
+                <DateContainer>
+                    <img src={signal} />
+                    <span>{vehicle && formatDate(vehicle.dt_gps)}</span>
+                </DateContainer> 
             </Header>
 
             <address>Praça Itália, 3-9 - Centro, Bauru, São Paulo, ...</address>

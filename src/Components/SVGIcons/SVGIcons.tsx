@@ -1,4 +1,4 @@
-import IconName from "../../types/Icon";
+import IconName from "../../types/IconName";
 
 interface SVGIconsProps {
     /**
