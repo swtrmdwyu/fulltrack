@@ -4,9 +4,9 @@ import { renderToString } from 'react-dom/server';
 import Vehicle from '../../interfaces/Vehicle';
 import MarkerTypeName from '../../types/MarkerTypeName';
 import VehicleMarker from '../VehicleMarker';
-import AgroupControl from '../MapControls/AgroupControl';
-import ZoomControl from '../MapControls/ZoomControl';
-import MapSettingsControl from '../MapControls/MapSettingsControl';
+import AgroupControl from './MapControls/AgroupControl';
+import ZoomControl from './MapControls/ZoomControl';
+import MapSettingsControl from './MapControls/MapSettingsControl';
 
 
 interface MapProps {

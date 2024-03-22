@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 import MenuLink from  "../../interfaces/MenuLink";
 import Navbar from "../../Components/Navbar";
 import Menu from "../../Components/Menu";
@@ -11,11 +11,15 @@ import "../../i18n/config";
 import { useTranslation } from "react-i18next"
 import Vehicle from "../../interfaces/Vehicle";
 import Map from "../../Components/Map";
+import { AuthContext } from "../../Contexts/AuthContext";
+import getVehicles from "../../services/getVehicles";
+import getClients from "../../services/getClients";
+import getAddress, { AddressRequestParams } from "../../services/getAddress";
 
 
 export default function Home() {
   const { t } = useTranslation();
-
+  const {authTokens, setTokens} = useContext(AuthContext);
   const [resizeMap, setResizeMap] = useState(false);
   const [searchValue, setSearchValue ] = useState("");
   const [vehicles, setVehicles] = useState<Vehicle[] | []>([
@@ -183,7 +187,40 @@ export default function Home() {
     { label: t("menu_names.settings"), href: "#", icon: "settings" },
   ];
 
+  const isFirstRender = useRef(true);
+
   
+  useEffect(() => {
+    if(isFirstRender.current) {
+      isFirstRender.current = false;
+
+      async function getAllData() {
+        if(authTokens) {
+          const vehicles = await getVehicles(authTokens.authToken);
+          const clients = await getClients(authTokens.authToken);
+
+          const addressData: AddressRequestParams[] = vehicles.map((vehicle: Vehicle) => {
+            const addressParams: AddressRequestParams = {              
+              "code": vehicle.ativo_id,
+              "latitude": vehicle.lat_lng[0].toString(),
+              "longitude": vehicle.lat_lng[1].toString(),
+            }
+            return addressParams;
+          });
+
+          const address = await getAddress(authTokens.authToken, addressData);
+
+          console.log("vehicles:", vehicles);
+          console.log("clients:", clients);
+          console.log("address:", address);
+        }
+      }
+
+      getAllData();
+      //fazer as requests para os endpoints e armazenar em estados.
+    }
+  }, []);
+
   const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
 
   const newSearchValue = event.target.value;

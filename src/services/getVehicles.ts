@@ -1,7 +1,7 @@
 import api from "../api/api";
 import Vehicle from "../interfaces/Vehicle";
 
-export default async function getVehicles(token: string){
+export default async function getVehicles(token: string): Promise<Vehicle[]>{
     const vehicles: Vehicle[] = [];
 
     await api
@@ -11,7 +11,8 @@ export default async function getVehicles(token: string){
         }
     })
     .then((response) => {
-        vehicles.push([...response.data as Vehicle] as Vehicle[])
+        const vehiclesList: Vehicle[] = response.data.map((vehicle: Vehicle) => vehicle);
+        vehicles.push(...vehiclesList);
     })
     .catch((error) => console.log(error));
 

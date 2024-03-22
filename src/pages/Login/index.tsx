@@ -9,6 +9,8 @@ import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import getAuthTokens from "../../services/getAuthTokens";
 import getVehicles from "../../services/getVehicles";
+import refresh from "../../services/refreshToken";
+import getAddress from "../../services/getAddress";
 
 export default function Login() {
     const { t } = useTranslation();
@@ -30,18 +32,13 @@ export default function Login() {
 
     const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
-        if(authTokens) {
-            const vehicles = await getVehicles(authTokens?.authToken);
-            console.log(vehicles)
-        }
-
-        // const authTokens = await getAuthTokens();
+        const authTokens = await getAuthTokens();
         
-        // if(authTokens) {
-        //     setTokens(authTokens);
-        //     localStorage.setItem("authTokens", JSON.stringify(authTokens));
-        //     navigate("/");
-        // }
+        if(authTokens) {
+            setTokens(authTokens);
+            localStorage.setItem("authTokens", JSON.stringify(authTokens));
+            navigate("/");
+        }
     }
 
     return( 
