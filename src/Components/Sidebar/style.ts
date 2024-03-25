@@ -8,7 +8,6 @@ export const SidebarContainer = styled.div`
     box-shadow: 0px 8px 16px 0px #6B757C52;
     min-height: calc(100vh - 3.563rem);
     position: relative;
-
 `;
 
 export const SidebarContent = styled.div<SidebarContentProps>`
@@ -24,6 +23,7 @@ export const ToggleSideBarButton = styled.button<SidebarContentProps>`
     border-radius: 0 .5rem .5rem 0;
     border: none;
     border-left: 0.71px solid var(--gray-color-light);
+    cursor: pointer;
     display: flex;
     height: 3.25rem;
     justify-content: center;

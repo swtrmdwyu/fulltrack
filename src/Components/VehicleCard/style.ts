@@ -8,9 +8,14 @@ export const CardContainer = styled.div`
     address {
         color: var(--gray-color-dark);
         font-size: .75rem;
+        font-style: normal;
         font-weight: 500;
         line-height: 1.125rem;
         margin-top: .25rem;
+        max-width: 270px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
     }
 `;
 
@@ -48,7 +53,7 @@ export const DateContainer = styled.div`
         height: 1.125rem;
         gap: .5rem;
         font-size: .75rem;
-        justify-content: center
+        justify-content: center;
 `;
 
 export const Tags = styled.div`
@@ -58,7 +63,7 @@ export const Tags = styled.div`
     margin-top: .5rem;
 `;
 
-export const Locale = styled.span`
+export const Client = styled.span`
     color: var(--primary-color);
     font-size: .75rem;
     line-height: 1.125;
