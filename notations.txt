@@ -1,10 +1,8 @@
-
-1 login -> validar se é email
-
 2 ao clicar no veiculo mostar pontos de referencia do usuario -> buscar esses pontos no localStorage
 3 utilizar react query nas requests 
-4 barra de pesquisa 
-5 cluster dos markers -> https://developer.here.com/documentation/examples/maps-js/clustering/custom-cluster-theme (documentation)
-6 cadastro de ponto de referencia -> salvar no localStorage
+4 barra de pesquisa ---
+5 cluster dos markers -> https://developer.here.com/documentation/examples/maps-js/clustering/custom-cluster-theme (documentation) ---
+6 cadastro de ponto de referencia -> salvar no localStorage 
 7 cadastro de cerca ( so aquela redonda mesmo com descrição) -> salvar no localStorage
 8 camadas -> so as do here mesmo
+9 problemas de desempenho.

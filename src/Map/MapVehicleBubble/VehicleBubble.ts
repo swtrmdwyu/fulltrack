@@ -1,5 +1,5 @@
 import H from '@here/maps-api-for-javascript';
-import { FormatedVehicle } from '../../../interfaces/FormatedVehicle';
+import { FormatedVehicle } from '../../interfaces/FormatedVehicle';
 
 export default function VehicleBubble(vehicle: FormatedVehicle, content: string) {
     const vehicleBubble = new H.ui.InfoBubble({

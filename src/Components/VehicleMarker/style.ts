@@ -57,8 +57,8 @@ export const MarkerContainer = styled.div`
     justify-content: space-between;
     position: relative;
     width: 2.5rem;
-    left: -1.5rem;
-    top: -3.5rem;
+    left: -1.2rem;
+    top: -3.03rem;
 `;
 
 export const MarkerVehicle = styled.div<VehicleMarkerProps>`
