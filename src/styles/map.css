@@ -15,21 +15,6 @@
     position: absolute;
 }
 
-.H_overlay {
-    display: none;
-}
-
-.H_overlay::before {
-    border-width: 10px 10px 10px 0;
-    border-color: transparent #fff transparent transparent;
-    left: -10px;
-}
-
-.map-settings-control-here {
-    background-image: url("../src/assets/icons/Layers.svg");
-    top: 8rem;
-}
-
 .agroup-control-here {
     background-image: url("../src/assets/icons/Target.svg");
     top: 0;
@@ -39,6 +24,28 @@
     background-image: url("../src/assets/icons/Target-hover.svg");
 }
 
+.reference-control-here {
+    background-image: url("../src/assets/icons/reference.svg");
+    top: 11rem;
+}
+
+.reference-control-here:hover {
+    background-image: url("../src/assets/icons/reference-hover.svg");
+    top: 11rem;
+}
+
+.fence-control-here {
+    background-image: url("../src/assets/icons/fence.svg");
+    top: 14rem;
+}
+
+.fence-control-here:hover {
+    background-image: url("../src/assets/icons/fence-hover.svg");
+    top: 14rem;
+}
+
+
+/* zoom */
 .H_zoom {
     background-color: var(--quartiary-color);
     background-repeat: no-repeat;
@@ -152,3 +159,49 @@
     top: -1rem;
     left: -1rem;
 }
+
+.map-settings-control-here {
+    background-image: url("../src/assets/icons/Layers.svg");
+    top: 8rem;
+}
+
+.map-settings-control-here:hover {
+    background-image: url("../src/assets/icons/Layers-hover.svg");
+    top: 8rem;
+}
+
+/* map-settings */
+.H_overlay {
+    border-radius: 4px;
+    position: absolute;
+    background-color: var(--quartiary-color);
+    left: 3rem;
+    width: 10.813rem;
+    transform: translateY(1.9rem);
+    padding: 1rem;
+    display: none;
+}
+
+.H_overlay .H_rdo_title {
+    font-size: 14px;
+    font-weight: 600;
+    font-family: var(--primary-font);
+}
+
+.map-settings-control-here:hover ~ .H_overlay {
+    width: 3rem;
+}
+
+/* <div class="H_overlay H_el H_open H_bottom H_right" style="bottom: 0px; margin: 0px 12px; right: 40px;">
+    <div class="H_rdo H_el">
+        <div class="H_rdo_title H_el">Choose view</div>
+            <div class="H_rdo_buttons H_el">
+                <div class="H_btn H_el">Normal</div>
+            </div>
+        </div>
+        <div class="H_separator H_el"></div>
+        <div class="H_grp H_el">
+        <div class="H_btn H_el">Tráfego</div>
+        <div class="H_btn H_el">Satélite</div>
+    </div>
+</div> */

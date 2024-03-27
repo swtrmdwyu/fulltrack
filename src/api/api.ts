@@ -1,10 +1,24 @@
 import axios from "axios";
-import tokenAPI from "./token";
-import AuthTokens from "../interfaces/AuthTokens";
 import refreshToken from "../services/refreshToken";
+import AuthTokens from "../interfaces/AuthTokens";
+
+function getStorageToken(): string {
+    const storage = localStorage.getItem("authTokens");
+    if(storage) {
+        const authObj: AuthTokens = JSON.parse(storage);
+
+        return authObj.authToken;
+    }
+    console.log("aaaaaaa")
+
+    return "";
+}
 
 const api = axios.create({
     baseURL: import.meta.env.VITE_BASE_API_URL,
+    headers: {
+        "Authorization": `Bearer ${getStorageToken()}`
+    }
 });
 
 api.interceptors.response.use();

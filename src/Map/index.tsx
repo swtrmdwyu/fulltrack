@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import H, { clustering } from '@here/maps-api-for-javascript';
+import H from '@here/maps-api-for-javascript';
 import { renderToString } from 'react-dom/server';
 import Vehicle from '../interfaces/Vehicle';
 import MarkerTypeName from '../types/MarkerTypeName';
@@ -9,11 +9,13 @@ import ZoomControl from './MapControls/ZoomControl';
 import MapSettingsControl from './MapControls/MapSettingsControl';
 import { FormatedVehicle } from '../interfaces/FormatedVehicle';
 import VehicleBubble from './MapVehicleBubble/VehicleBubble';
-import BubbleContent from '../Components/BubbleContent';
 import Points from '../interfaces/Points';
-import startClustering from './clustering';
+
 import markerType from './markerTypeName';
 import stringVehicleCard from './stringCardVehicle';
+import startClustering from './Clustering';
+import ReferenceControl from './MapControls/ReferenceControl';
+import FenceControl from './MapControls/FenceControl';
 
 
 interface MapProps {
@@ -30,6 +32,7 @@ export default function Map({ apikey, vehicles, size }: MapProps) {
     const map = useRef<H.Map | null>(null);
     const platform = useRef<H.service.Platform | null>(null);
 	const vehiclesRef = useRef<FormatedVehicle[] | []>([]);
+	const [clustering, setClustering] = useState<H.map.layer.ObjectLayer | null>(null);
 
     useEffect(
         () => {
@@ -48,6 +51,7 @@ export default function Map({ apikey, vehicles, size }: MapProps) {
 				const rasterTileProvider = new H.service.rasterTile.Provider(
 					rasterTileService
 				);
+
 				const rasterTileLayer = new H.map.layer.TileLayer(rasterTileProvider);
 				
 				//cria um novo mapa.
@@ -64,6 +68,7 @@ export default function Map({ apikey, vehicles, size }: MapProps) {
 				new H.mapevents.Behavior(
 					new H.mapevents.MapEvents(newMap)
 				);
+				
 				map.current = newMap;
 				map.current.setZoom(18);
 
@@ -81,6 +86,8 @@ export default function Map({ apikey, vehicles, size }: MapProps) {
 				const ui = new H.ui.UI(map.current);
 				ui.addControl("zoomControl", ZoomControl());
 				ui.addControl("mapSettingsControl", MapSettingsControl(defaultLayers));
+				ui.addControl("referenceControl", ReferenceControl({onStateChange: () => {}}));
+				ui.addControl("fenceControl", FenceControl({onStateChange: () => {}}));
 
 			}
 
@@ -93,8 +100,6 @@ export default function Map({ apikey, vehicles, size }: MapProps) {
 			if(vehicles !== vehiclesRef.current) {
 				vehiclesRef.current = vehicles;
 				let markers: H.map.DomMarker[] = [];
-
-
 
 				vehicles.forEach((vehicle: FormatedVehicle) => {
 					//coordenadas do veículo.
@@ -155,47 +160,47 @@ export default function Map({ apikey, vehicles, size }: MapProps) {
 			[apikey, size, vehicles]
 	);
 
-    return <div style={ { height: "calc(100vh - 3.563rem)" } } ref={mapRef} />;
-
-}
-
-export function createCustomMarker(
-	coords: { lat: number; lng: number }, 
-	markerType: MarkerTypeName, 
-	key: number, 
-	zoom?: {min: number, max: number}
+	function createCustomMarker(
+		coords: { lat: number; lng: number }, 
+		markerType: MarkerTypeName, 
+		key: number, 
+		zoom?: {min: number, max: number}
+		
+	): H.map.DomMarker {
+		const markerComponent = renderToString(
+			<VehicleMarker
+				key={key}
+				type={markerType}
+			/>
+		);
 	
-): H.map.DomMarker {
-	const markerComponent = renderToString(
-		<VehicleMarker
-			key={key}
-			type={markerType}
-		/>
-	);
-
-	const marker = new H.map.DomMarker(coords, {
-		icon: new H.map.DomIcon(markerComponent),
-		data: {},
-		min: zoom ? zoom.min : 0,
-		max: zoom ? zoom.max : Infinity
-	});
-
-	return marker;
-}
-
-function toggleClustering(
-	map: H.Map, 
-	vehicles: Vehicle[], 
-	clusteringLayer: H.map.layer.ObjectLayer | null,
-	markers:  H.map.DomMarker[]
-):  H.map.layer.ObjectLayer | null {
-	if(!clusteringLayer)  {
-		map.removeObjects(markers);
-		clusteringLayer = startClustering(map, vehicles);
-		return clusteringLayer;
+		const marker = new H.map.DomMarker(coords, {
+			icon: new H.map.DomIcon(markerComponent),
+			data: {},
+			min: zoom ? zoom.min : 0,
+			max: zoom ? zoom.max : Infinity
+		});
+	
+		return marker;
 	}
 
-	map.removeLayer(clusteringLayer);
-	map.addObjects(markers);
-	return null;
+	function toggleClustering(
+		map: H.Map, 
+		vehicles: Vehicle[], 
+		clusteringLayer: H.map.layer.ObjectLayer | null,
+		markers:  H.map.DomMarker[]
+	):  H.map.layer.ObjectLayer | null {
+		if(!clusteringLayer)  {
+			map.removeObjects(markers);
+			clusteringLayer = startClustering(map, vehicles);
+			return clusteringLayer;
+		}
+	
+		map.removeLayer(clusteringLayer);
+		map.addObjects(markers);
+		return null;
+	}
+
+    return <div style={ { height: "calc(100vh - 3.563rem)" } } ref={mapRef} />;
+
 }
