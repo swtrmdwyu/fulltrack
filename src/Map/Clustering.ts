@@ -1,13 +1,19 @@
 import H from '@here/maps-api-for-javascript';
-import { createCustomMarker } from '.';
+import createClusterMarker from './createClusterMarker';
+import convertToStr from './stringVehicleMarker';
+import Vehicle from '../interfaces/Vehicle';
+import markerType from './markerTypeName';
+import { createNoiseMarker } from './createNoiseMarker';
+
 interface Points {
     latitude: H.geo.Latitude,
     longitude: H.geo.Longitude
 }
-export default function startClustering(map: H.Map, data: Points[]) {
 
-    const dataPoints = data.map((point: Points) => {
-      return new H.clustering.DataPoint(point.latitude, point.longitude, undefined, {});
+export default function startClustering(map: H.Map, vehicles: Vehicle[]) {
+
+    const dataPoints = vehicles.map((point: Vehicle) => {
+      return new H.clustering.DataPoint(point.lat_lng[0], point.lat_lng[1], undefined, point);
     });
   
     const clusteredDataProvider = new H.clustering.Provider(dataPoints, {
@@ -26,26 +32,16 @@ export default function startClustering(map: H.Map, data: Points[]) {
   
 const  CUSTOM_THEME = {
     getClusterPresentation: function (cluster: H.clustering.ICluster) {
-
-        const zoom = {
-            min: cluster.getMinZoom(),
-            max: cluster.getMaxZoom()
-        }
-
-        console.log(zoom)
-
-        const clusterMarker = createCustomMarker(cluster.getPosition(), "moving", 1, zoom)
+        const clusterMarker = createClusterMarker(cluster);
 
         return clusterMarker;
     },
     getNoisePresentation: (noisePoint: H.clustering.INoisePoint) => {
-        const zoom = {
-            min: noisePoint.getMinZoom(),
-            max: Infinity
-        }
-        const noiseMarker = createCustomMarker(noisePoint.getPosition(), "ignition-on", 1, zoom)
 
-        return noiseMarker;
+      const type = markerType(noisePoint.getData());
+      const element = convertToStr(type);
+      const noiseMarker = createNoiseMarker(noisePoint, element);
+      return noiseMarker;
     }
     
 };

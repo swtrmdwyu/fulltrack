@@ -133,3 +133,22 @@
     bottom: -8px;
     left: calc(50% - 16px);
 }   
+
+/* cluster */
+
+.cluster-container {
+    align-items: center;
+    background-color: var(--primary-color);
+    border: .5rem solid var(--secondary-color);
+    border-radius: 50%;
+    color: var(--quartiary-color);
+    display: flex;
+    font-family: var(--primary-font);
+    font-size: .875rem;
+    font-weight: 600;
+    height: 2rem;
+    justify-content: center;
+    width: 2rem;
+    top: -1rem;
+    left: -1rem;
+}

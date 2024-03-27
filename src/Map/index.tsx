@@ -10,8 +10,10 @@ import MapSettingsControl from './MapControls/MapSettingsControl';
 import { FormatedVehicle } from '../interfaces/FormatedVehicle';
 import VehicleBubble from './MapVehicleBubble/VehicleBubble';
 import BubbleContent from '../Components/BubbleContent';
-import startClustering from './Clustering';
 import Points from '../interfaces/Points';
+import startClustering from './clustering';
+import markerType from './markerTypeName';
+import stringVehicleCard from './stringCardVehicle';
 
 
 interface MapProps {
@@ -111,7 +113,7 @@ export default function Map({ apikey, vehicles, size }: MapProps) {
 
 					if(map.current) {
 						const ui = new H.ui.UI(map.current);
-						const content  = renderToString(<BubbleContent vehicle={vehicle}/>)
+						const content  = stringVehicleCard(vehicle);
 						const bubble = VehicleBubble(vehicle, content);
 
 						bubble.setState(H.ui.InfoBubble.State.CLOSED);
@@ -129,7 +131,7 @@ export default function Map({ apikey, vehicles, size }: MapProps) {
 				const ui = new H.ui.UI(map.current);
 				ui.addControl("agroupControl", AgroupControl({onStateChange: () => {
 					if(map.current) {
-						clusteringLayer = toggleClustering(map.current, points, clusteringLayer, markers);
+						clusteringLayer = toggleClustering(map.current, vehicles, clusteringLayer, markers);
 					}
 					
 				}}));
@@ -157,31 +159,6 @@ export default function Map({ apikey, vehicles, size }: MapProps) {
 
 }
 
-
-function markerType(vehicle: Vehicle): MarkerTypeName {
-	if(vehicle.is_bloqued) {
-		return "block";
-	}
-
-	if(vehicle.ignition === 0) {
-		return "ignition-off"
-	}
-
-	if(vehicle.speed.val === 0) {
-		return "ignition-on"
-	}
-
-	if(vehicle.speed.val > 0) {
-		return "moving"
-	}
-
-	if(vehicle.dt_gps === "") {
-		return "no-signal"
-	}
-
-	return undefined;
-}
-
 export function createCustomMarker(
 	coords: { lat: number; lng: number }, 
 	markerType: MarkerTypeName, 
@@ -207,13 +184,14 @@ export function createCustomMarker(
 }
 
 function toggleClustering(
-	map: H.Map, points: Points[], 
+	map: H.Map, 
+	vehicles: Vehicle[], 
 	clusteringLayer: H.map.layer.ObjectLayer | null,
 	markers:  H.map.DomMarker[]
 ):  H.map.layer.ObjectLayer | null {
 	if(!clusteringLayer)  {
 		map.removeObjects(markers);
-		clusteringLayer = startClustering(map, points);
+		clusteringLayer = startClustering(map, vehicles);
 		return clusteringLayer;
 	}
 
