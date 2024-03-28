@@ -13,7 +13,7 @@ export default function useGetvehicles() {
     const query = useQuery({
         queryKey: ["get-vehicles"],
         queryFn: getVehicles,
-        refetchInterval: 10000
+        refetchInterval: 30000
     })
 
     return {
