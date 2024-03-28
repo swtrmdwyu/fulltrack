@@ -97,12 +97,13 @@
 .H_ib {
     background-color: var(--quartiary-color);
     border-radius: 6px;
+    box-shadow: 0px 8px 16px 0px #6B757C52;
     display: flex;
     flex-direction: column;
-    left: -10.8rem;
+    left: -10.4rem;
     padding: 1rem 1rem .2rem 1rem;
     position: absolute;
-    top: -19.874rem;
+    top: -18.874rem;
 
 }
 

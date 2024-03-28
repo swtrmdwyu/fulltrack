@@ -14,6 +14,7 @@
     "@here/maps-api-for-javascript": "^1.52.0",
     "@pmmmwh/react-refresh-webpack-plugin": "^0.5.3",
     "@svgr/webpack": "^5.5.0",
+    "@tanstack/react-query": "^5.28.9",
     "axios": "^1.6.7",
     "babel-jest": "^27.4.2",
     "babel-loader": "^8.2.3",

@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import H from '@here/maps-api-for-javascript';
+import H, { clustering } from '@here/maps-api-for-javascript';
 import { renderToString } from 'react-dom/server';
 import Vehicle from '../interfaces/Vehicle';
 import MarkerTypeName from '../types/MarkerTypeName';
@@ -10,12 +10,14 @@ import MapSettingsControl from './MapControls/MapSettingsControl';
 import { FormatedVehicle } from '../interfaces/FormatedVehicle';
 import VehicleBubble from './MapVehicleBubble/VehicleBubble';
 import Points from '../interfaces/Points';
-
 import markerType from './markerTypeName';
-import stringVehicleCard from './stringCardVehicle';
 import startClustering from './Clustering';
 import ReferenceControl from './MapControls/ReferenceControl';
 import FenceControl from './MapControls/FenceControl';
+import createClusterMarker from './createClusterMarker';
+import { createNoiseMarker } from './createNoiseMarker';
+import stringVehicleMarker from './stringVehicleMarker';
+import stringBubbleContent from './stringBubbleContent';
 
 
 interface MapProps {
@@ -32,7 +34,9 @@ export default function Map({ apikey, vehicles, size }: MapProps) {
     const map = useRef<H.Map | null>(null);
     const platform = useRef<H.service.Platform | null>(null);
 	const vehiclesRef = useRef<FormatedVehicle[] | []>([]);
-	const [clustering, setClustering] = useState<H.map.layer.ObjectLayer | null>(null);
+	const [isClustering, setIsClustering] = useState(false);
+	const markersRef = useRef<H.map.DomMarker[] | null>(null);
+	const clusterLayer = useRef<H.map.layer.ObjectLayer | null>(null);
 
     useEffect(
         () => {
@@ -70,7 +74,7 @@ export default function Map({ apikey, vehicles, size }: MapProps) {
 				);
 				
 				map.current = newMap;
-				map.current.setZoom(18);
+				map.current.setZoom(8);
 
 				// Atualiza o tamanho do mapa quando a janela muda de tamanho.
 				window.addEventListener("resize", () => {
@@ -88,18 +92,44 @@ export default function Map({ apikey, vehicles, size }: MapProps) {
 				ui.addControl("mapSettingsControl", MapSettingsControl(defaultLayers));
 				ui.addControl("referenceControl", ReferenceControl({onStateChange: () => {}}));
 				ui.addControl("fenceControl", FenceControl({onStateChange: () => {}}));
+				ui.addControl("agroupControl", AgroupControl({onStateChange: () => {
+					if(map.current) {
+						toggleClustering();
+					}
+				}}));
+				
+			}
+			console.log(isClustering)
+			
 
+
+			if(isClustering) {
+				if(vehiclesRef.current !== vehicles) {
+					if(clusterLayer.current) {
+						map.current.removeLayer(clusterLayer.current);
+					}
+				}
+
+				if(markersRef.current) {
+					map.current.removeObjects(markersRef.current);
+					clusterLayer.current = startClustering(map.current, vehicles, CUSTOM_THEME);
+					markersRef.current = null;
+					vehiclesRef.current = [];					
+				}
+				
+ 				return;
 			}
 
-			//armazena os pontos dos markers.
-			const points: Points[] = [];
+			if(clusterLayer.current) {
+				map.current.removeLayer(clusterLayer.current);
+			}
 
-			let clusteringLayer: H.map.layer.ObjectLayer | null = null;
 
-			//verifica se houveram alterações nos veículos.
+			let bubbles: H.ui.InfoBubble[] = [];
+			let markers: H.map.DomMarker[] = [];
+
 			if(vehicles !== vehiclesRef.current) {
 				vehiclesRef.current = vehicles;
-				let markers: H.map.DomMarker[] = [];
 
 				vehicles.forEach((vehicle: FormatedVehicle) => {
 					//coordenadas do veículo.
@@ -108,56 +138,42 @@ export default function Map({ apikey, vehicles, size }: MapProps) {
 						lng: vehicle.lat_lng[1],
 					}
 
-					points.push({
-						latitude:  vehicle.lat_lng[0],
-						longitude: vehicle.lat_lng[1],
-					})
-
 					//cria um novo marker.
 					const marker = createCustomMarker(coords, markerType(vehicle), vehicle.ativo_id);
 
 					if(map.current) {
 						const ui = new H.ui.UI(map.current);
-						const content  = stringVehicleCard(vehicle);
+						const content  = stringBubbleContent(vehicle);
 						const bubble = VehicleBubble(vehicle, content);
 
 						bubble.setState(H.ui.InfoBubble.State.CLOSED);
 						ui.addBubble(bubble);
+						bubbles.push(bubble);
 						
 						marker.addEventListener("tap", () => {
 							bubble.setState(H.ui.InfoBubble.State.OPEN);
 						})
 					}
-
-						markers.push(marker);	
+					markers.push(marker)
 				})
-
-
-				const ui = new H.ui.UI(map.current);
-				ui.addControl("agroupControl", AgroupControl({onStateChange: () => {
-					if(map.current) {
-						clusteringLayer = toggleClustering(map.current, vehicles, clusteringLayer, markers);
-					}
-					
-				}}));
-
-				if(markers && map.current) {
-					map.current.addObjects(markers);
-				}
+				
+				map.current.addObjects(markers);
+				markersRef.current = markers;
 
 				map.current.setCenter({
 					lat: -23.174269,
 					lng: -46.92628
 				});
 			}
-			
+
 			setTimeout(() => {
 				if(map.current) {
 					map.current.getViewPort().resize();
 				}
 			}, 400)
+
 		},
-			[apikey, size, vehicles]
+			[apikey, size, vehicles, isClustering]
 	);
 
 	function createCustomMarker(
@@ -184,22 +200,36 @@ export default function Map({ apikey, vehicles, size }: MapProps) {
 		return marker;
 	}
 
-	function toggleClustering(
-		map: H.Map, 
-		vehicles: Vehicle[], 
-		clusteringLayer: H.map.layer.ObjectLayer | null,
-		markers:  H.map.DomMarker[]
-	):  H.map.layer.ObjectLayer | null {
-		if(!clusteringLayer)  {
-			map.removeObjects(markers);
-			clusteringLayer = startClustering(map, vehicles);
-			return clusteringLayer;
-		}
-	
-		map.removeLayer(clusteringLayer);
-		map.addObjects(markers);
-		return null;
+	function toggleClustering() {
+		setIsClustering((previous) => !previous)
 	}
+
+	const CUSTOM_THEME = {
+		getClusterPresentation: function (cluster: H.clustering.ICluster) {
+			const clusterMarker = createClusterMarker(cluster);
+	
+			return clusterMarker;
+		},
+
+		getNoisePresentation: (noisePoint: H.clustering.INoisePoint) => {
+		  const type = markerType(noisePoint.getData());
+		  const element = stringVehicleMarker(type);
+		  const noiseMarker = createNoiseMarker(noisePoint, element);
+		  if(map.current) {
+			const ui = new H.ui.UI(map.current);
+			const content  = stringBubbleContent(noisePoint.getData());
+			const bubble = VehicleBubble(noisePoint.getData(), content);
+
+			bubble.setState(H.ui.InfoBubble.State.CLOSED);
+			ui.addBubble(bubble);
+			noiseMarker.addEventListener("tap", () => {
+				bubble.setState(H.ui.InfoBubble.State.OPEN);
+			})
+		  }
+		  return noiseMarker;
+		}
+		
+	};
 
     return <div style={ { height: "calc(100vh - 3.563rem)" } } ref={mapRef} />;
 
