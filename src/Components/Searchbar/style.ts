@@ -1,6 +1,7 @@
 import styled from "styled-components";
 
 export const SearchbarContainer = styled.div`
+    
     position: relative;
 
     input {

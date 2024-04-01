@@ -9,7 +9,6 @@ function getStorageToken(): string {
 
         return authObj.authToken;
     }
-    console.log("aaaaaaa")
 
     return "";
 }

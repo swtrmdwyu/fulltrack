@@ -8,15 +8,14 @@ import { AuthContext } from "../../Contexts/AuthContext";
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import getAuthTokens from "../../services/getAuthTokens";
-import getVehicles from "../../services/getVehicles";
-import refresh from "../../services/refreshToken";
-import getAddress from "../../services/getAddress";
+
+import verifyEmail from "../../utils/verifyEmail";
 
 export default function Login() {
     const { t } = useTranslation();
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
-    const {authTokens, setTokens} = useContext(AuthContext);
+    const {setTokens} = useContext(AuthContext);
 
     const navigate = useNavigate();
 
@@ -30,8 +29,13 @@ export default function Login() {
         setPassword(newPasswordValue);
     }
 
-    const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+    const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {   
         event.preventDefault();
+
+        if(!verifyEmail(email)) {
+            return;
+        }
+        
         const authTokens = await getAuthTokens();
         
         if(authTokens) {

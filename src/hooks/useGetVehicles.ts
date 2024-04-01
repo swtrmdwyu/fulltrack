@@ -13,8 +13,8 @@ export default function useGetvehicles() {
     const query = useQuery({
         queryKey: ["get-vehicles"],
         queryFn: getVehicles,
-        refetchInterval: 30000
-    })
+        refetchOnWindowFocus: false
+    });
 
     return {
         ...query,

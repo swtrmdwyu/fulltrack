@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import H, { clustering } from '@here/maps-api-for-javascript';
+import H, { clustering, ui } from '@here/maps-api-for-javascript';
 import { renderToString } from 'react-dom/server';
 import Vehicle from '../interfaces/Vehicle';
 import MarkerTypeName from '../types/MarkerTypeName';
@@ -37,6 +37,9 @@ export default function Map({ apikey, vehicles, size }: MapProps) {
 	const [isClustering, setIsClustering] = useState(false);
 	const markersRef = useRef<H.map.DomMarker[] | null>(null);
 	const clusterLayer = useRef<H.map.layer.ObjectLayer | null>(null);
+	const uiRef = useRef<H.ui.UI | null>(null);
+	const bubblesRef = useRef<H.ui.InfoBubble | null>(null);
+	const refMarkerRef = useRef<H.map.DomMarker | null>(null);
 
     useEffect(
         () => {
@@ -69,7 +72,7 @@ export default function Map({ apikey, vehicles, size }: MapProps) {
 				});
       
 				// Hablilita eventos padrões do mapa.
-				new H.mapevents.Behavior(
+				const behavior = new H.mapevents.Behavior(
 					new H.mapevents.MapEvents(newMap)
 				);
 				
@@ -86,85 +89,38 @@ export default function Map({ apikey, vehicles, size }: MapProps) {
 				//criação das layers do mapa.
 				const defaultLayers = platform.current.createDefaultLayers();
 
-				// Criação dos contorles do mapa.
+				// Criação dos contorles do mapa.+
 				const ui = new H.ui.UI(map.current);
 				ui.addControl("zoomControl", ZoomControl());
 				ui.addControl("mapSettingsControl", MapSettingsControl(defaultLayers));
 				ui.addControl("referenceControl", ReferenceControl({onStateChange: () => {}}));
-				ui.addControl("fenceControl", FenceControl({onStateChange: () => {}}));
-				ui.addControl("agroupControl", AgroupControl({onStateChange: () => {
+				ui.addControl("fenceControl", FenceControl({onStateChange: () => {
 					if(map.current) {
-						toggleClustering();
+						addReferenceMarker(map.current);
 					}
 				}}));
+				ui.addControl("agroupControl", AgroupControl({onStateChange: () => { toggleClustering() }}));
 				
-			}
-			console.log(isClustering)
-			
-
-
-			if(isClustering) {
-				if(vehiclesRef.current !== vehicles) {
-					if(clusterLayer.current) {
-						map.current.removeLayer(clusterLayer.current);
-					}
-				}
-
-				if(markersRef.current) {
-					map.current.removeObjects(markersRef.current);
-					clusterLayer.current = startClustering(map.current, vehicles, CUSTOM_THEME);
-					markersRef.current = null;
-					vehiclesRef.current = [];					
-				}
+				uiRef.current = ui;
 				
- 				return;
 			}
 
 			if(clusterLayer.current) {
 				map.current.removeLayer(clusterLayer.current);
 			}
+			
+			if(isClustering) {
+				if(markersRef.current) {
+					map.current.removeObjects(markersRef.current);
+					markersRef.current = null;
+					vehiclesRef.current = [];					
+				}
 
-
-			let bubbles: H.ui.InfoBubble[] = [];
-			let markers: H.map.DomMarker[] = [];
-
-			if(vehicles !== vehiclesRef.current) {
-				vehiclesRef.current = vehicles;
-
-				vehicles.forEach((vehicle: FormatedVehicle) => {
-					//coordenadas do veículo.
-					const coords = {
-						lat: vehicle.lat_lng[0],            
-						lng: vehicle.lat_lng[1],
-					}
-
-					//cria um novo marker.
-					const marker = createCustomMarker(coords, markerType(vehicle), vehicle.ativo_id);
-
-					if(map.current) {
-						const ui = new H.ui.UI(map.current);
-						const content  = stringBubbleContent(vehicle);
-						const bubble = VehicleBubble(vehicle, content);
-
-						bubble.setState(H.ui.InfoBubble.State.CLOSED);
-						ui.addBubble(bubble);
-						bubbles.push(bubble);
-						
-						marker.addEventListener("tap", () => {
-							bubble.setState(H.ui.InfoBubble.State.OPEN);
-						})
-					}
-					markers.push(marker)
-				})
+				clusterLayer.current = startClustering(map.current, vehicles, CUSTOM_THEME);
 				
-				map.current.addObjects(markers);
-				markersRef.current = markers;
-
-				map.current.setCenter({
-					lat: -23.174269,
-					lng: -46.92628
-				});
+ 				return;
 			}
+
 
 			setTimeout(() => {
 				if(map.current) {
@@ -172,12 +128,50 @@ export default function Map({ apikey, vehicles, size }: MapProps) {
 				}
 			}, 400)
 
+			if(clusterLayer.current) {
+				map.current.removeLayer(clusterLayer.current);
+			}
+
+			let markers: H.map.DomMarker[] = [];
+
+			if(vehicles !== vehiclesRef.current) {
+
+				if(markersRef.current) {
+					map.current.removeObjects(markersRef.current);
+				}
+
+				vehiclesRef.current = vehicles;
+
+				vehicles.forEach((vehicle: FormatedVehicle) => {
+
+					//coordenadas do veículo.
+					const coords = new H.geo.Point(
+						vehicle.lat_lng[0],            
+						vehicle.lat_lng[1],
+					);
+
+					//cria um novo marker.
+					const marker = createCustomMarker(coords, markerType(vehicle), vehicle.ativo_id);
+				
+					marker.addEventListener("tap", () => {
+						if(uiRef.current) {
+							addVehicleBubble(uiRef.current, vehicle);
+						}
+					})
+					
+					markers.push(marker)
+				})
+				
+				map.current.addObjects(markers);
+				markersRef.current = markers;
+			}
+
 		},
 			[apikey, size, vehicles, isClustering]
 	);
 
 	function createCustomMarker(
-		coords: { lat: number; lng: number }, 
+		coords: H.geo.Point, 
 		markerType: MarkerTypeName, 
 		key: number, 
 		zoom?: {min: number, max: number}
@@ -215,22 +209,49 @@ export default function Map({ apikey, vehicles, size }: MapProps) {
 		  const type = markerType(noisePoint.getData());
 		  const element = stringVehicleMarker(type);
 		  const noiseMarker = createNoiseMarker(noisePoint, element);
-		  if(map.current) {
-			const ui = new H.ui.UI(map.current);
-			const content  = stringBubbleContent(noisePoint.getData());
-			const bubble = VehicleBubble(noisePoint.getData(), content);
-
-			bubble.setState(H.ui.InfoBubble.State.CLOSED);
-			ui.addBubble(bubble);
-			noiseMarker.addEventListener("tap", () => {
-				bubble.setState(H.ui.InfoBubble.State.OPEN);
-			})
-		  }
+		  noiseMarker.addEventListener("tap", () => {
+			if(uiRef.current) {
+				addVehicleBubble(uiRef.current, noisePoint.getData());
+			  }
+		  })
+		  
 		  return noiseMarker;
-		}
-		
+		}		
 	};
+
+	function addVehicleBubble( ui: H.ui.UI, vehicle: FormatedVehicle) {
+			const content  = stringBubbleContent(vehicle);
+			const bubble = VehicleBubble(vehicle, content);
+			bubble.addEventListener("statechange", () => {
+				if(bubble.getState() === "closed") {
+					ui.removeBubble(bubble)
+					bubblesRef.current = null;
+				}
+			})
+
+			if(!bubblesRef.current) {
+				ui.addBubble(bubble);
+				bubblesRef.current = bubble;
+			}
+
+	}
 
     return <div style={ { height: "calc(100vh - 3.563rem)" } } ref={mapRef} />;
 
 }
+
+// function addReferenceMarker(map: H.Map) {
+// 	const center = map.getCenter();
+// 	const marker = new H.map.Marker(center)
+// 	map.addObject(marker);
+
+// 	map.addEventListener("pointermove", (event: H.mapevents.MapEvents) => {
+
+// 		const target = event.target;
+// 		if(target) {
+// 			const targetPosition = map.geoToScreen(target.getGeometry());
+// 		}
+		
+// 		console.log(event.target)
+// 	})
+// }

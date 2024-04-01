@@ -1,6 +1,7 @@
 import styled from "styled-components";
 
 export const CardContainer = styled.div`
+    cursor: pointer;
     display: flex;
     flex-direction: column;
     font-family: var(--primary-font);

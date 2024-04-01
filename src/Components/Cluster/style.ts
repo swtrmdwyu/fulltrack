@@ -7,6 +7,7 @@ export const ClusterContainer = styled.div<ClusterProps>`
     border: .5rem solid var(--secondary-color);
     border-radius: 50%;
     color: var(--quartiary-color);
+    cursor: pointer;
     display: flex;
     font-family: var(--primary-font);
     font-size: .875rem;

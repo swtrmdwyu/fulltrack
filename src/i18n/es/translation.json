@@ -22,5 +22,11 @@
     },
     "login_button": "Entrar"
   },
-  "fulltime_logo_alt": "Logo Fulltime"
+  "fulltime_logo_alt": "Logo Fulltime",
+  "searchbar_placeholder": "Buscar...",
+  "search_not_found": {
+    "label": "No encontramos nada",
+    "paragraph": "No encontramos ningún elemento con los términos buscados. Intente hacer la búsqueda de nuevo.",
+    "button": "Buscar de nuevo"
+  }
 }

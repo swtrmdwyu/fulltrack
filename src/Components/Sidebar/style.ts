@@ -13,7 +13,7 @@ export const SidebarContainer = styled.div`
 export const SidebarContent = styled.div<SidebarContentProps>`
     max-height: calc(100vh - 3.563rem);
     transition: width .4s ease-in-out;
-    width: ${(props: SidebarContentProps) => props.$expanded ? "25rem" : "0"};
+    width: ${(props: SidebarContentProps) => props.$expanded ? "25.375rem" : "0"};
 `;
 
 export const ToggleSideBarButton = styled.button<SidebarContentProps>`

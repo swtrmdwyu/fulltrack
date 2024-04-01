@@ -30,6 +30,7 @@ export const MapContainer = styled.div`
 
 export const VehiclesCardsContainer = styled.div`
     max-height: calc(100vh -  8.126rem);
+    overflow-x: hidden;
     overflow-y: auto;
     white-space: nowrap;
 `;
