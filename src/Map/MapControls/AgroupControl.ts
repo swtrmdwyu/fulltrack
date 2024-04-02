@@ -11,8 +11,7 @@ export default function AgroupControl({ onStateChange }: AgroupControlProps) {
                 if(onStateChange) onStateChange();
             }
         },
-        data: {
-        }
+        data: {}
     });
 
     agroupButton.addClass("agroup-control-here");

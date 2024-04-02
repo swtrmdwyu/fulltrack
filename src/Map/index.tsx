@@ -1,7 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
-import H, { clustering, ui } from '@here/maps-api-for-javascript';
+import H from '@here/maps-api-for-javascript';
 import { renderToString } from 'react-dom/server';
-import Vehicle from '../interfaces/Vehicle';
 import MarkerTypeName from '../types/MarkerTypeName';
 import VehicleMarker from '../Components/VehicleMarker';
 import AgroupControl from './MapControls/AgroupControl';
@@ -9,7 +8,6 @@ import ZoomControl from './MapControls/ZoomControl';
 import MapSettingsControl from './MapControls/MapSettingsControl';
 import { FormatedVehicle } from '../interfaces/FormatedVehicle';
 import VehicleBubble from './MapVehicleBubble/VehicleBubble';
-import Points from '../interfaces/Points';
 import markerType from './markerTypeName';
 import startClustering from './Clustering';
 import ReferenceControl from './MapControls/ReferenceControl';
@@ -18,6 +16,8 @@ import createClusterMarker from './createClusterMarker';
 import { createNoiseMarker } from './createNoiseMarker';
 import stringVehicleMarker from './stringVehicleMarker';
 import stringBubbleContent from './stringBubbleContent';
+import addReferenceMarker from './MapUtils/addReferenceMarker';
+import addFence from './MapUtils/addFence';
 
 
 interface MapProps {
@@ -39,7 +39,6 @@ export default function Map({ apikey, vehicles, size }: MapProps) {
 	const clusterLayer = useRef<H.map.layer.ObjectLayer | null>(null);
 	const uiRef = useRef<H.ui.UI | null>(null);
 	const bubblesRef = useRef<H.ui.InfoBubble | null>(null);
-	const refMarkerRef = useRef<H.map.DomMarker | null>(null);
 
     useEffect(
         () => {
@@ -72,7 +71,7 @@ export default function Map({ apikey, vehicles, size }: MapProps) {
 				});
       
 				// Hablilita eventos padrões do mapa.
-				const behavior = new H.mapevents.Behavior(
+				new H.mapevents.Behavior(
 					new H.mapevents.MapEvents(newMap)
 				);
 				
@@ -93,10 +92,14 @@ export default function Map({ apikey, vehicles, size }: MapProps) {
 				const ui = new H.ui.UI(map.current);
 				ui.addControl("zoomControl", ZoomControl());
 				ui.addControl("mapSettingsControl", MapSettingsControl(defaultLayers));
-				ui.addControl("referenceControl", ReferenceControl({onStateChange: () => {}}));
-				ui.addControl("fenceControl", FenceControl({onStateChange: () => {
+				ui.addControl("referenceControl", ReferenceControl({onStateChange: () => {
 					if(map.current) {
 						addReferenceMarker(map.current);
+					}
+				}}));
+				ui.addControl("fenceControl", FenceControl({onStateChange: () => {
+					if(map.current) {
+						addFence(map.current);
 					}
 				}}));
 				ui.addControl("agroupControl", AgroupControl({onStateChange: () => { toggleClustering() }}));
@@ -240,18 +243,3 @@ export default function Map({ apikey, vehicles, size }: MapProps) {
 
 }
 
-// function addReferenceMarker(map: H.Map) {
-// 	const center = map.getCenter();
-// 	const marker = new H.map.Marker(center)
-// 	map.addObject(marker);
-
-// 	map.addEventListener("pointermove", (event: H.mapevents.MapEvents) => {
-
-// 		const target = event.target;
-// 		if(target) {
-// 			const targetPosition = map.geoToScreen(target.getGeometry());
-// 		}
-		
-// 		console.log(event.target)
-// 	})
-// }
