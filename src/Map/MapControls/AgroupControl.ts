@@ -7,7 +7,7 @@ interface AgroupControlProps {
 export default function AgroupControl({ onStateChange }: AgroupControlProps) {
     const agroupButton = new H.ui.base.Button({
         onStateChange: (event: any) => {
-            if(event.target.getState() === "down") {
+            if(event.target.getState() === H.ui.base.Button.State.DOWN) {
                 if(onStateChange) onStateChange();
             }
         },

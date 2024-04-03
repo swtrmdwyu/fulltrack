@@ -1,24 +1,24 @@
-import { useEffect, useRef, useState } from 'react';
-import H from '@here/maps-api-for-javascript';
-import { renderToString } from 'react-dom/server';
-import MarkerTypeName from '../types/MarkerTypeName';
-import VehicleMarker from '../Components/VehicleMarker';
-import AgroupControl from './MapControls/AgroupControl';
-import ZoomControl from './MapControls/ZoomControl';
-import MapSettingsControl from './MapControls/MapSettingsControl';
-import { FormatedVehicle } from '../interfaces/FormatedVehicle';
-import VehicleBubble from './MapVehicleBubble/VehicleBubble';
-import markerType from './markerTypeName';
-import startClustering from './Clustering';
-import ReferenceControl from './MapControls/ReferenceControl';
-import FenceControl from './MapControls/FenceControl';
-import createClusterMarker from './createClusterMarker';
-import { createNoiseMarker } from './createNoiseMarker';
-import stringVehicleMarker from './stringVehicleMarker';
-import stringBubbleContent from './stringBubbleContent';
-import addReferenceMarker from './MapUtils/addReferenceMarker';
-import addFence from './MapUtils/addFence';
-
+import { useEffect, useRef, useState } from "react";
+import H from "@here/maps-api-for-javascript";
+import { renderToString } from "react-dom/server";
+import MarkerTypeName from "../types/MarkerTypeName";
+import VehicleMarker from "../Components/VehicleMarker";
+import AgroupControl from "./MapControls/AgroupControl";
+import ZoomControl from "./MapControls/ZoomControl";
+import MapSettingsControl from "./MapControls/MapSettingsControl";
+import { FormatedVehicle } from "../interfaces/FormatedVehicle";
+import VehicleBubble from "./MapVehicleBubble/VehicleBubble";
+import markerType from "./markerTypeName";
+import startClustering from "./Clustering";
+import ReferenceControl from "./MapControls/ReferenceControl";
+import FenceControl from "./MapControls/FenceControl";
+import createClusterMarker from "./createClusterMarker";
+import { createNoiseMarker } from "./createNoiseMarker";
+import stringVehicleMarker from "./stringVehicleMarker";
+import stringBubbleContent from "./stringBubbleContent";
+import addReferenceMarker from "./MapUtils/addReferenceMarker";
+import addFence from "./MapUtils/addFence";
+import selectFencePosition from "./MapUtils/selectFencePosition";
 
 interface MapProps {
     /**
@@ -39,6 +39,8 @@ export default function Map({ apikey, vehicles, size }: MapProps) {
 	const clusterLayer = useRef<H.map.layer.ObjectLayer | null>(null);
 	const uiRef = useRef<H.ui.UI | null>(null);
 	const bubblesRef = useRef<H.ui.InfoBubble | null>(null);
+	const [fence, setFence] = useState<H.map.Circle | null>(null);
+	const [rer0efenceMarker, setReferenceMarker] = useState<H.map.Marker | null>(null);
 
     useEffect(
         () => {
@@ -71,7 +73,7 @@ export default function Map({ apikey, vehicles, size }: MapProps) {
 				});
       
 				// Hablilita eventos padrões do mapa.
-				new H.mapevents.Behavior(
+				const behavior = new H.mapevents.Behavior(
 					new H.mapevents.MapEvents(newMap)
 				);
 				
@@ -97,9 +99,11 @@ export default function Map({ apikey, vehicles, size }: MapProps) {
 						addReferenceMarker(map.current);
 					}
 				}}));
-				ui.addControl("fenceControl", FenceControl({onStateChange: () => {
+
+				ui.addControl("fenceControl", FenceControl({onStateChange: async () => {
 					if(map.current) {
-						addFence(map.current);
+						const fencePosition = await selectFencePosition(map.current);
+						addFence(map.current, behavior, fencePosition);
 					}
 				}}));
 				ui.addControl("agroupControl", AgroupControl({onStateChange: () => { toggleClustering() }}));
@@ -123,7 +127,6 @@ export default function Map({ apikey, vehicles, size }: MapProps) {
 				
  				return;
 			}
-
 
 			setTimeout(() => {
 				if(map.current) {

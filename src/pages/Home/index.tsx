@@ -6,7 +6,7 @@ import Sidebar from "../../Components/Sidebar";
 import DividerBox from "../../Components/DividerBox";
 import Searchbar from "../../Components/Searchbar";
 import VehicleCard from "../../Components/VehicleCard";
-import { MapContainer, MenuContainer, NavContainer, SideBarContainer, StyledDiv, VehiclesCardsContainer } from "./style";
+import { LoadingContainer, MapContainer, MenuContainer, NavContainer, SideBarContainer, StyledDiv, VehiclesCardsContainer } from "./style";
 import "../../i18n/config";
 import { useTranslation } from "react-i18next"
 import Vehicle from "../../interfaces/Vehicle";
@@ -19,11 +19,13 @@ import Client from "../../interfaces/Client";
 import { FormatedVehicle } from "../../interfaces/FormatedVehicle";
 import useGetvehicles from "../../hooks/useGetVehicles";
 import SearchNotFound from "../../Components/SearchNotFound";
+import Loading from "../../Components/Loading";
+import FenceSidebar from "../../Components/FenceSidebar";
 
 
 export default function Home() {
   const { t } = useTranslation();
-  // const {vehicles} = useGetvehicles();
+  const {vehicles} = useGetvehicles();
   const {authTokens} = useContext(AuthContext);
   const [resizeMap, setResizeMap] = useState(false);
   const [searchValue, setSearchValue ] = useState("");
@@ -44,43 +46,43 @@ export default function Home() {
 
   const isFirstRender = useRef(true);
   
-  // useEffect(() => {
-  //   if(isFirstRender.current) {
-  //     async function getAllData() {
-  //       if(authTokens) {
-  //           if(vehicles) {
-  //               const clients: Client[] = await getClients(authTokens.authToken);
+useEffect(() => {
+  if(isFirstRender.current) {
+    async function getAllData() {
+      if(authTokens) {
+          if(vehicles) {
+              const clients: Client[] = await getClients(authTokens.authToken);
 
-  //               const addressData: AddressRequestParams[] = vehicles.map((vehicle: Vehicle) => {
-  //                 const addressParams: AddressRequestParams = {              
-  //                   "code": vehicle.ativo_id,
-  //                   "latitude": vehicle.lat_lng[0].toString(),
-  //                   "longitude": vehicle.lat_lng[1].toString(),
-  //                 }
-  //                 return addressParams;
-  //               });
+              const addressData: AddressRequestParams[] = vehicles.map((vehicle: Vehicle) => {
+                const addressParams: AddressRequestParams = {              
+                  "code": vehicle.ativo_id,
+                  "latitude": vehicle.lat_lng[0].toString(),
+                  "longitude": vehicle.lat_lng[1].toString(),
+                }
+                return addressParams;
+              });
       
-  //               const address: Address[] = await getAddress(authTokens.authToken, addressData);
+              const address: Address[] = await getAddress(authTokens.authToken, addressData);
       
-  //               const forrmatedVehicles: FormatedVehicle[] = vehicles.map((vehicle: Vehicle) => {
-  //                 const vehicleAddress: Address = address.filter((address: Address) => address.code == vehicle.ativo_id)[0];
-  //                 const vehicleCLient: Client = clients.filter((client: Client) => client.client_id === vehicle.client_id)[0];
-  //                 return {
-  //                   ...vehicle,
-  //                   address: vehicleAddress ? vehicleAddress.label : "Não informado",
-  //                   client: vehicleCLient.client_description
-  //                 }
-  //               });
+              const forrmatedVehicles: FormatedVehicle[] = vehicles.map((vehicle: Vehicle) => {
+                const vehicleAddress: Address = address.filter((address: Address) => address.code == vehicle.ativo_id)[0];
+                const vehicleCLient: Client = clients.filter((client: Client) => client.client_id === vehicle.client_id)[0];
+                return {
+                  ...vehicle,
+                  address: vehicleAddress ? vehicleAddress.label : "Não informado",
+                  client: vehicleCLient.client_description
+                }
+              });
                 
-  //               setFormatedVehicles(forrmatedVehicles.slice(0,30));
-  //           }
-  //       }
-  //     }
+              setFormatedVehicles(forrmatedVehicles.slice(0,30));
+          }
+      }
+    }
       
-  //     getAllData();
+    getAllData();
       
-  //   }
-  // }, [vehicles]);
+  }
+}, [vehicles]);
 
   const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
 
@@ -138,8 +140,13 @@ export default function Home() {
                 </DividerBox>
             )}
             {(searchValue && searchResults.length === 0) && <SearchNotFound />}
+            {/* <LoadingContainer>
+                <Loading />
+            </LoadingContainer> */}
+            
           </VehiclesCardsContainer>
         </Sidebar>
+        {/* <FenceSidebar>AAAAAAAAAAAAAAAAAAAAA</FenceSidebar> */}
       </SideBarContainer>
      <MapContainer>
         {

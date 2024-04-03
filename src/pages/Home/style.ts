@@ -22,6 +22,7 @@ export const NavContainer = styled.div`
 
 export const SideBarContainer = styled.div`
   grid-area: sidebar;
+  display: flex;
 `;
 
 export const MapContainer = styled.div`
@@ -33,4 +34,11 @@ export const VehiclesCardsContainer = styled.div`
     overflow-x: hidden;
     overflow-y: auto;
     white-space: nowrap;
+`;
+
+export const LoadingContainer = styled.div`
+    align-items: center;
+    display: flex;
+    height: calc(100vh -  8.126rem);
+    justify-content: center ;
 `;
