@@ -6,7 +6,7 @@ import { FenceButtonsContainer, FenceContainer, FenceSidebarContainer } from "./
 interface FenceSidebarProps {
     onClose?: () => void,
     onSave?: () => void,
-    onDescChange?: () => void
+    onDescChange?: (event: React.ChangeEvent<HTMLInputElement>) => void
 }
 export default function FenceSidebar({ onClose, onSave, onDescChange } : FenceSidebarProps) {
     return(
@@ -22,7 +22,7 @@ export default function FenceSidebar({ onClose, onSave, onDescChange } : FenceSi
            
           </FenceContainer>
           <FenceButtonsContainer>
-                <Button type="click" onClick={onSave} theme="secondary">Cancelar</Button>
+                <Button type="click" onClick={onClose} theme="secondary">Cancelar</Button>
                 <Button type="click" onClick={onSave} theme="secondary">Cadastrar</Button>
             </FenceButtonsContainer>
         </FenceSidebarContainer>

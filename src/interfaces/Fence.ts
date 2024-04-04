@@ -1,5 +1,6 @@
 import FenceData from "./FenceData";
 
 export default interface Fence extends FenceData {
-    position: H.geo.IPoint
+    position: H.geo.IPoint,
+    radius: number
 }

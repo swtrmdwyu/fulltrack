@@ -21,7 +21,6 @@ import useGetvehicles from "../../hooks/useGetVehicles";
 import SearchNotFound from "../../Components/SearchNotFound";
 import Loading from "../../Components/Loading";
 import FenceSidebar from "../../Components/FenceSidebar";
-import FenceData from "../../interfaces/FenceData";
 
 export default function Home() {
   const { t } = useTranslation();
@@ -34,7 +33,13 @@ export default function Home() {
   const [cancelAddingFence, setCancelAddingFence] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [showFenceSideBar, setShowFenceSideBar] = useState(false);
-  const [fenceData, setFenceData] = useState<FenceData | {}>({});
+  const [fenceDescription, setFenceDescription] = useState("");
+  const [saveFence, setSaveFence] = useState(false);
+
+  const [showRefSideBar, setShowRefSideBar] = useState(false);
+  const [RefDescription, setRefDescription] = useState("");
+  const [saveRef, setSaveRef] = useState(false);
+  const [cancelAddingRef, setCancelAddingRef] = useState(false);
 
   const menu: MenuLink[] = [
     { label: t("menu_names.dashboard"), href: "#", icon: "dashboard" },
@@ -50,49 +55,46 @@ export default function Home() {
 
   const isFirstRender = useRef(true);
   
-useEffect(() => {
-  if(isFirstRender.current) {
-    setIsLoading(true);
-    async function getAllData() {
-      if(authTokens) {
-          if(vehicles) {
-              const clients: Client[] = await getClients(authTokens.authToken);
+  useEffect(() => {
+    if(isFirstRender.current) {
+      setIsLoading(true);
+      async function getAllData() {
+        if(authTokens) {
+            if(vehicles) {
+                const clients: Client[] = await getClients(authTokens.authToken);
 
-              const addressData: AddressRequestParams[] = vehicles.map((vehicle: Vehicle) => {
-                const addressParams: AddressRequestParams = {              
-                  "code": vehicle.ativo_id,
-                  "latitude": vehicle.lat_lng[0].toString(),
-                  "longitude": vehicle.lat_lng[1].toString(),
-                }
-                return addressParams;
-              });
-      
-              const address: Address[] = await getAddress(authTokens.authToken, addressData);
-      
-              const forrmatedVehicles: FormatedVehicle[] = vehicles.map((vehicle: Vehicle) => {
-                const vehicleAddress: Address = address.filter((address: Address) => address.code == vehicle.ativo_id)[0];
-                const vehicleCLient: Client = clients.filter((client: Client) => client.client_id === vehicle.client_id)[0];
-                return {
-                  ...vehicle,
-                  address: vehicleAddress ? vehicleAddress.label : "Não informado",
-                  client: vehicleCLient.client_description
-                }
-              });
-                
-              setFormatedVehicles(forrmatedVehicles.slice(0,0));
-              setTimeout(() => {
-                if(formatedVehicles.length > 0) {
-                  setIsLoading(false);
-                }
-              }, 2000);
-          }
+                const addressData: AddressRequestParams[] = vehicles.map((vehicle: Vehicle) => {
+                  const addressParams: AddressRequestParams = {              
+                    "code": vehicle.ativo_id,
+                    "latitude": vehicle.lat_lng[0].toString(),
+                    "longitude": vehicle.lat_lng[1].toString(),
+                  }
+                  return addressParams;
+                });
+        
+                const address: Address[] = await getAddress(authTokens.authToken, addressData);
+        
+                const forrmatedVehicles: FormatedVehicle[] = vehicles.map((vehicle: Vehicle) => {
+                  const vehicleAddress: Address = address.filter((address: Address) => address.code == vehicle.ativo_id)[0];
+                  const vehicleCLient: Client = clients.filter((client: Client) => client.client_id === vehicle.client_id)[0];
+                  return {
+                    ...vehicle,
+                    address: vehicleAddress ? vehicleAddress.label : "Não informado",
+                    client: vehicleCLient.client_description
+                  }
+                });
+                  
+                setFormatedVehicles(forrmatedVehicles);
+                setIsLoading(false);
+  
+            }
+        }
       }
+        
+      getAllData();
+        
     }
-      
-    getAllData();
-      
-  }
-}, [vehicles]);
+  }, [vehicles]);
 
   const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
 
@@ -119,10 +121,44 @@ useEffect(() => {
     setShowFenceSideBar(false);
   }
 
+  const handleRefSidebarClose = () => {
+    setCancelAddingRef((previous) => !previous);
+    setShowRefSideBar(false);
+  }
+
   const handleShowFenceSidebar = () => {
     setShowFenceSideBar(true);
     setCancelAddingFence(false);
+    setResizeMap(previous => !previous);
   }
+
+  const handleShowRefSidebar = () => {
+    setShowRefSideBar(true);
+    setCancelAddingRef(false);
+    setResizeMap(previous => !previous);
+  }
+
+  const onFenceDescChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const description = event.target.value;
+    setFenceDescription(description);
+  }
+
+  const onRefDescChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const description = event.target.value;
+    setRefDescription(description);
+  }
+
+  const handleFanceSave = () => {
+      setSaveFence((previous) => !previous);
+      setShowFenceSideBar(false);
+      setResizeMap(previous => !previous);
+  }
+
+  const handleRefSave = () => {
+    setSaveRef((previous) => !previous);
+    setShowRefSideBar(false);
+    setResizeMap(previous => !previous);
+}
 
   return (
     <StyledDiv>
@@ -174,6 +210,15 @@ useEffect(() => {
         {showFenceSideBar && 
           <FenceSidebar 
             onClose={handleFenceSidebarClose}
+            onSave={handleFanceSave}
+            onDescChange={onFenceDescChange}
+          />
+        }
+        {showRefSideBar && 
+          <FenceSidebar 
+            onClose={handleRefSidebarClose}
+            onSave={handleRefSave}
+            onDescChange={onRefDescChange}
           />
         }
       </SideBarContainer>
@@ -185,7 +230,12 @@ useEffect(() => {
             vehicles={formatedVehicles}
             cancelAddingFence={cancelAddingFence}
             showFenceSidebar={handleShowFenceSidebar}
-            fenceData={fenceData ? fenceData : {}}
+            fenceData={{description: fenceDescription}}
+            saveFence={saveFence}
+            cancelAddingRefPoint={cancelAddingRef}
+            showRefPointSidebar={handleShowRefSidebar}
+            refPointData={{description: RefDescription}}
+            saveRefPoint={saveRef}
           /> 
         }
      </MapContainer>

@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import H from "@here/maps-api-for-javascript";
-import { renderToStaticMarkup, renderToString } from "react-dom/server";
+import { renderToString } from "react-dom/server";
 import MarkerTypeName from "../types/MarkerTypeName";
 import VehicleMarker from "../Components/VehicleMarker";
 import AgroupControl from "./MapControls/AgroupControl";
@@ -22,6 +22,7 @@ import selectFencePosition from "./MapUtils/selectFencePosition";
 import ReferencePoint from "../interfaces/ReferencePoint";
 import FenceData from "../interfaces/FenceData";
 import Fence from "../interfaces/Fence";
+import renderFences from "./MapUtils/renderFences";
 
 interface MapProps {
     /**
@@ -32,17 +33,33 @@ interface MapProps {
 	size: boolean,
 	cancelAddingFence?: boolean,
 	saveFence?: boolean,
-	fenceData: FenceData | {},
-	showFenceSidebar: () => void
+	fenceData: FenceData,
+	showFenceSidebar: () => void,
+	cancelAddingRefPoint?: boolean,
+	saveRefPoint?: boolean,
+	refPointData: FenceData,
+	showRefPointSidebar: () => void
 
 }
 
-export default function Map({ apikey, vehicles, size, cancelAddingFence, showFenceSidebar, saveFence, fenceData }: MapProps) {
+export default function Map({ 
+	apikey, 
+	vehicles, 
+	size, 
+	cancelAddingFence, 
+	showFenceSidebar, 
+	saveFence, 
+	fenceData,
+	refPointData,
+	showRefPointSidebar,
+	cancelAddingRefPoint,
+	saveRefPoint
+}: MapProps) {
     const mapRef = useRef<HTMLDivElement | null>(null);
     const map = useRef<H.Map | null>(null);
     const platform = useRef<H.service.Platform | null>(null);
 	const vehiclesRef = useRef<FormatedVehicle[] | []>([]);
-	const [isClustering, setIsClustering] = useState(false);
+	const [isClustering, setIsClustering] = useState(true);
 	const markersRef = useRef<H.map.DomMarker[] | null>(null);
 	const clusterLayer = useRef<H.map.layer.ObjectLayer | null>(null);
 	const uiRef = useRef<H.ui.UI | null>(null);
@@ -58,7 +75,7 @@ export default function Map({ apikey, vehicles, size, cancelAddingFence, showFen
 				// Cria uma nova instancia do platform.
 				platform.current = new H.service.Platform({ apikey });
 
-				// Craicção de uma layer personalizada.
+				// Criação de uma layer personalizada.
 				const rasterTileService = platform.current.getRasterTileService({
 					queryParams: {
 						style: "explore.day",
@@ -112,10 +129,9 @@ export default function Map({ apikey, vehicles, size, cancelAddingFence, showFen
 					if(map.current) {
 						isAddingRef.current  = true;
 						const referenceMarker = await addReferenceMarker(map.current);
-						
+						refPointRef.current = referenceMarker;
 
-
-						isAddingRef.current = false;
+						showRefPointSidebar();
 					}
 						
 				}}));
@@ -130,15 +146,23 @@ export default function Map({ apikey, vehicles, size, cancelAddingFence, showFen
 						const fencePosition = await selectFencePosition(map.current);
 						const fence = addFence(map.current, behavior, fencePosition);
 						showFenceSidebar();
-						fenceRef.current = fence;
+						fenceRef.current = await fence;
 					}
 				}}));
 
 				ui.addControl("agroupControl", AgroupControl({onStateChange: () => { toggleClustering() }}));
 				
 				uiRef.current = ui;
+
+				renderFences(map.current);
 				
 			}
+			setTimeout(() => {
+				if(map.current) {
+					map.current.getViewPort().resize();
+				}
+			}, 400)
+
 
 			if(clusterLayer.current) {
 				map.current.removeLayer(clusterLayer.current);
@@ -155,12 +179,6 @@ export default function Map({ apikey, vehicles, size, cancelAddingFence, showFen
 				
  				return;
 			}
-
-			setTimeout(() => {
-				if(map.current) {
-					map.current.getViewPort().resize();
-				}
-			}, 400)
 
 			if(clusterLayer.current) {
 				map.current.removeLayer(clusterLayer.current);
@@ -278,7 +296,6 @@ export default function Map({ apikey, vehicles, size, cancelAddingFence, showFen
 	}
 
 	useEffect(() => {
-
 		if(!map.current || !cancelAddingFence) {
 			return;
 		}
@@ -293,7 +310,7 @@ export default function Map({ apikey, vehicles, size, cancelAddingFence, showFen
 	}, [cancelAddingFence]);
 
 	useEffect(() => {
-		if(!map.current || !saveFence) {
+		if(!map.current) {
 			return;
 		}
 
@@ -301,21 +318,79 @@ export default function Map({ apikey, vehicles, size, cancelAddingFence, showFen
 			return;
 		}
 
+		console.log(fenceRef.current)
 		const storage = localStorage.getItem("fences");
+
+		const newFence =  {
+			position: fenceRef.current.getCenter(),
+			description: fenceData.description,
+			radius: fenceRef.current.getRadius()
+		}
 
 		if(storage) {
 			const storageObj: Fence[] = JSON.parse(storage);
-			const newFence =  {
-				position: fenceRef.current.getCenter(),
-				description: fenceData =! {} ? fenceData.description : "";
-			}
 
 			storageObj.push(newFence);
 			localStorage.setItem("fences", JSON.stringify(storageObj));
+			isAddingRef.current = false;
+			fenceRef.current = null;
+
+			return;
+		}
+
+		localStorage.setItem("fences", JSON.stringify([newFence]));
+		isAddingRef.current = false;
+		fenceRef.current = null;
+		
+	}, [saveFence]);
+
+	useEffect(() => {
+
+		if(!map.current || !cancelAddingFence) {
+			return;
+		}
+
+		if(!refPointRef.current) {
+			return;
 		}
 		
+		map.current.removeObject(refPointRef.current)
+		isAddingRef.current = false;
+		
+	}, [cancelAddingRefPoint]);
 
-	}, [saveFence]);
+	useEffect(() => {
+		if(!map.current) {
+			return;
+		}
+
+		if(!refPointRef.current) {
+			return;
+		}
+
+		const storage = localStorage.getItem("referencePoints");
+
+		const newFence =  {
+			position: refPointRef.current.getGeometry(),
+			description: refPointData.description
+		}
+
+		if(storage) {
+			const storageObj: ReferencePoint[] = JSON.parse(storage);
+
+			storageObj.push(newFence);
+			localStorage.setItem("referencePoints", JSON.stringify(storageObj));
+			isAddingRef.current = false;
+			refPointRef.current = null;
+
+			return;
+		}
+
+		localStorage.setItem("referencePoints", JSON.stringify([newFence]));
+		isAddingRef.current = false;
+		refPointRef.current = null;
+		
+	}, [saveRefPoint]);
 
 
     return <div style={ { height: "calc(100vh - 3.563rem)" } } ref={mapRef} />;
