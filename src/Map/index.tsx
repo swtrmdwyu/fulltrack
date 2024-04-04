@@ -161,7 +161,7 @@ export default function Map({
 				if(map.current) {
 					map.current.getViewPort().resize();
 				}
-			}, 400)
+			}, 600)
 
 
 			if(clusterLayer.current) {
@@ -326,6 +326,10 @@ export default function Map({
 			description: fenceData.description,
 			radius: fenceRef.current.getRadius()
 		}
+
+		const fence = new H.map.Circle(fenceRef.current.getCenter(), fenceRef.current.getRadius());
+		map.current.removeObject(fenceRef.current);
+		map.current.addObject(fence);
 
 		if(storage) {
 			const storageObj: Fence[] = JSON.parse(storage);
