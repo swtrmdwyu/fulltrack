@@ -28,5 +28,17 @@
     "label": "No encontramos nada",
     "paragraph": "No encontramos ningún elemento con los términos buscados. Intente hacer la búsqueda de nuevo.",
     "button": "Buscar de nuevo"
-  }
+  },
+  "fence": {
+    "label": "Registrar Cerca"
+  },
+  "reference_point": {
+      "label": "Registrar Punto de Referencia"
+  },
+  "add_object": {
+    "description": "Descripción",
+    "button_save":  "Guardar",
+    "button_cancel": "Cancelar"
+  },
+  "not_specified": "No especificado"
 }

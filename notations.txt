@@ -1,14 +1,1 @@
-2 ao clicar no veiculo mostar pontos de referencia do usuario -> buscar esses pontos no localStorage easy
-6 cadastro de ponto de referencia -> salvar no localStorage hard
-7 cadastro de cerca ( so aquela redonda mesmo com descrição) -> salvar no localStorage hard
-8 camadas -> so as do here mesmo hard
-9 colocar loading
-
-
-9 desempenho
-10 melhora do codigo
-11 trocar markers
-12 listagem dinamica
 13 storybook
-14 começar com o cluster
-15 tentar adicionar sonner

@@ -28,5 +28,18 @@
         "label": "We didn't find anything",
         "paragraph": "We didn't find any items matching the searched terms. Please try again.",
         "button": "Search again"
-      }
+      },
+      "fence": {
+        "label": "Register Fence"
+      },
+      "reference_point": {
+          "label": "Register Reference Point"
+      },
+      "add_object": {
+        "description": "Description",
+        "button_save": "Save",
+        "button_cancel": "Cancel"
+      },
+      "not_specified": "Not specified"
+    
 }

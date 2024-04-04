@@ -23,6 +23,9 @@ import ReferencePoint from "../interfaces/ReferencePoint";
 import FenceData from "../interfaces/FenceData";
 import Fence from "../interfaces/Fence";
 import renderFences from "./MapUtils/renderFences";
+import renderRefPoints from "./MapUtils/renderReferenceMarkers";
+import { MarkerVehicle } from "../Components/VehicleMarker/style";
+import vehicleMarkerSVG from "./MapMarkers/vehicleMarker";
 
 interface MapProps {
     /**
@@ -60,7 +63,7 @@ export default function Map({
     const platform = useRef<H.service.Platform | null>(null);
 	const vehiclesRef = useRef<FormatedVehicle[] | []>([]);
 	const [isClustering, setIsClustering] = useState(true);
-	const markersRef = useRef<H.map.DomMarker[] | null>(null);
+	const markersRef = useRef<H.map.Marker[] | null>(null);
 	const clusterLayer = useRef<H.map.layer.ObjectLayer | null>(null);
 	const uiRef = useRef<H.ui.UI | null>(null);
 	const bubblesRef = useRef<H.ui.InfoBubble | null>(null);
@@ -115,10 +118,6 @@ export default function Map({
 
 				const defaultLayers: any = platform.current.createDefaultLayers();
 
-				const layers = [
-					rasterTileLayer
-				];
-
 				// Criação dos contorles do mapa.
 				const ui = new H.ui.UI(map.current);
 				ui.addControl("zoomControl", ZoomControl());
@@ -157,6 +156,7 @@ export default function Map({
 				uiRef.current = ui;
 
 				renderFences(map.current);
+				renderRefPoints(map.current);
 				
 			}
 			setTimeout(() => {
@@ -186,7 +186,7 @@ export default function Map({
 				map.current.removeLayer(clusterLayer.current);
 			}
 
-			let markers: H.map.DomMarker[] = [];
+			let markers: H.map.Marker[] = [];
 
 			if(vehicles !== vehiclesRef.current) {
 
@@ -237,16 +237,12 @@ export default function Map({
 		key: number, 
 		zoom?: {min: number, max: number}
 		
-	): H.map.DomMarker {
-		const markerComponent = renderToString(
-			<VehicleMarker
-				key={key}
-				type={markerType}
-			/>
-		);
+	): H.map.Marker {
+		const markerSVG = vehicleMarkerSVG(markerType);
+		const markerIcon = new H.map.Icon(markerSVG);
 	
-		const marker = new H.map.DomMarker(coords, {
-			icon: new H.map.DomIcon(markerComponent),
+		const marker = new H.map.Marker(coords, {
+			icon: markerIcon,
 			data: {},
 			min: zoom ? zoom.min : 0,
 			max: zoom ? zoom.max : Infinity
@@ -302,6 +298,8 @@ export default function Map({
 			return;
 		}
 
+		map.current.getViewPort().resize();
+
 		if(!fenceRef.current) {
 			return;
 		}
@@ -319,8 +317,6 @@ export default function Map({
 		if(!fenceRef.current) {
 			return;
 		}
-
-		console.log(fenceRef.current)
 		const storage = localStorage.getItem("fences");
 
 		const newFence =  {
@@ -328,6 +324,8 @@ export default function Map({
 			description: fenceData.description,
 			radius: fenceRef.current.getRadius()
 		}
+
+		map.current.getViewPort().resize();
 
 		const fence = new H.map.Circle(fenceRef.current.getCenter(), fenceRef.current.getRadius());
 		map.current.removeObject(fenceRef.current);
@@ -352,15 +350,17 @@ export default function Map({
 
 	useEffect(() => {
 
-		if(!map.current || !cancelAddingFence) {
+		if(!map.current || !cancelAddingRefPoint) {
 			return;
 		}
 
 		if(!refPointRef.current) {
 			return;
 		}
-		
-		map.current.removeObject(refPointRef.current)
+
+		map.current.removeObject(refPointRef.current);
+		map.current.getViewPort().resize();
+		refPointRef.current = null;
 		isAddingRef.current = false;
 		
 	}, [cancelAddingRefPoint]);
@@ -395,6 +395,7 @@ export default function Map({
 		localStorage.setItem("referencePoints", JSON.stringify([newFence]));
 		isAddingRef.current = false;
 		refPointRef.current = null;
+		map.current.getViewPort().resize();
 		
 	}, [saveRefPoint]);
 

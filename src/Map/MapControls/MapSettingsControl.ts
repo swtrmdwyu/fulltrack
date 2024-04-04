@@ -1,12 +1,17 @@
 import H from '@here/maps-api-for-javascript';
 
 export default function MapSettingsControl(baseLayer: H.map.layer.Layer, defaultLayers: any) {
+
     const mapSettingsControl = new H.ui.MapSettingsControl({
         baseLayers: [
             { label: "Normal", layer: baseLayer},
-            { label: "Tráfego", layer: defaultLayers.vector.traffic},
-            { label: "Satélite", layer: defaultLayers.vector.satelite}
+            { label: "Satélite", layer: defaultLayers.raster.satellite.map}
+
         ],
+        layers: [
+            { label: "Tráfego", layer: defaultLayers.vector.traffic.map},
+            
+        ]
     });
     
     let cssClass = false;

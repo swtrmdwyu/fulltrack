@@ -184,6 +184,10 @@
     position: absolute;
     top: 0;
     width: 10.813rem;
+    font-family: var(--primary-font);
+    font-size: 12px;
+    line-height: 18px;
+    font-weight: 500;
 }
 
 .H_overlay .H_rdo_title {
@@ -191,6 +195,10 @@
     font-weight: 600;
     font-family: var(--primary-font);
     margin-bottom: 1rem;
+}
+
+.H_overlay .H_grp .H_btn {
+    padding-top: 1rem;
 }
 
 .map-settings-control-active {
@@ -210,17 +218,3 @@
     font-weight: 500;
     gap: 1rem;
 }
-
-/* <div class="H_overlay H_el H_open H_bottom H_right" style="bottom: 0px; margin: 0px 12px; right: 40px;">
-    <div class="H_rdo H_el">
-        <div class="H_rdo_title H_el">Choose view</div>
-            <div class="H_rdo_buttons H_el">
-                <div class="H_btn H_el">Normal</div>
-            </div>
-        </div>
-        <div class="H_separator H_el"></div>
-        <div class="H_grp H_el">
-        <div class="H_btn H_el">Tráfego</div>
-        <div class="H_btn H_el">Satélite</div>
-    </div>
-</div> */

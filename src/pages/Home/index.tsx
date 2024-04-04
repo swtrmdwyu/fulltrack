@@ -21,6 +21,7 @@ import useGetvehicles from "../../hooks/useGetVehicles";
 import SearchNotFound from "../../Components/SearchNotFound";
 import Loading from "../../Components/Loading";
 import FenceSidebar from "../../Components/FenceSidebar";
+import RefSidebar from "../../Components/RefPointSidebar";
 
 export default function Home() {
   const { t } = useTranslation();
@@ -79,14 +80,13 @@ export default function Home() {
                   const vehicleCLient: Client = clients.filter((client: Client) => client.client_id === vehicle.client_id)[0];
                   return {
                     ...vehicle,
-                    address: vehicleAddress ? vehicleAddress.label : "Não informado",
+                    address: vehicleAddress ? vehicleAddress.label : t("not_specified") ,
                     client: vehicleCLient.client_description
                   }
                 });
                   
-                setFormatedVehicles(forrmatedVehicles);
+                setFormatedVehicles(forrmatedVehicles.slice(0,100));
                 setIsLoading(false);
-  
             }
         }
       }
@@ -109,7 +109,7 @@ export default function Home() {
     
   }
 
-  const handleSearch = () => console.log(searchValue);
+    const handleSearch = () => console.log(searchValue);
 
   const handleToggleSidebar = () => {
     setResizeMap(previous => !previous);
@@ -215,7 +215,7 @@ export default function Home() {
           />
         }
         {showRefSideBar && 
-          <FenceSidebar 
+          <RefSidebar 
             onClose={handleRefSidebarClose}
             onSave={handleRefSave}
             onDescChange={onRefDescChange}
