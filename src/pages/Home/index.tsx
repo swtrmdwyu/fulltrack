@@ -6,7 +6,7 @@ import Sidebar from "../../Components/Sidebar";
 import DividerBox from "../../Components/DividerBox";
 import Searchbar from "../../Components/Searchbar";
 import VehicleCard from "../../Components/VehicleCard";
-import { LoadingContainer, MapContainer, MenuContainer, NavContainer, SideBarContainer, StyledDiv, VehiclesCardsContainer } from "./style";
+import {LoadingContainer, MapContainer, MenuContainer, NavContainer, SideBarContainer, StyledDiv, VehiclesCardsContainer } from "./style";
 import "../../i18n/config";
 import { useTranslation } from "react-i18next"
 import Vehicle from "../../interfaces/Vehicle";
@@ -21,6 +21,7 @@ import useGetvehicles from "../../hooks/useGetVehicles";
 import SearchNotFound from "../../Components/SearchNotFound";
 import Loading from "../../Components/Loading";
 import FenceSidebar from "../../Components/FenceSidebar";
+import Input from "../../Components/Input";
 
 
 export default function Home() {
@@ -31,6 +32,7 @@ export default function Home() {
   const [searchValue, setSearchValue ] = useState("");
   const [formatedVehicles, setFormatedVehicles] = useState<FormatedVehicle[] | []>([]);
   const [searchResults, setSearchResults] = useState<FormatedVehicle[] | []>([]);
+  const [cancelAddingFence, setCancelAddingFence] = useState(false);
 
   const menu: MenuLink[] = [
     { label: t("menu_names.dashboard"), href: "#", icon: "dashboard" },
@@ -104,6 +106,11 @@ useEffect(() => {
 
   }
 
+  const handleFenceSidebarClose = () => {
+    setCancelAddingFence((previous) => !previous);
+  
+  }
+
   return (
     <StyledDiv>
       <NavContainer>
@@ -146,7 +153,12 @@ useEffect(() => {
             
           </VehiclesCardsContainer>
         </Sidebar>
-        {/* <FenceSidebar>AAAAAAAAAAAAAAAAAAAAA</FenceSidebar> */}
+
+        <FenceSidebar 
+          onClose={handleFenceSidebarClose}
+        >
+ 
+        </FenceSidebar>
       </SideBarContainer>
      <MapContainer>
         {
@@ -154,6 +166,7 @@ useEffect(() => {
           size={resizeMap}
           apikey="v3XFar3gKIuWv7fn4sNSVWtQy9MD9-yq5rCh5f0tpfA"
           vehicles={formatedVehicles}
+          cancelAddingFence={cancelAddingFence}
         /> }
      </MapContainer>
       

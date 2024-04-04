@@ -2,8 +2,9 @@ export default function Add(
 	map: H.Map, 
 	behavior: H.mapevents.Behavior, 
 	position: H.geo.Point, 
-	color?: string) {
-
+	color?: string):  
+H.map.Circle {
+	
 	const circle = new H.map.Circle(
 		position, 
 		8000,
@@ -52,4 +53,6 @@ export default function Add(
 	circle.addEventListener("dragstart", dragStartListener, false);
 	circle.addEventListener("drag", dragListener, false);
 	circle.addEventListener("dragend", dragEndListener, false);
+
+	return circle;
 }

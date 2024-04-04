@@ -1,34 +1,39 @@
 import referenceMarker from "../MapMarkers/referenceMarker";
 
-export default function addReferenceMarker(map: H.Map, color?: string) {
-	const center = map.getCenter();
+export default function addReferenceMarker(map: H.Map, color?: string): Promise<H.map.Marker> {
 
-	const marker = new H.map.Marker(center, {
-	  volatility: true,
-	  icon: referenceMarker(color ? color : "#B3ADCD"),
-	  data: {}
-	});
+	return new Promise((resolve) => {
+		const center = map.getCenter();
 
-	marker.draggable = true;
-	map.addObject(marker);
-
-	const pointerMoveListener = (event: H.mapevents.Event) => {
-		const pointer = event.currentPointer;
-
-		requestAnimationFrame(() => {
-			const geoPoint = map.screenToGeo(pointer.viewportX, pointer.viewportY);
-
-			if (geoPoint) {
-				marker.setGeometry(geoPoint);
-			}
+		const marker = new H.map.Marker(center, {
+		  volatility: true,
+		  icon: referenceMarker(color ? color : "#B3ADCD"),
+		  data: {}
 		});
-	};
 	
-	const removeListeners = () => {
-		map.removeEventListener("pointermove", pointerMoveListener);
-		map.removeEventListener("tap", removeListeners);
-	}
-  
-	map.addEventListener("pointermove", pointerMoveListener, false);
-	map.addEventListener("tap", removeListeners);
+		marker.draggable = true;
+		map.addObject(marker);
+	
+		const pointerMoveListener = (event: H.mapevents.Event) => {
+			const pointer = event.currentPointer;
+	
+			requestAnimationFrame(() => {
+				const geoPoint = map.screenToGeo(pointer.viewportX, pointer.viewportY);
+	
+				if (geoPoint) {
+					marker.setGeometry(geoPoint);
+				}
+			});
+		};
+		
+		const removeListeners = () => {
+			map.removeEventListener("pointermove", pointerMoveListener);
+			map.removeEventListener("tap", removeListeners);
+			
+			resolve(marker);
+		}
+	  
+		map.addEventListener("pointermove", pointerMoveListener, false);
+		map.addEventListener("tap", removeListeners);
+	})
 }

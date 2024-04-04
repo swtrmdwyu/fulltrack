@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import H from "@here/maps-api-for-javascript";
-import { renderToString } from "react-dom/server";
+import { renderToStaticMarkup, renderToString } from "react-dom/server";
 import MarkerTypeName from "../types/MarkerTypeName";
 import VehicleMarker from "../Components/VehicleMarker";
 import AgroupControl from "./MapControls/AgroupControl";
@@ -19,6 +19,7 @@ import stringBubbleContent from "./stringBubbleContent";
 import addReferenceMarker from "./MapUtils/addReferenceMarker";
 import addFence from "./MapUtils/addFence";
 import selectFencePosition from "./MapUtils/selectFencePosition";
+import ReferencePoint from "../interfaces/ReferencePoint";
 
 interface MapProps {
     /**
@@ -26,10 +27,12 @@ interface MapProps {
      */
     apikey: string,
 	vehicles: FormatedVehicle[],
-	size: boolean;
+	size: boolean,
+	cancelAddingFence?: boolean
+
 }
 
-export default function Map({ apikey, vehicles, size }: MapProps) {
+export default function Map({ apikey, vehicles, size, cancelAddingFence }: MapProps) {
     const mapRef = useRef<HTMLDivElement | null>(null);
     const map = useRef<H.Map | null>(null);
     const platform = useRef<H.service.Platform | null>(null);
@@ -39,8 +42,9 @@ export default function Map({ apikey, vehicles, size }: MapProps) {
 	const clusterLayer = useRef<H.map.layer.ObjectLayer | null>(null);
 	const uiRef = useRef<H.ui.UI | null>(null);
 	const bubblesRef = useRef<H.ui.InfoBubble | null>(null);
-	const [fence, setFence] = useState<H.map.Circle | null>(null);
-	const [rer0efenceMarker, setReferenceMarker] = useState<H.map.Marker | null>(null);
+	const isAddingRef = useRef(false);
+	const fenceRef = useRef<H.map.Circle | null>(null);
+	const refPointRef = useRef<H.map.Marker | null>(null);
 
     useEffect(
         () => {
@@ -87,23 +91,54 @@ export default function Map({ apikey, vehicles, size }: MapProps) {
 					}
 				});
 
-				//criação das layers do mapa.
-				const defaultLayers = platform.current.createDefaultLayers();
+				const layers = [
+					rasterTileLayer
+				]
 
-				// Criação dos contorles do mapa.+
+				// Criação dos contorles do mapa.
 				const ui = new H.ui.UI(map.current);
 				ui.addControl("zoomControl", ZoomControl());
-				ui.addControl("mapSettingsControl", MapSettingsControl(defaultLayers));
-				ui.addControl("referenceControl", ReferenceControl({onStateChange: () => {
-					if(map.current) {
-						addReferenceMarker(map.current);
+				ui.addControl("mapSettingsControl", MapSettingsControl(rasterTileLayer, layers));
+				ui.addControl("referenceControl", ReferenceControl({onStateChange: async () => {
+					if(isAddingRef.current) {
+						return;
 					}
+	
+					if(map.current) {
+						isAddingRef.current  = true;
+						const referenceMarker = await addReferenceMarker(map.current);
+						const storage = localStorage.getItem("referencePoints");
+
+						if(storage) {
+							const storageObj: ReferencePoint[] = JSON.parse(storage);
+							const newReferencePoint: ReferencePoint =  {
+								position: referenceMarker.getGeometry(),
+								description: "",
+							}
+
+							storageObj.push(newReferencePoint);
+							localStorage.setItem("referencePoints", JSON.stringify(storageObj));
+						}
+
+
+
+
+						isAddingRef.current = false;
+
+					}
+						
 				}}));
 
 				ui.addControl("fenceControl", FenceControl({onStateChange: async () => {
 					if(map.current) {
+						if(isAddingRef.current) {
+							return;
+						}
+
+						isAddingRef.current = true;
 						const fencePosition = await selectFencePosition(map.current);
-						addFence(map.current, behavior, fencePosition);
+						const fence = addFence(map.current, behavior, fencePosition);
+						fenceRef.current = fence;
 					}
 				}}));
 				ui.addControl("agroupControl", AgroupControl({onStateChange: () => { toggleClustering() }}));
@@ -171,10 +206,17 @@ export default function Map({ apikey, vehicles, size }: MapProps) {
 				map.current.addObjects(markers);
 				markersRef.current = markers;
 			}
-
+			
 		},
 			[apikey, size, vehicles, isClustering]
 	);
+
+	if(uiRef.current) {
+		const ui = uiRef.current;
+		if(!ui.getControl("referenceControl")) {
+
+		}
+	} 
 
 	function createCustomMarker(
 		coords: H.geo.Point, 
@@ -242,7 +284,24 @@ export default function Map({ apikey, vehicles, size }: MapProps) {
 
 	}
 
+	useEffect(() => {
+
+		if(!map.current || !cancelAddingFence) {
+			return;
+		}
+
+		if(!fenceRef.current) {
+			return;
+		}
+		
+		if(cancelAddingFence) {
+			map.current.removeObject(fenceRef.current)
+			isAddingRef.current = false;
+		}
+		
+	}, [cancelAddingFence])
+
+
     return <div style={ { height: "calc(100vh - 3.563rem)" } } ref={mapRef} />;
 
 }
-

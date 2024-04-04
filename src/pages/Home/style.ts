@@ -42,3 +42,4 @@ export const LoadingContainer = styled.div`
     height: calc(100vh -  8.126rem);
     justify-content: center ;
 `;
+

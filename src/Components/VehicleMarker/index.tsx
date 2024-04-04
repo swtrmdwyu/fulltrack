@@ -1,10 +1,8 @@
-import { useState } from "react";
 import MarkerTypeName from "../../types/MarkerTypeName";
-import { MarkerContainer, MarkerPoint, MarkerVehicle, VehicleStatus } from "./style";
+import { MarkerContainer, MarkerPoint, MarkerVehicle} from "./style";
 
 
 export interface VehicleMarkerProps {
-    $showInfo?: boolean,
     /**
      * Define qual imagem será exibida dentro do marker.
      */
@@ -30,33 +28,15 @@ export interface VehicleMarkerProps {
     
 }
 
-export default function VehicleMarker({ image, type, $showInfo }: VehicleMarkerProps) {
-    const [ isVisible, setIsVisible ] = useState(false);
-
-    if($showInfo) {
-        setIsVisible($showInfo);
-    }
-
-    const toggleStatusVisiblity = () => {
-        setIsVisible((previous) => !previous);
-    }
+export default function VehicleMarker({ image, type }: VehicleMarkerProps) {
 
     return (
         <MarkerContainer>
             <MarkerVehicle
                 image={image}
                 type={type}
-                onClick={toggleStatusVisiblity}
             />
             <MarkerPoint type={type} />
-            <VehicleStatus 
-                type={type}
-                $isVisible={isVisible}
-            >
-                <div><h2>Em mov.</h2></div>
-                <div>90 km/h</div>
-                <div>BEE4R22</div>
-            </VehicleStatus>
         </MarkerContainer>
     );
 }
