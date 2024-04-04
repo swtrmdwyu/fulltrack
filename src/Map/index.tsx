@@ -20,6 +20,8 @@ import addReferenceMarker from "./MapUtils/addReferenceMarker";
 import addFence from "./MapUtils/addFence";
 import selectFencePosition from "./MapUtils/selectFencePosition";
 import ReferencePoint from "../interfaces/ReferencePoint";
+import FenceData from "../interfaces/FenceData";
+import Fence from "../interfaces/Fence";
 
 interface MapProps {
     /**
@@ -28,11 +30,14 @@ interface MapProps {
     apikey: string,
 	vehicles: FormatedVehicle[],
 	size: boolean,
-	cancelAddingFence?: boolean
+	cancelAddingFence?: boolean,
+	saveFence?: boolean,
+	fenceData: FenceData | {},
+	showFenceSidebar: () => void
 
 }
 
-export default function Map({ apikey, vehicles, size, cancelAddingFence }: MapProps) {
+export default function Map({ apikey, vehicles, size, cancelAddingFence, showFenceSidebar, saveFence, fenceData }: MapProps) {
     const mapRef = useRef<HTMLDivElement | null>(null);
     const map = useRef<H.Map | null>(null);
     const platform = useRef<H.service.Platform | null>(null);
@@ -107,24 +112,10 @@ export default function Map({ apikey, vehicles, size, cancelAddingFence }: MapPr
 					if(map.current) {
 						isAddingRef.current  = true;
 						const referenceMarker = await addReferenceMarker(map.current);
-						const storage = localStorage.getItem("referencePoints");
-
-						if(storage) {
-							const storageObj: ReferencePoint[] = JSON.parse(storage);
-							const newReferencePoint: ReferencePoint =  {
-								position: referenceMarker.getGeometry(),
-								description: "",
-							}
-
-							storageObj.push(newReferencePoint);
-							localStorage.setItem("referencePoints", JSON.stringify(storageObj));
-						}
-
-
+						
 
 
 						isAddingRef.current = false;
-
 					}
 						
 				}}));
@@ -138,9 +129,11 @@ export default function Map({ apikey, vehicles, size, cancelAddingFence }: MapPr
 						isAddingRef.current = true;
 						const fencePosition = await selectFencePosition(map.current);
 						const fence = addFence(map.current, behavior, fencePosition);
+						showFenceSidebar();
 						fenceRef.current = fence;
 					}
 				}}));
+
 				ui.addControl("agroupControl", AgroupControl({onStateChange: () => { toggleClustering() }}));
 				
 				uiRef.current = ui;
@@ -294,12 +287,35 @@ export default function Map({ apikey, vehicles, size, cancelAddingFence }: MapPr
 			return;
 		}
 		
-		if(cancelAddingFence) {
-			map.current.removeObject(fenceRef.current)
-			isAddingRef.current = false;
+		map.current.removeObject(fenceRef.current)
+		isAddingRef.current = false;
+		
+	}, [cancelAddingFence]);
+
+	useEffect(() => {
+		if(!map.current || !saveFence) {
+			return;
+		}
+
+		if(!fenceRef.current) {
+			return;
+		}
+
+		const storage = localStorage.getItem("fences");
+
+		if(storage) {
+			const storageObj: Fence[] = JSON.parse(storage);
+			const newFence =  {
+				position: fenceRef.current.getCenter(),
+				description: fenceData =! {} ? fenceData.description : "";
+			}
+
+			storageObj.push(newFence);
+			localStorage.setItem("fences", JSON.stringify(storageObj));
 		}
 		
-	}, [cancelAddingFence])
+
+	}, [saveFence]);
 
 
     return <div style={ { height: "calc(100vh - 3.563rem)" } } ref={mapRef} />;

@@ -21,8 +21,7 @@ import useGetvehicles from "../../hooks/useGetVehicles";
 import SearchNotFound from "../../Components/SearchNotFound";
 import Loading from "../../Components/Loading";
 import FenceSidebar from "../../Components/FenceSidebar";
-import Input from "../../Components/Input";
-
+import FenceData from "../../interfaces/FenceData";
 
 export default function Home() {
   const { t } = useTranslation();
@@ -33,6 +32,9 @@ export default function Home() {
   const [formatedVehicles, setFormatedVehicles] = useState<FormatedVehicle[] | []>([]);
   const [searchResults, setSearchResults] = useState<FormatedVehicle[] | []>([]);
   const [cancelAddingFence, setCancelAddingFence] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [showFenceSideBar, setShowFenceSideBar] = useState(false);
+  const [fenceData, setFenceData] = useState<FenceData | {}>({});
 
   const menu: MenuLink[] = [
     { label: t("menu_names.dashboard"), href: "#", icon: "dashboard" },
@@ -50,6 +52,7 @@ export default function Home() {
   
 useEffect(() => {
   if(isFirstRender.current) {
+    setIsLoading(true);
     async function getAllData() {
       if(authTokens) {
           if(vehicles) {
@@ -76,7 +79,12 @@ useEffect(() => {
                 }
               });
                 
-              setFormatedVehicles(forrmatedVehicles.slice(0,30));
+              setFormatedVehicles(forrmatedVehicles.slice(0,0));
+              setTimeout(() => {
+                if(formatedVehicles.length > 0) {
+                  setIsLoading(false);
+                }
+              }, 2000);
           }
       }
     }
@@ -108,7 +116,12 @@ useEffect(() => {
 
   const handleFenceSidebarClose = () => {
     setCancelAddingFence((previous) => !previous);
-  
+    setShowFenceSideBar(false);
+  }
+
+  const handleShowFenceSidebar = () => {
+    setShowFenceSideBar(true);
+    setCancelAddingFence(false);
   }
 
   return (
@@ -135,39 +148,46 @@ useEffect(() => {
           </DividerBox>
 
           <VehiclesCardsContainer>
-            {(formatedVehicles && !searchValue) && formatedVehicles.map((vehicle: FormatedVehicle) => 
+            {(!isLoading && !searchValue) && formatedVehicles.map((vehicle: FormatedVehicle) => 
                 <DividerBox key={vehicle.ativo_id}>
                   <VehicleCard vehicle={vehicle}></VehicleCard>
                 </DividerBox>
             )}
 
-            {(formatedVehicles && searchValue) && searchResults.map((vehicle: FormatedVehicle) => 
+            {(!isLoading && searchValue) && searchResults.map((vehicle: FormatedVehicle) => 
                 <DividerBox key={vehicle.ativo_id}>
                   <VehicleCard vehicle={vehicle}></VehicleCard>
                 </DividerBox>
             )}
+
             {(searchValue && searchResults.length === 0) && <SearchNotFound />}
-            {/* <LoadingContainer>
+
+           {isLoading && 
+              <LoadingContainer>
                 <Loading />
-            </LoadingContainer> */}
+              </LoadingContainer>
+            }
             
           </VehiclesCardsContainer>
         </Sidebar>
 
-        <FenceSidebar 
-          onClose={handleFenceSidebarClose}
-        >
- 
-        </FenceSidebar>
+        {showFenceSideBar && 
+          <FenceSidebar 
+            onClose={handleFenceSidebarClose}
+          />
+        }
       </SideBarContainer>
      <MapContainer>
         {
-        <Map 
-          size={resizeMap}
-          apikey="v3XFar3gKIuWv7fn4sNSVWtQy9MD9-yq5rCh5f0tpfA"
-          vehicles={formatedVehicles}
-          cancelAddingFence={cancelAddingFence}
-        /> }
+          <Map 
+            size={resizeMap}
+            apikey="v3XFar3gKIuWv7fn4sNSVWtQy9MD9-yq5rCh5f0tpfA"
+            vehicles={formatedVehicles}
+            cancelAddingFence={cancelAddingFence}
+            showFenceSidebar={handleShowFenceSidebar}
+            fenceData={fenceData ? fenceData : {}}
+          /> 
+        }
      </MapContainer>
       
     </StyledDiv>
