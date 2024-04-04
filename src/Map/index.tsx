@@ -113,14 +113,16 @@ export default function Map({
 					}
 				});
 
+				const defaultLayers: any = platform.current.createDefaultLayers();
+
 				const layers = [
 					rasterTileLayer
-				]
+				];
 
 				// Criação dos contorles do mapa.
 				const ui = new H.ui.UI(map.current);
 				ui.addControl("zoomControl", ZoomControl());
-				ui.addControl("mapSettingsControl", MapSettingsControl(rasterTileLayer, layers));
+				ui.addControl("mapSettingsControl", MapSettingsControl(rasterTileLayer, defaultLayers));
 				ui.addControl("referenceControl", ReferenceControl({onStateChange: async () => {
 					if(isAddingRef.current) {
 						return;
