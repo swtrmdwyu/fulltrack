@@ -3,6 +3,9 @@ import VehicleCard from "../VehicleCard";
 import { BubbleContentContainer, StyledButton } from "./style";
 
 interface BubbleContentProps {
+    /**
+     * Recebe um obejto do tipo FormatedVehicle
+     */
     vehicle: FormatedVehicle
 }
 

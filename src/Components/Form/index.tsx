@@ -14,7 +14,6 @@ export interface FormProps {
 export default function Form({ children, onSubmit}: FormProps) {
     return(
         <StyledForm onSubmit={onSubmit}>
-
             {children}
         </StyledForm>
     );

@@ -13,12 +13,18 @@ export interface VehicleCardProps {
 }
 
 export default function VehicleCard({ vehicle, $isBubble}: VehicleCardProps) {
-    const ignitionTagType = 
-        vehicle.ignition === 0 ? 
-            "ignition-off" : vehicle.speed.val === 0 ? 
-                "ignition-stopped" : "ignition-moving";
-    const textTagIgnition = ignitionTagType === "ignition-off" ? "Desligado" : ignitionTagType === "ignition-stopped" ? "Parado e ligado" : "Em movimento";
 
+    // Verifica o tipo da tag de ignição.
+    const ignitionTagType = vehicle.ignition === 0 ? 
+        "ignition-off" : vehicle.speed.val === 0 ? 
+            "ignition-stopped" : "ignition-moving";
+
+    // Verifica o texto da tag de ignição baseada em seu tipo.
+    const textTagIgnition = ignitionTagType === "ignition-off" ?
+        "Desligado" : ignitionTagType === "ignition-stopped" ? 
+            "Parado e ligado" : "Em movimento";
+            
+    // Verifica o tipo da tag de velocidade.
     const speedTagtype = vehicle.speed.val === 0 ? "speed-stopped" : "speed-moving";
 
     return(

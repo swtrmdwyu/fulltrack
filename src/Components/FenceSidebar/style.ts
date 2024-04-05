@@ -2,8 +2,8 @@ import styled from "styled-components";
 
 export const FenceSidebarContainer = styled.div`
     min-height: calc(100vh - 3.563rem);
-    width: 406px;
     position: relative;
+    width: 406px;
 `;
 
 export const FenceContainer = styled.div`
@@ -11,24 +11,24 @@ export const FenceContainer = styled.div`
     position: relative;
 `
 export const FenceButtonsContainer = styled.div`
+    background-color: transparent;
     bottom: 0;
     display: flex;
     justify-content: center;
     gap: 1rem;
     height: 2.5rem;
-    position: absolute;
     padding: 1rem;
+    position: absolute;
     width: calc(100% - 2rem);
-    background-color: transparent;
 `;
 
 export const CloseButton = styled.button`
-    border: none;
-    background: transparent;
-    padding: 0;
-    display: flex;
     align-items: center;
+    background: transparent;
+    border: none;
+    display: flex;
     justify-content: center;
+    padding: 0;
 
     &:hover {
         cursor: pointer;

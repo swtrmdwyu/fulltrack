@@ -11,7 +11,12 @@ export default function SearchNotFound() {
             <h2>{t("search_not_found.label")}</h2>
             <p>{t("search_not_found.paragraph")}</p>
             <div>
-                <Button type="click" theme="primary">{t("search_not_found.button")}</Button>
+                <Button
+                    type="click"
+                    theme="primary"
+                >
+                    {t("search_not_found.button")}
+                </Button>
             </div>          
         </Container>
     );

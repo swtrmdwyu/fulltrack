@@ -9,6 +9,7 @@ export const StyledDiv = styled.div`
   grid-template-columns: auto auto 1fr;
   height: 100vh;
   width: 100%;
+  user-select:none; 
 `;
 
 export const MenuContainer = styled.div`
@@ -16,7 +17,6 @@ export const MenuContainer = styled.div`
 `;
 
 export const NavContainer = styled.div`
-  
   grid-area: navbar;
 `;
 

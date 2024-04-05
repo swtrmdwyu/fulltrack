@@ -11,8 +11,9 @@ export interface MenuProps {
 }
 
 export default function Menu({ menuLinks }: MenuProps) {
-    const [ expanded, setExpanded ] = useState(false);
-    const [ selected, setSelected ] = useState(0);
+    const [expanded, setExpanded] = useState(false);
+    const [selected, setSelected] = useState(0); 
+    const [changeDisplay, setChangeDisplay] = useState(false);
 
     /**
      * Função que é chamada quando o cursor do mouse entra na área do menu.
@@ -21,8 +22,14 @@ export default function Menu({ menuLinks }: MenuProps) {
     const handleMouseEnter = () => {
         setTimeout(() => {
             setExpanded(true);
-        }, 100)
-    }   
+            
+        }, 100);
+
+        setTimeout(() => {
+            setChangeDisplay(true);
+        }, 150);
+        
+    } 
     
     /**
      * Função que é chamada quando o cursor do mouse sai da área do menu.
@@ -31,7 +38,11 @@ export default function Menu({ menuLinks }: MenuProps) {
     const handleMouseLeave = () => {
         setTimeout(() => {
             setExpanded(false);
-        }, 100)
+        }, 100);
+
+        setTimeout(() => {
+            setChangeDisplay(false);
+        }, 25);
     }
     
     /**
@@ -42,7 +53,7 @@ export default function Menu({ menuLinks }: MenuProps) {
     }
 
     return (
-        <MenuContainer
+        <MenuContainer 
             onMouseEnter={handleMouseEnter}
             onMouseLeave={handleMouseLeave}
         >
@@ -55,7 +66,7 @@ export default function Menu({ menuLinks }: MenuProps) {
                     </>
                 }
             </LogoContainer>
-            <LinksContainer>
+            <LinksContainer $changeDisplay={changeDisplay}>
                 {menuLinks && menuLinks.map((menuLink: MenuLink, idx: number)=> (
                     <li key={idx}>
                         <LinkButton

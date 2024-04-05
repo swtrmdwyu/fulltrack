@@ -8,9 +8,9 @@ export const  Container = styled.div`
     font-weight: 500;
     justify-content: center;
     margin: 10.438rem 3.438rem 0 3.438rem;
-    white-space: normal;
-    width: 18.5rem;
     text-align: center;
+    width: 18.5rem;
+    white-space: normal;
 
     img {
         margin-bottom: 2rem;

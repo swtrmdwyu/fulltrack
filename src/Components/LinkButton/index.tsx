@@ -1,5 +1,5 @@
-
-import MenuIcons from "../Menu/MenuIcons";
+import IconName from "../../types/IconName";
+import SVGIcons from "../SVGIcons/SVGIcons";
 import { StyledLink } from "./style";
 
 export interface LinkButtonProps {
@@ -14,7 +14,7 @@ export interface LinkButtonProps {
     /**
      * O endereço URL para o qual o link deve apontar.
      */
-    icon?: string,
+    icon?: IconName,
     /**
      * Função disparada quando o link é clicado.
      */
@@ -22,15 +22,14 @@ export interface LinkButtonProps {
     /**
      * O texto a ser exibido.
      */
-    text?: string,
-    
+    text?: string, 
 }
 
 export default function LinkButton({ 
     $active = false, 
     href = "#", 
     icon,
-    text,
+    text = "link button",
     onClick
 }: LinkButtonProps) {
     return (
@@ -39,11 +38,11 @@ export default function LinkButton({
             $active={$active}
             onClick={onClick}
         > 
-            <MenuIcons
+            <SVGIcons
                 size="1.5rem"
-                name={icon?? ""}
+                name={icon}
             />
-            {text}
+            {text && <span>{text}</span>}
         </StyledLink>
     );
 }

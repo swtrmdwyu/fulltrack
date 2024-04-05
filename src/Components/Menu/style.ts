@@ -1,5 +1,9 @@
 import styled from "styled-components";
 
+interface LinksContainerProps {
+    $changeDisplay?: boolean,
+}
+
 export const MenuContainer = styled.aside`
     background-color: var(--primary-color);
     display: flex;
@@ -43,10 +47,16 @@ export const LogoContainer = styled.div`
     }
 `;
 
-export const LinksContainer = styled.ul`
+
+
+export const LinksContainer = styled.ul<LinksContainerProps>`
     display: flex;
     flex-direction: column;
     gap: .5rem;
     list-style: none;
     padding: 0;
+
+    span {
+        display: ${(props: LinksContainerProps) => props.$changeDisplay ? "block" : "none"};
+    }
 `;

@@ -1,8 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import H from "@here/maps-api-for-javascript";
-import { renderToString } from "react-dom/server";
 import MarkerTypeName from "../types/MarkerTypeName";
-import VehicleMarker from "../Components/VehicleMarker";
 import AgroupControl from "./MapControls/AgroupControl";
 import ZoomControl from "./MapControls/ZoomControl";
 import MapSettingsControl from "./MapControls/MapSettingsControl";
@@ -14,7 +12,6 @@ import ReferenceControl from "./MapControls/ReferenceControl";
 import FenceControl from "./MapControls/FenceControl";
 import createClusterMarker from "./createClusterMarker";
 import { createNoiseMarker } from "./createNoiseMarker";
-import stringVehicleMarker from "./stringVehicleMarker";
 import stringBubbleContent from "./stringBubbleContent";
 import addReferenceMarker from "./MapUtils/addReferenceMarker";
 import addFence from "./MapUtils/addFence";
@@ -24,7 +21,6 @@ import FenceData from "../interfaces/FenceData";
 import Fence from "../interfaces/Fence";
 import renderFences from "./MapUtils/renderFences";
 import renderRefPoints from "./MapUtils/renderReferenceMarkers";
-import { MarkerVehicle } from "../Components/VehicleMarker/style";
 import vehicleMarkerSVG from "./MapMarkers/vehicleMarker";
 
 interface MapProps {
@@ -264,7 +260,7 @@ export default function Map({
 
 		getNoisePresentation: (noisePoint: H.clustering.INoisePoint) => {
 		  const type = markerType(noisePoint.getData());
-		  const element = stringVehicleMarker(type);
+		  const element = vehicleMarkerSVG(type);
 		  const noiseMarker = createNoiseMarker(noisePoint, element);
 		  noiseMarker.addEventListener("tap", () => {
 			if(uiRef.current) {

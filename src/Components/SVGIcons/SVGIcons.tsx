@@ -103,12 +103,12 @@ export default function SVGIcons({
             );
 
             case "briefcase":
-            return (
-                <svg width={size} height={size} viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path fillRule="evenodd" clipRule="evenodd" d="M19.0029 21.0038H4.99705C3.89202 21.0038 2.99622 20.1079 2.99622 19.0029V9.99917C2.99622 8.89414 3.89202 7.99834 4.99705 7.99834H19.0029C20.1079 7.99834 21.0037 8.89414 21.0037 9.99917V19.0029C21.0037 20.1079 20.1079 21.0038 19.0029 21.0038Z" stroke={fill} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-                    <path d="M16.0017 21.0037V5.9975C16.0017 4.89247 15.1059 3.99667 14.0009 3.99667H9.99919C8.89416 3.99667 7.99835 4.89247 7.99835 5.9975V21.0037" stroke={fill} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-                </svg>
-            );
+                return (
+                    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path fillRule="evenodd" clipRule="evenodd" d="M19.0029 21.0038H4.99705C3.89202 21.0038 2.99622 20.1079 2.99622 19.0029V9.99917C2.99622 8.89414 3.89202 7.99834 4.99705 7.99834H19.0029C20.1079 7.99834 21.0037 8.89414 21.0037 9.99917V19.0029C21.0037 20.1079 20.1079 21.0038 19.0029 21.0038Z" stroke={fill} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                        <path d="M16.0017 21.0037V5.9975C16.0017 4.89247 15.1059 3.99667 14.0009 3.99667H9.99919C8.89416 3.99667 7.99835 4.89247 7.99835 5.9975V21.0037" stroke={fill} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                    </svg>
+                );
 
             case "add":
                 return(
@@ -218,6 +218,9 @@ export default function SVGIcons({
                     </svg>
                 );
             }
+
+            case undefined: 
+                throw new Error("Icon name invalid")
     }       
 
 }

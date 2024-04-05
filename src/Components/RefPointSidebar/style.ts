@@ -2,8 +2,8 @@ import styled from "styled-components";
 
 export const RefSidebarContainer = styled.div`
     min-height: calc(100vh - 3.563rem);
-    width: 406px;
     position: relative;
+    width: 406px;
 `;
 
 export const RefContainer = styled.div`
@@ -11,24 +11,24 @@ export const RefContainer = styled.div`
     position: relative;
 `
 export const RefButtonsContainer = styled.div`
+    background-color: transparent;
     bottom: 0;
     display: flex;
     justify-content: center;
     gap: 1rem;
     height: 2.5rem;
-    position: absolute;
     padding: 1rem;
+    position: absolute;
     width: calc(100% - 2rem);
-    background-color: transparent;
 `;
 
 export const CloseButton = styled.button`
-    border: none;
-    background: transparent;
-    padding: 0;
-    display: flex;
     align-items: center;
+    background: transparent;
+    border: none;
+    display: flex;
     justify-content: center;
+    padding: 0;
 
     &:hover {
         cursor: pointer;
@@ -36,11 +36,11 @@ export const CloseButton = styled.button`
 `
 
 export const BarContainer = styled.div`
+    align-items: center;
+    cursor: default;
+    display: flex;
     font-family: var(--primary-font);
     font-size: 1rem;
     font-weight: 500;
-    align-items: center;
-    display: flex;
     gap: .75rem;
-    cursor: default;
 `;

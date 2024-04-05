@@ -4,8 +4,8 @@ export function createNoiseMarker(
     noisePoint: H.clustering.INoisePoint,
     element: string,
 ) {
-	const marker = new H.map.DomMarker(noisePoint.getPosition(), {
-		icon: new H.map.DomIcon(element),
+	const marker = new H.map.Marker(noisePoint.getPosition(), {
+		icon: new H.map.Icon(element),
 		data: {...noisePoint.getData()},
 		min: noisePoint.getMinZoom(),
 	});
