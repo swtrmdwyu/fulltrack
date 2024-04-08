@@ -4,6 +4,9 @@ import Input from "../Input";
 import { BarContainer, CloseButton, RefButtonsContainer, RefContainer, RefSidebarContainer } from "./style";
 import close from "../../assets/icons/close-side.svg";
 import { useTranslation } from "react-i18next";
+import Select from "../Select";
+import React from "react";
+import Client from "../../interfaces/Client";
 
 interface RefSidebarProps {
   	/** 
@@ -18,10 +21,17 @@ interface RefSidebarProps {
 	 * Chamada quando o botão salvar for clicado.
 	 */
     onSave?: () => void,
+	/**
+	 * Lista com os clientes do select de clientes.
+	 */
+	clients?: Client[],
 }
 
-export default function RefSidebar({ onClose, onSave, onDescChange } : RefSidebarProps) {
+export default function RefSidebar({ onClose, onSave, onDescChange, clients } : RefSidebarProps) {
     const { t } = useTranslation();
+
+	const clientsList = clients?.map((client) => client.client_description);
+
 
     return(
         <RefSidebarContainer>
@@ -33,21 +43,17 @@ export default function RefSidebar({ onClose, onSave, onDescChange } : RefSideba
           </DividerBox>
           <RefContainer>
             <Input 
-				placeholder={t("add_object.description")} 
+				placeholder={t("reference_point.description_placeholder")}
 				onChange={onDescChange} 
 				label={t("add_object.description")} 
 			/>
-           
-          </RefContainer>
-          <RefButtonsContainer>
-                <Button 
-					type="click" 
-					onClick={onClose} 
-					theme="secondary"
-				>
-					{t("add_object.button_cancel")}
-				</Button>
-				
+
+			<Select 
+				label={t("Cliente")}
+				options={clientsList ? clientsList : ["Nenhum cliente existente"]}
+			/>
+
+			<RefButtonsContainer>				
                 <Button 
 					type="click" 
 					onClick={onSave} 
@@ -55,7 +61,17 @@ export default function RefSidebar({ onClose, onSave, onDescChange } : RefSideba
 				>
 					{t("add_object.button_save")} 
 				</Button>
+
+				<Button 
+					type="click" 
+					onClick={onClose} 
+					theme="tertiary"
+				>
+					{t("add_object.button_cancel")}
+				</Button>
             </RefButtonsContainer>
+          </RefContainer>
+
         </RefSidebarContainer>
     );
 }

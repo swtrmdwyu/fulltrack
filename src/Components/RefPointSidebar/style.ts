@@ -7,19 +7,20 @@ export const RefSidebarContainer = styled.div`
 `;
 
 export const RefContainer = styled.div`
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
     padding: 1.5rem;
     position: relative;
 `
 export const RefButtonsContainer = styled.div`
     background-color: transparent;
-    bottom: 0;
     display: flex;
-    justify-content: center;
+    flex-direction: column;
     gap: 1rem;
-    height: 2.5rem;
-    padding: 1rem;
-    position: absolute;
-    width: calc(100% - 2rem);
+    justify-content: center;
+    margin-top: 1.5rem;
+    width: 100%;
 `;
 
 export const CloseButton = styled.button`

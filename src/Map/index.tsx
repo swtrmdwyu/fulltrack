@@ -6,13 +6,13 @@ import ZoomControl from "./MapControls/ZoomControl";
 import MapSettingsControl from "./MapControls/MapSettingsControl";
 import { FormatedVehicle } from "../interfaces/FormatedVehicle";
 import VehicleBubble from "./MapVehicleBubble/VehicleBubble";
-import markerType from "./markerTypeName";
-import startClustering from "./Clustering";
+import markerType from "./MapUtils/markerTypeName";
+import startClustering from "./MapClustering/clustering";
 import ReferenceControl from "./MapControls/ReferenceControl";
 import FenceControl from "./MapControls/FenceControl";
-import createClusterMarker from "./createClusterMarker";
-import { createNoiseMarker } from "./createNoiseMarker";
-import stringBubbleContent from "./stringBubbleContent";
+import createClusterMarker from "./MapClustering/createClusterMarker";
+import { createNoiseMarker } from "./MapClustering/createNoiseMarker";
+import stringBubbleContent from "./MapUtils/stringBubbleContent";
 import addReferenceMarker from "./MapUtils/addReferenceMarker";
 import addFence from "./MapUtils/addFence";
 import selectFencePosition from "./MapUtils/selectFencePosition";
@@ -79,11 +79,9 @@ export default function Map({
 					queryParams: {
 						style: "explore.day",
 						size: 512,
-					},
+					}
 				});
-				const rasterTileProvider = new H.service.rasterTile.Provider(
-					rasterTileService
-				);
+				const rasterTileProvider = new H.service.rasterTile.Provider(rasterTileService);
 
 				const rasterTileLayer = new H.map.layer.TileLayer(rasterTileProvider);
 				
@@ -114,24 +112,26 @@ export default function Map({
 
 				const defaultLayers: any = platform.current.createDefaultLayers();
 
-				// Criação dos contorles do mapa.
+				// Adição dos controles ao mapa.
 				const ui = new H.ui.UI(map.current);
 				ui.addControl("zoomControl", ZoomControl());
 				ui.addControl("mapSettingsControl", MapSettingsControl(rasterTileLayer, defaultLayers));
 				ui.addControl("referenceControl", ReferenceControl({onStateChange: async () => {
+					
 					if(isAddingRef.current) {
 						return;
 					}
 	
 					if(map.current) {
+						
 						isAddingRef.current  = true;
 						const referenceMarker = await addReferenceMarker(map.current);
 						refPointRef.current = referenceMarker;
-
 						showRefPointSidebar();
 					}
 						
 				}}));
+
 
 				ui.addControl("fenceControl", FenceControl({onStateChange: async () => {
 					if(map.current) {
@@ -155,13 +155,15 @@ export default function Map({
 				renderRefPoints(map.current);
 				
 			}
+
+			// Responsavel por atualizar o taamaho do maapa.
 			setTimeout(() => {
 				if(map.current) {
 					map.current.getViewPort().resize();
 				}
 			}, 600)
 
-
+			// Verificação e adicção de cluster.
 			if(clusterLayer.current) {
 				map.current.removeLayer(clusterLayer.current);
 			}
@@ -184,8 +186,8 @@ export default function Map({
 
 			let markers: H.map.Marker[] = [];
 
+			// Adiciona markers
 			if(vehicles !== vehiclesRef.current) {
-
 				if(markersRef.current) {
 					map.current.removeObjects(markersRef.current);
 				}
@@ -201,7 +203,7 @@ export default function Map({
 					);
 
 					//cria um novo marker.
-					const marker = createCustomMarker(coords, markerType(vehicle), vehicle.ativo_id);
+					const marker = createCustomMarker(coords, markerType(vehicle));
 				
 					marker.addEventListener("tap", () => {
 						if(uiRef.current) {
@@ -230,7 +232,6 @@ export default function Map({
 	function createCustomMarker(
 		coords: H.geo.Point, 
 		markerType: MarkerTypeName, 
-		key: number, 
 		zoom?: {min: number, max: number}
 		
 	): H.map.Marker {

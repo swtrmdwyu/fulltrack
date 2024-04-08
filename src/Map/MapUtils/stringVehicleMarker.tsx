@@ -1,6 +1,6 @@
 import { renderToString } from "react-dom/server";
-import VehicleMarker from "../Components/VehicleMarker";
-import MarkerTypeName from "../types/MarkerTypeName";
+import VehicleMarker from "../../Components/VehicleMarker";
+import MarkerTypeName from "../../types/MarkerTypeName";
 
 export function convert() {
     return (

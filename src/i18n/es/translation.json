@@ -33,7 +33,8 @@
     "label": "Registrar Cerca"
   },
   "reference_point": {
-      "label": "Registrar Punto de Referencia"
+      "label": "Registrar Punto de Referencia",
+      "description_placeholder": "¿Cuál es el nombre de este punto de referencia?"
   },
   "add_object": {
     "description": "Descripción",

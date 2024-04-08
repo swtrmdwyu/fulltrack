@@ -1,12 +1,12 @@
 import H from '@here/maps-api-for-javascript';
-import Vehicle from '../interfaces/Vehicle';
+import Vehicle from '../../interfaces/Vehicle';
 
 
 export default function startClustering(
   map: H.Map, vehicles: Vehicle[], 
   CUSTOM_THEME:{
     getClusterPresentation: (cluster: H.clustering.ICluster) => H.map.DomMarker,
-    getNoisePresentation: (noisePoint: H.clustering.INoisePoint) => H.map.DomMarker
+    getNoisePresentation: (noisePoint: H.clustering.INoisePoint) => H.map.Marker
   }
 ) {
     const dataPoints = vehicles.map((point: Vehicle) => {

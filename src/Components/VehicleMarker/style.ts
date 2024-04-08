@@ -2,10 +2,6 @@ import styled from "styled-components";
 import { VehicleMarkerProps } from ".";
 import truckContainer from "../../assets/icons/truck-container.svg";
 
-interface VehicleStatusProps extends VehicleMarkerProps {
-    $isVisible: boolean
-}
-
 const themes = {
     "moving": {
         titleColors: {

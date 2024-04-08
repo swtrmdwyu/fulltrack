@@ -1,6 +1,6 @@
 import { renderToString } from "react-dom/server";
-import { FormatedVehicle } from "../interfaces/FormatedVehicle";
-import BubbleContent from "../Components/BubbleContent";
+import { FormatedVehicle } from "../../interfaces/FormatedVehicle";
+import BubbleContent from "../../Components/BubbleContent";
 
 export function convert() {
     return (

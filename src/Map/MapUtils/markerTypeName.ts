@@ -1,5 +1,5 @@
-import Vehicle from "../interfaces/Vehicle";
-import MarkerTypeName from "../types/MarkerTypeName";
+import Vehicle from "../../interfaces/Vehicle";
+import MarkerTypeName from "../../types/MarkerTypeName";
 
 export default function markerType(vehicle: Vehicle): MarkerTypeName {
 	if(vehicle.is_bloqued) {

@@ -33,7 +33,8 @@
         "label": "Register Fence"
       },
       "reference_point": {
-          "label": "Register Reference Point"
+          "label": "Register Reference Point",
+          "description_placeholder": "What is the name of this reference point?"
       },
       "add_object": {
         "description": "Description",

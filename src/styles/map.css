@@ -15,6 +15,7 @@
     position: absolute;
 }
 
+/* agroup */
 .agroup-control-here {
     background-image: url("../src/assets/icons/Target.svg");
     top: 0;
@@ -24,6 +25,7 @@
     background-image: url("../src/assets/icons/Target-hover.svg");
 }
 
+ /* reference */
 .reference-control-here {
     background-image: url("../src/assets/icons/reference.svg");
     top: 11rem;
@@ -34,6 +36,11 @@
     top: 11rem;
 }
 
+.active-reference {
+    background-image: url("../src/assets/icons/reference-hover.svg");
+}
+
+/* fence */
 .fence-control-here {
     background-image: url("../src/assets/icons/fence.svg");
     top: 14rem;
@@ -43,7 +50,6 @@
     background-image: url("../src/assets/icons/fence-hover.svg");
     top: 14rem;
 }
-
 
 /* zoom */
 .H_zoom {
@@ -143,7 +149,6 @@
 }   
 
 /* cluster */
-
 .cluster-container {
     align-items: center;
     background-color: var(--primary-color);

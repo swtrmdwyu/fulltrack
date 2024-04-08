@@ -33,7 +33,8 @@
     "label": "Cadastrar Cerca"
   },
   "reference_point": {
-    "label": "Cadastrar Ponto de Referência"
+    "label": "Cadastrar Ponto de Referência",
+    "description_placeholder": "Qual o nome desse ponto de referência?"
   },
   "add_object": {
     "description": "Descrição",

@@ -36,11 +36,11 @@ export default function Home() {
   const [showFenceSideBar, setShowFenceSideBar] = useState(false);
   const [fenceDescription, setFenceDescription] = useState("");
   const [saveFence, setSaveFence] = useState(false);
-
   const [showRefSideBar, setShowRefSideBar] = useState(false);
   const [RefDescription, setRefDescription] = useState("");
   const [saveRef, setSaveRef] = useState(false);
   const [cancelAddingRef, setCancelAddingRef] = useState(false);
+  const [clients, setClients] = useState<Client[] | null>(null);
 
   const menu: MenuLink[] = [
     { label: t("menu_names.dashboard"), href: "#", icon: "dashboard" },
@@ -63,6 +63,7 @@ export default function Home() {
         if(authTokens) {
             if(vehicles) {
                 const clients: Client[] = await getClients(authTokens.authToken);
+                setClients(clients);
 
                 const addressData: AddressRequestParams[] = vehicles.map((vehicle: Vehicle) => {
                   const addressParams: AddressRequestParams = {              
@@ -219,6 +220,7 @@ export default function Home() {
             onClose={handleRefSidebarClose}
             onSave={handleRefSave}
             onDescChange={onRefDescChange}
+            clients={clients ? clients : []}
           />
         }
       </SideBarContainer>
