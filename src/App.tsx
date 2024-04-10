@@ -3,6 +3,7 @@ import AppRoutes from "./Routes/AppRoutes";
 import { AuthProvider } from "./Contexts/AuthContext";
 import { LanguageProvider } from "./Contexts/LanguageContext";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query"
+import { LandmarkProvider } from "./Contexts/LandmarkContext";
 export default function App() {
 
   const client = new QueryClient();
@@ -11,7 +12,9 @@ export default function App() {
     <QueryClientProvider client={client}>
       <AuthProvider>
         <LanguageProvider>
-          <AppRoutes />
+          <LandmarkProvider>
+            <AppRoutes />
+          </LandmarkProvider>
         </LanguageProvider>
       </AuthProvider>
     </QueryClientProvider>

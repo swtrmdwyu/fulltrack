@@ -22,6 +22,7 @@ import Fence from "../interfaces/Fence";
 import renderFences from "./MapUtils/renderFences";
 import renderRefPoints from "./MapUtils/renderReferenceMarkers";
 import vehicleMarkerSVG from "./MapMarkers/vehicleMarker";
+import ReferenceData from "../interfaces/ReferenceData";
 
 interface MapProps {
     /**
@@ -36,7 +37,7 @@ interface MapProps {
 	showFenceSidebar: () => void,
 	cancelAddingRefPoint?: boolean,
 	saveRefPoint?: boolean,
-	refPointData: FenceData,
+	refPointData: ReferenceData,
 	showRefPointSidebar: () => void
 
 }
@@ -375,8 +376,15 @@ export default function Map({
 
 		const newFence =  {
 			position: refPointRef.current.getGeometry(),
-			description: refPointData.description
+			data: {
+				description: refPointData.description,
+				color: refPointData.color,
+				client: refPointData.client
+			}
 		}
+
+		refPointRef.current.setData(refPointData);
+		refPointRef.current.addEventListener("tap", () => console.log("aaaaaaaaaaaaaaaaaaaaa"))
 
 		if(storage) {
 			const storageObj: ReferencePoint[] = JSON.parse(storage);

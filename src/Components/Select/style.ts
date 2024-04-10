@@ -54,7 +54,8 @@ export const StyledButton = styled.button<SelectListProps>`
     top: 2rem;
 
     img {
-        rotate: ${(props: SelectListProps) => props.$showList ? "180deg": "0deg"};
+        transition: rotate .18s ease-in-out;
+        rotate: ${(props: SelectListProps) => props.$showList ? "-180deg": "0deg"};
     } 
 `;
 

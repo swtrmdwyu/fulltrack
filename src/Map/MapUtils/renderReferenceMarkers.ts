@@ -14,9 +14,11 @@ export default function renderRefPoints(map: H.Map) {
 
     storageObj.forEach((reference: ReferencePoint) => {
         const newRefPoint = new H.map.Marker(reference.position, {
-            data: {},
-            icon: referenceMarker("#B3ADCD")
+            data: reference.data,
+            icon: referenceMarker(reference.data.color)
         })
+
+        newRefPoint.addEventListener("tap", () => console.log(newRefPoint.getData()));
 
         refPoints.push(newRefPoint);
     })

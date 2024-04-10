@@ -32,6 +32,16 @@
     --orange-color-medium: #CE7C3A;
     --orange-color-lighter: #FFF7DA;
 
+    --custom-color-gray: #85919E;
+    --custom-color-blue: #6390F5;
+    --custom-color-cyan: #3A99D5;
+    --custom-color-green: #19A675;
+    --custom-color-yellow: #D3771E;
+    --custom-color-orange: #E4704D;
+    --custom-color-red: #E95F77;
+    --custom-color-purple: #C372CF;
+    --custom-color-violet: #9B85D7;
+
     /* fontes da aplicação */
-    --primary-font: "Inter", sans-serif;    
+    --primary-font: "Inter", sans-serif;
 }

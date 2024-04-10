@@ -5,17 +5,14 @@ const themes = {
     primary: {
         backgroundColor: "var(--primary-color-medium)",
         color: "var(--quartiary-color)",
-        hoverColor: "",
     },
     secondary: {
         backgroundColor: "var(--gray-color-lighter)",
         color: "var(--gray-color-darker)",
-        hoverColor: "",
     },
     tertiary: {
         backgroundColor: "transparent",
         color: "var(--gray-color-darker)",
-        hoverColor: "transparent",
     }
 }
 
@@ -43,13 +40,10 @@ export const StyledButton = styled.button<ButtonProps>`
     padding: .5rem 0;
     width: 100%;
     transition: scale .3s ease-in-out;
+    transition: opacity .1s ease-in-out;
 
     &:hover {
-        background-color: ${(props: ButtonProps) => 
-            props.theme ? 
-            themes[props.theme].hoverColor : 
-            ""
-        };
+        opacity: .9;
     }
 
     &:active {
