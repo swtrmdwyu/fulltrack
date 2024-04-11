@@ -70,6 +70,7 @@ export const SelectListContainer = styled.div`
     overflow: auto;
     width: 100%;
     white-space: nowrap;
+    z-index: 2;
 
     ul {
         li {

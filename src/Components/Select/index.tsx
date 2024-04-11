@@ -2,9 +2,14 @@ import { InputContainer, SelectContainer, SelectListContainer, StyledButton } fr
 import arrow from "../../assets/icons/arrow-select.svg";
 import { useState } from "react";
 
+interface Option {
+    key: string,
+    value: string
+}
+
 interface SelectProps {
     label?: string,
-    options: string[],
+    options: Option[],
     onChange?: (event: React.ChangeEvent<HTMLInputElement>) => void,
     onSetValue: (value: string) => void
     value: string
@@ -38,6 +43,7 @@ export default function Select({ options, label, value, onChange, onSetValue}: S
                     placeholder="Selecione..."
                     value={value}
                     onChange={onChangeValue}
+                    
                 />
                 <StyledButton 
                     onClick={toogleArrow} 
@@ -50,12 +56,12 @@ export default function Select({ options, label, value, onChange, onSetValue}: S
             {showList && 
                 <SelectListContainer>
                     <ul>
-                        {options.map((option: string, idx) => (
+                        {options.map((option: Option, idx) => (
                             <li 
                                 key={idx}
-                                onClick={() => handleSetValue(option)}
+                                onClick={() => handleSetValue(option.value)}
                             >
-                                {option}
+                                {option.key}
                             </li>
                         ))}
                     </ul>

@@ -7,7 +7,7 @@ export default function addReferenceMarker(map: H.Map, color?: string): Promise<
 
 		const marker = new H.map.Marker(center, {
 		  volatility: true,
-		  icon: referenceMarker(color ? color : "#B3ADCD"),
+		  icon: referenceMarker(color ? color : "#85919E"),
 		  data: {}
 		});
 	

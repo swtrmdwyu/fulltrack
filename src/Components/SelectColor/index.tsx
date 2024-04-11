@@ -1,42 +1,39 @@
-import { useContext, useRef, useState } from "react";
 import { Color, ColorsBox, SelectButton, SelectColorsContainer } from "./style";
 import arrow from "../../assets/icons/arrow-select.svg";
-import { LandmarkContext } from "../../Contexts/LandmarkContext";
+import { useState } from "react";
 
 export interface SelectColorProps {
     /**
-     * Função usada para salvar a cor selecionada em um estado.
+     * Chamada quando a cor do componente for alterada.
      */
-    setColor: () => void
+    setColor: (color: string) => void
 }
 
 export default function SelectColor({ setColor }: SelectColorProps) {
     const [showColors, setShowColors] = useState(false);
     const [active, setActive] = useState(0);
-    const { setCurrentColor } = useContext(LandmarkContext);
-
-    const colorRef = useRef<HTMLDivElement | null>(null);
 
     const handleButtonClick = () => {
         setShowColors((previous) => !previous);
     }
 
     const handleSetColor = (color: string, idx: number) => {
+        handleButtonClick();
         setActive(idx);
-        setCurrentColor(color);
+        if(setColor) setColor(color);
     }
 
     const colors = [
-        "var(--custom-color-gray)",
-        "var(--custom-color-blue)",
-        "var(--custom-color-cyan)",
-        "var(--custom-color-green)",
-        "var(--custom-color-yellow)",
-        "var(--custom-color-orange)",
-        "var(--custom-color-red)",
-        "var(--custom-color-purple)",
-        "var(--custom-color-violet)"
-    ]
+        "#85919E",
+        "#6390F5",
+        "#3A99D5",
+        "#19A675",
+        "#D3771E",
+        "#E4704D",
+        "#E95F77",
+        "#C372CF",
+        "#9B85D7"
+    ];
 
     return (
         <SelectColorsContainer>
@@ -50,7 +47,7 @@ export default function SelectColor({ setColor }: SelectColorProps) {
             <ColorsBox $showColors={showColors}> 
                 {colors.map((color: string, idx) => 
                     <Color 
-                        ref={colorRef} key={idx} 
+                        key={idx} 
                         $active={idx === active ? true : false} 
                         color={color}
                         onClick={() => handleSetColor(color, idx)}

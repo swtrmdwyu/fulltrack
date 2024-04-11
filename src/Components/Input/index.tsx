@@ -8,7 +8,7 @@ export interface InputProps {
     /**
      * Função disparada quando houver alterações no valor do input.
      */
-    onChange?: (arg1: React.ChangeEvent<HTMLInputElement>) => void,
+    onChange?: (event: React.ChangeEvent<HTMLInputElement>) => void,
     /**
      * Define o texto exibido no placeholder do input.
      */

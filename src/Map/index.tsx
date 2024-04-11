@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 import H from "@here/maps-api-for-javascript";
 import MarkerTypeName from "../types/MarkerTypeName";
 import AgroupControl from "./MapControls/AgroupControl";
@@ -16,13 +16,14 @@ import stringBubbleContent from "./MapUtils/stringBubbleContent";
 import addReferenceMarker from "./MapUtils/addReferenceMarker";
 import addFence from "./MapUtils/addFence";
 import selectFencePosition from "./MapUtils/selectFencePosition";
-import ReferencePoint from "../interfaces/ReferencePoint";
 import FenceData from "../interfaces/FenceData";
 import Fence from "../interfaces/Fence";
 import renderFences from "./MapUtils/renderFences";
 import renderRefPoints from "./MapUtils/renderReferenceMarkers";
 import vehicleMarkerSVG from "./MapMarkers/vehicleMarker";
-import ReferenceData from "../interfaces/ReferenceData";
+import { LandmarkContext } from "../Contexts/LandmarkContext";
+import LandmarkData from "../interfaces/LandmarkData";
+import Landmark from "../interfaces/Landmark";
 
 interface MapProps {
     /**
@@ -36,8 +37,6 @@ interface MapProps {
 	fenceData: FenceData,
 	showFenceSidebar: () => void,
 	cancelAddingRefPoint?: boolean,
-	saveRefPoint?: boolean,
-	refPointData: ReferenceData,
 	showRefPointSidebar: () => void
 
 }
@@ -50,10 +49,8 @@ export default function Map({
 	showFenceSidebar, 
 	saveFence, 
 	fenceData,
-	refPointData,
 	showRefPointSidebar,
 	cancelAddingRefPoint,
-	saveRefPoint
 }: MapProps) {
     const mapRef = useRef<HTMLDivElement | null>(null);
     const map = useRef<H.Map | null>(null);
@@ -66,7 +63,15 @@ export default function Map({
 	const bubblesRef = useRef<H.ui.InfoBubble | null>(null);
 	const isAddingRef = useRef(false);
 	const fenceRef = useRef<H.map.Circle | null>(null);
-	const refPointRef = useRef<H.map.Marker | null>(null);
+	const landmarkRef = useRef<H.map.Marker | null>(null);
+	const { 
+		landmarkColor, 
+		changeLandmarkColor, 
+		landmarkClient, 
+		landmarkDescription, 
+		canSaveLandmark, 
+		resetLandmark
+	} = useContext(LandmarkContext);
 
     useEffect(
         () => {
@@ -117,7 +122,7 @@ export default function Map({
 				const ui = new H.ui.UI(map.current);
 				ui.addControl("zoomControl", ZoomControl());
 				ui.addControl("mapSettingsControl", MapSettingsControl(rasterTileLayer, defaultLayers));
-				ui.addControl("referenceControl", ReferenceControl({onStateChange: async () => {
+				ui.addControl("landmarkControl", ReferenceControl({onStateChange: async () => {
 					
 					if(isAddingRef.current) {
 						return;
@@ -127,7 +132,7 @@ export default function Map({
 						
 						isAddingRef.current  = true;
 						const referenceMarker = await addReferenceMarker(map.current);
-						refPointRef.current = referenceMarker;
+						landmarkRef.current = referenceMarker;
 						showRefPointSidebar();
 					}
 						
@@ -352,13 +357,13 @@ export default function Map({
 			return;
 		}
 
-		if(!refPointRef.current) {
+		if(!landmarkRef.current) {
 			return;
 		}
 
-		map.current.removeObject(refPointRef.current);
+		map.current.removeObject(landmarkRef.current);
 		map.current.getViewPort().resize();
-		refPointRef.current = null;
+		landmarkRef.current = null;
 		isAddingRef.current = false;
 		
 	}, [cancelAddingRefPoint]);
@@ -368,41 +373,51 @@ export default function Map({
 			return;
 		}
 
-		if(!refPointRef.current) {
+		if(!landmarkRef.current) {
 			return;
 		}
 
 		const storage = localStorage.getItem("referencePoints");
 
-		const newFence =  {
-			position: refPointRef.current.getGeometry(),
-			data: {
-				description: refPointData.description,
-				color: refPointData.color,
-				client: refPointData.client
-			}
+		const data: LandmarkData = {
+			description: landmarkDescription,
+			color: landmarkColor,
+			client: landmarkClient
 		}
 
-		refPointRef.current.setData(refPointData);
-		refPointRef.current.addEventListener("tap", () => console.log("aaaaaaaaaaaaaaaaaaaaa"))
+		const newLandmark =  {
+			position: landmarkRef.current.getGeometry(),
+			data: data
+		}
+
+		landmarkRef.current.setData(data);
 
 		if(storage) {
-			const storageObj: ReferencePoint[] = JSON.parse(storage);
+			const storageObj: Landmark[] = JSON.parse(storage);
 
-			storageObj.push(newFence);
+			storageObj.push(newLandmark);
 			localStorage.setItem("referencePoints", JSON.stringify(storageObj));
 			isAddingRef.current = false;
-			refPointRef.current = null;
+			landmarkRef.current = null;
 
 			return;
 		}
 
-		localStorage.setItem("referencePoints", JSON.stringify([newFence]));
+		localStorage.setItem("referencePoints", JSON.stringify([newLandmark]));
 		isAddingRef.current = false;
-		refPointRef.current = null;
+		landmarkRef.current = null;
 		map.current.getViewPort().resize();
 		
-	}, [saveRefPoint]);
+		resetLandmark();
+	}, [canSaveLandmark]);
+
+	useEffect(() => {
+		if(!landmarkRef.current) {
+			return;
+		}
+
+		changeLandmarkColor(landmarkRef.current);
+	}, [landmarkColor])
 
 
     return <div style={ { height: "calc(100vh - 3.563rem)" } } ref={mapRef} />;

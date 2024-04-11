@@ -1,19 +1,19 @@
 import styled from "styled-components";
 
-export const RefSidebarContainer = styled.div`
+export const LandmarkSidebarContainer = styled.div`
     min-height: calc(100vh - 3.563rem);
     position: relative;
     width: 406px;
 `;
 
-export const RefContainer = styled.div`
+export const LandmarkContainer = styled.div`
     display: flex;
     flex-direction: column;
     gap: 1.5rem;
     padding: 1.5rem;
     position: relative;
 `
-export const RefButtonsContainer = styled.div`
+export const LandmarkButtonsContainer = styled.div`
     background-color: transparent;
     display: flex;
     flex-direction: column;
