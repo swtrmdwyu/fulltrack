@@ -1,13 +1,13 @@
-import referenceMarker from "../MapMarkers/referenceMarker";
+import landmarkIcon from "../MapMarkers/landmarkIcon";
 
-export default function addReferenceMarker(map: H.Map, color?: string): Promise<H.map.Marker> {
+export default function addLandmark(map: H.Map, color?: string): Promise<H.map.Marker> {
 
 	return new Promise((resolve) => {
 		const center = map.getCenter();
 
 		const marker = new H.map.Marker(center, {
 		  volatility: true,
-		  icon: referenceMarker(color ? color : "#85919E"),
+		  icon: landmarkIcon(color ? color : "#85919E"),
 		  data: {}
 		});
 	
@@ -29,6 +29,10 @@ export default function addReferenceMarker(map: H.Map, color?: string): Promise<
 		const removeListeners = () => {
 			map.removeEventListener("pointermove", pointerMoveListener);
 			map.removeEventListener("tap", removeListeners);
+			
+
+			const markerPosition: H.geo.Point = marker.getGeometry() as H.geo.Point;
+			map.setCenter(markerPosition, true);
 			
 			resolve(marker);
 		}

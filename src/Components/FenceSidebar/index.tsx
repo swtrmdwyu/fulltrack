@@ -1,9 +1,13 @@
 import Button from "../Button";
 import DividerBox from "../DividerBox";
 import Input from "../Input";
-import { BarContainer, CloseButton, FenceButtonsContainer, FenceContainer, FenceSidebarContainer } from "./style";
+import { BarContainer, CloseButton, FenceButtonsContainer, FenceContainer, FenceSidebarContainer, MarkerIconContainer } from "./style";
 import close from "../../assets/icons/close-side.svg";
 import { useTranslation } from "react-i18next";
+import SelectColor from "../SelectColor";
+import { useContext } from "react";
+import { FenceContext } from "../../Contexts/FenceContext";
+import Select from "../Select";
 
 interface FenceSidebarProps {
     /**
@@ -23,6 +27,8 @@ interface FenceSidebarProps {
 export default function FenceSidebar({ onClose, onDescChange, onSave } : FenceSidebarProps) {
     const { t } = useTranslation();
 
+    const {setCurrentFenceColor} = useContext(FenceContext);
+
     return(
         <FenceSidebarContainer>
             <DividerBox>
@@ -32,7 +38,23 @@ export default function FenceSidebar({ onClose, onDescChange, onSave } : FenceSi
             </BarContainer>
           </DividerBox>
           <FenceContainer>
-            <Input placeholder={t("add_object.description")} onChange={onDescChange} label={t("add_object.description")} />
+            <Input 
+              placeholder={t("add_object.description")} 
+              onChange={onDescChange} 
+              label={t("add_object.description")} 
+            />
+            <Select 
+              label={t("Cliente")}
+              options={[]}
+              onSetValue={() => {}}
+              value={""}  
+              onChange={() => {}}
+            />
+
+          <MarkerIconContainer>
+            <label>Ícone do marcador</label>
+            <SelectColor setColor={setCurrentFenceColor}/>
+          </MarkerIconContainer>
            
           </FenceContainer>
           <FenceButtonsContainer>
@@ -44,7 +66,7 @@ export default function FenceSidebar({ onClose, onDescChange, onSave } : FenceSi
 					{t("add_object.button_cancel")}
 				</Button>
 
-                <Button 
+        <Button 
 					type="click"
 					onClick={onSave}
 					theme="primary"

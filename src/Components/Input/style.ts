@@ -13,12 +13,13 @@ export const InputContainer = styled.div`
     input {
         border: 1px solid var(--gray-color-medium);
         border-radius: .25rem;
+        color: var(--primary-color);
         font-size: 1rem;
-        outline: none;
         line-height: 1.5rem;
         padding: .5rem 1rem;
-        width: calc(100% - 2rem );
+        outline: none;
         transition: box-shadow .2s ease-in-out;
+        width: calc(100% - 2rem );
 
         &::placeholder {
             color: var(--gray-color-medium);

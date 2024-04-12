@@ -7,6 +7,9 @@ export const FenceSidebarContainer = styled.div`
 `;
 
 export const FenceContainer = styled.div`
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
     padding: 1.5rem;
     position: relative;
 `
@@ -43,4 +46,18 @@ export const BarContainer = styled.div`
     display: flex;
     gap: .75rem;
     cursor: default;
+`;
+
+export const MarkerIconContainer = styled.div`
+    display: flex;
+    flex-direction: column;
+    gap: .5rem;
+    
+
+    label {
+        font-family: var(--primary-font);
+        font-weight: 500;
+        font-size: .875rem;
+        color: var(--primary-color);
+    }
 `;

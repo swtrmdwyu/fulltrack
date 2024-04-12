@@ -14,5 +14,4 @@ export interface Address {
     number: number,
     street: string,
     code: number
-    
 }

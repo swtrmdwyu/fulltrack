@@ -45,3 +45,17 @@ export const BarContainer = styled.div`
     font-weight: 500;
     gap: .75rem;
 `;
+
+export const MarkerIconContainer = styled.div`
+    display: flex;
+    flex-direction: column;
+    gap: .5rem;
+    
+
+    label {
+        font-family: var(--primary-font);
+        font-weight: 500;
+        font-size: .875rem;
+        color: var(--primary-color);
+    }
+`;

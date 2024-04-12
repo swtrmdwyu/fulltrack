@@ -4,11 +4,11 @@ import Input from "../Input";
 import close from "../../assets/icons/close-side.svg";
 import { useTranslation } from "react-i18next";
 import Select from "../Select";
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useState } from "react";
 import Client from "../../interfaces/Client";
 import SelectColor from "../SelectColor";
 import { LandmarkContext } from "../../Contexts/LandmarkContext";
-import { BarContainer, CloseButton, LandmarkButtonsContainer, LandmarkContainer, LandmarkSidebarContainer } from "./style";
+import { BarContainer, CloseButton, LandmarkButtonsContainer, LandmarkContainer, LandmarkSidebarContainer, MarkerIconContainer } from "./style";
 
 interface LandmarkSidebarProps {
   	/** 
@@ -100,7 +100,7 @@ export default function LandmarkSidebar({ onClose, onSave, clients } : LandmarkS
             <DividerBox>
             <BarContainer>
               <CloseButton onClick={onClose}><img src={close} /></CloseButton>
-              <span>{t("Landmarkerence_point.label")}</span>
+              <span>{t("reference_point.label")}</span>
             </BarContainer>
           </DividerBox>
           <LandmarkContainer>
@@ -118,7 +118,17 @@ export default function LandmarkSidebar({ onClose, onSave, clients } : LandmarkS
 				onChange={onClientChange}
 			/>
 
-			<SelectColor setColor={setCurrentColor}/>
+			<Input 
+				placeholder="Endereço"
+				onChange={onDescriptionChange} 
+				label={"Endereço"}
+				value="Av. Pres. Vargas, 70 - Centro, Garça - SP, 17400"
+			/>
+
+			<MarkerIconContainer>
+				<label>Ícone do marcador</label>
+				<SelectColor setColor={setCurrentColor}/>
+			</MarkerIconContainer>
 
 			<LandmarkButtonsContainer>				
                 <Button 

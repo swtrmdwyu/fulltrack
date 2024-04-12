@@ -1,6 +1,6 @@
 import H from '@here/maps-api-for-javascript';
 
-const referenceMarker = (color: string): H.map.Icon => {
+const landmarkIcon = (color: string): H.map.Icon => {
     const svg = `<svg width="2.3rem" height="2.3rem" viewBox="0 0 24 27" fill="none" xmlns="http://www.w3.org/2000/svg">
             <g clip-path="url(#clip0_7733_36917)">
                 <path d="M20.4853 3.51472C25.1716 8.20101 25.1716 15.799 20.4853 20.4853C15.799 25.1716 8.20101 25.1716 3.51472 20.4853C-1.17157 15.799 -1.17157 8.20101 3.51472 3.51472C8.20101 -1.17157 15.799 -1.17157 20.4853 3.51472Z" fill="${color}"/>
@@ -23,4 +23,4 @@ const referenceMarker = (color: string): H.map.Icon => {
     return icon;
 }
 
-export default referenceMarker;
+export default landmarkIcon;

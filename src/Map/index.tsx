@@ -13,30 +13,34 @@ import FenceControl from "./MapControls/FenceControl";
 import createClusterMarker from "./MapClustering/createClusterMarker";
 import { createNoiseMarker } from "./MapClustering/createNoiseMarker";
 import stringBubbleContent from "./MapUtils/stringBubbleContent";
-import addReferenceMarker from "./MapUtils/addReferenceMarker";
 import addFence from "./MapUtils/addFence";
 import selectFencePosition from "./MapUtils/selectFencePosition";
 import FenceData from "../interfaces/FenceData";
 import Fence from "../interfaces/Fence";
 import renderFences from "./MapUtils/renderFences";
-import renderRefPoints from "./MapUtils/renderReferenceMarkers";
+import renderLandmarks from "./MapUtils/renderLandmarks";
 import vehicleMarkerSVG from "./MapMarkers/vehicleMarker";
 import { LandmarkContext } from "../Contexts/LandmarkContext";
 import LandmarkData from "../interfaces/LandmarkData";
 import Landmark from "../interfaces/Landmark";
+import addLandmark from "./MapUtils/addLandmark";
+import { FenceContext } from "../Contexts/FenceContext";
 
 interface MapProps {
     /**
      * Recebe a APIkey da API do HERE.
      */
     apikey: string,
+	/**
+     * Array com os veículos a serem renderizados no mapa.
+     */
 	vehicles: FormatedVehicle[],
 	size: boolean,
 	cancelAddingFence?: boolean,
 	saveFence?: boolean,
 	fenceData: FenceData,
 	showFenceSidebar: () => void,
-	cancelAddingRefPoint?: boolean,
+	cancelAddingLandmark?: boolean,
 	showRefPointSidebar: () => void
 
 }
@@ -50,7 +54,7 @@ export default function Map({
 	saveFence, 
 	fenceData,
 	showRefPointSidebar,
-	cancelAddingRefPoint,
+	cancelAddingLandmark,
 }: MapProps) {
     const mapRef = useRef<HTMLDivElement | null>(null);
     const map = useRef<H.Map | null>(null);
@@ -72,6 +76,10 @@ export default function Map({
 		canSaveLandmark, 
 		resetLandmark
 	} = useContext(LandmarkContext);
+	const {
+		fenceColor,
+		changeFenceColor
+	} = useContext(FenceContext);
 
     useEffect(
         () => {
@@ -131,7 +139,7 @@ export default function Map({
 					if(map.current) {
 						
 						isAddingRef.current  = true;
-						const referenceMarker = await addReferenceMarker(map.current);
+						const referenceMarker = await addLandmark(map.current);
 						landmarkRef.current = referenceMarker;
 						showRefPointSidebar();
 					}
@@ -158,7 +166,7 @@ export default function Map({
 				uiRef.current = ui;
 
 				renderFences(map.current);
-				renderRefPoints(map.current);
+				renderLandmarks(map.current);
 				
 			}
 
@@ -167,7 +175,7 @@ export default function Map({
 				if(map.current) {
 					map.current.getViewPort().resize();
 				}
-			}, 600)
+			}, 500)
 
 			// Verificação e adicção de cluster.
 			if(clusterLayer.current) {
@@ -322,10 +330,20 @@ export default function Map({
 		}
 		const storage = localStorage.getItem("fences");
 
-		const newFence =  {
+		const newFence: Fence =  {
 			position: fenceRef.current.getCenter(),
-			description: fenceData.description,
-			radius: fenceRef.current.getRadius()
+			radius: fenceRef.current.getRadius(),
+			data: {
+				description: fenceData.description,
+				colors: {
+					fillColor: "",
+					strokeColor: ""
+				},
+				client: {
+					client_description: "",
+					client_id: -1
+				}
+			}
 		}
 
 		map.current.getViewPort().resize();
@@ -353,7 +371,7 @@ export default function Map({
 
 	useEffect(() => {
 
-		if(!map.current || !cancelAddingRefPoint) {
+		if(!map.current || !cancelAddingLandmark) {
 			return;
 		}
 
@@ -366,7 +384,7 @@ export default function Map({
 		landmarkRef.current = null;
 		isAddingRef.current = false;
 		
-	}, [cancelAddingRefPoint]);
+	}, [cancelAddingLandmark]);
 
 	useEffect(() => {
 		if(!map.current) {
@@ -377,7 +395,7 @@ export default function Map({
 			return;
 		}
 
-		const storage = localStorage.getItem("referencePoints");
+		const storage = localStorage.getItem("landmarks");
 
 		const data: LandmarkData = {
 			description: landmarkDescription,
@@ -396,14 +414,14 @@ export default function Map({
 			const storageObj: Landmark[] = JSON.parse(storage);
 
 			storageObj.push(newLandmark);
-			localStorage.setItem("referencePoints", JSON.stringify(storageObj));
+			localStorage.setItem("landmarks", JSON.stringify(storageObj));
 			isAddingRef.current = false;
 			landmarkRef.current = null;
 
 			return;
 		}
 
-		localStorage.setItem("referencePoints", JSON.stringify([newLandmark]));
+		localStorage.setItem("landmarks", JSON.stringify([newLandmark]));
 		isAddingRef.current = false;
 		landmarkRef.current = null;
 		map.current.getViewPort().resize();
@@ -417,7 +435,16 @@ export default function Map({
 		}
 
 		changeLandmarkColor(landmarkRef.current);
-	}, [landmarkColor])
+	}, [landmarkColor]);
+
+
+	useEffect(() => {
+		if(!fenceRef.current) {
+			return;
+		}
+
+		changeFenceColor(fenceRef.current);
+	}, [fenceColor]);
 
 
     return <div style={ { height: "calc(100vh - 3.563rem)" } } ref={mapRef} />;

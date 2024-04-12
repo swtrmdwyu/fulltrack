@@ -1,8 +1,7 @@
-import { createContext, useRef, useState } from "react";
-import referenceMarker from "../Map/MapMarkers/referenceMarker";
+import { createContext, useState } from "react";
 import Client from "../interfaces/Client";
 import LandmarkData from "../interfaces/LandmarkData";
-
+import landmarkIcon from "../Map/MapMarkers/landmarkIcon";
 interface LandmarkContextType {
     /**
      * Armazena a cor do ponto de referência.
@@ -40,8 +39,17 @@ interface LandmarkContextType {
      * Muda a descrição do marker nos seus dados.
      */
     changeLandmarkDescription: (landmark: H.map.Marker) => void,
+    /**
+     * Verfica se o ponto de referência deve ser salvo.
+     */
     canSaveLandmark: boolean,
+    /**
+     * Troca o estado de "canSaveLandmark" para true ou false.
+     */
     setCurrentCanSaveLandmark: (can: boolean) => void,
+    /**
+     * Reseta as informações do contexto para o padrão.
+     */
     resetLandmark: () => void
 }
 
@@ -63,7 +71,7 @@ const LandmarkProvider =({ children }: { children: React.ReactNode}) => {
     }
 
     const changeLandmarkColor = (landmark: H.map.Marker) => {
-        landmark.setIcon(referenceMarker(landmarkColor));
+        landmark.setIcon(landmarkIcon(landmarkColor));
 
         const landmarkData: LandmarkData = landmark.getData();
         landmarkData.color = landmarkColor;
@@ -94,7 +102,7 @@ const LandmarkProvider =({ children }: { children: React.ReactNode}) => {
     }
 
     const setCurrentCanSaveLandmark = (can: boolean) => {
-        setCanSaveLandmark((previous) => !previous);
+        setCanSaveLandmark(can);
     }
 
     const resetLandmark = () => {
