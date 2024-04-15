@@ -1,6 +1,7 @@
 import { createContext, useState } from "react";
 import FenceData from "../interfaces/FenceData";
 import hexToRgba from "../utils/hexToRgba";
+import Client from "../interfaces/Client";
 
 interface FenceContextType {
     /**
@@ -15,30 +16,82 @@ interface FenceContextType {
      * Altera a cor da cerca mapa.
      */
     changeFenceColor: (fence: H.map.Circle) => void,
+    /**
+     * É a descrição da cerca.
+     */
+    fenceDescription: string,
+    /**
+     * Altera a descrição da cerca.
+     */
+    setCurrentFenceDescription: (description: string) => void,
+    /**
+     * Armazena o cliente referente a cerca.
+     */
+    fenceClient: Client,
+    /**
+     * Altera o cliente da cerca.
+    */
+    changeFenceClient: (client: Client) => void,
+    /**
+     * Restaura todos os estados para o padrão.
+     */
+    resetFence: () => void
 }
 
 const FenceContext = createContext<FenceContextType>({} as FenceContextType);
 
 const FenceProvider =({ children }: { children: React.ReactNode}) => {
-    const [fenceColor, setFenceColor] = useState("");
+    const [fenceColor, setFenceColor] = useState("#85919E");
+    const [fenceDescription, setFenceDescription] = useState("");
+    const [fenceClient, setFenceClient] = useState<Client>({
+        client_description: "",
+        client_id: -1,
+    });
+    const [fenceVehicles, setFenceVehicles] = useState([]);
 
     const setCurrentFenceColor = (color: string) => {
         setFenceColor(color);
     }
 
     const changeFenceColor = (fence: H.map.Circle) => {
-        console.log(fence)
+        const fillColor = hexToRgba(fenceColor, 0.5);
+
         fence.setStyle({
-            fillColor: hexToRgba(fenceColor, 0.5),
-            strokeColor: fenceColor, 
-        })
+            fillColor: fillColor,
+            strokeColor: fenceColor,
+        });
+
+        const fenceData: FenceData = fence.getData();
+        fenceData.colors.fillColor = fillColor;
+        fenceData.colors.strokeColor = fenceColor;
+
+        fence.setData(fenceData);
+    }
+
+    const setCurrentFenceDescription = (description: string) => {
+        setFenceDescription(description);
+    }
+
+    const resetFence = () => {
+        setFenceColor("#85919E");
+        setFenceDescription("");
+    }
+
+    const changeFenceClient = (client: Client) => {
+        console.log(fenceClient)
+        setFenceClient(client);
     }
 
     return (
         <FenceContext.Provider value={{
             fenceColor,
             setCurrentFenceColor,
-            changeFenceColor
+            changeFenceColor,
+            fenceDescription,
+            setCurrentFenceDescription,
+            fenceClient,
+            changeFenceClient,
+            resetFence
         }}>
             {children}
         </FenceContext.Provider>

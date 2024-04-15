@@ -3,12 +3,20 @@ import DividerBox from "../DividerBox";
 import Input from "../Input";
 import close from "../../assets/icons/close-side.svg";
 import { useTranslation } from "react-i18next";
-import Select from "../Select";
-import React, { useContext, useState } from "react";
+import React, { useContext } from "react";
 import Client from "../../interfaces/Client";
 import SelectColor from "../SelectColor";
 import { LandmarkContext } from "../../Contexts/LandmarkContext";
-import { BarContainer, CloseButton, LandmarkButtonsContainer, LandmarkContainer, LandmarkSidebarContainer, MarkerIconContainer } from "./style";
+import { 
+	BarContainer, 
+	CloseButton, 
+	LandmarkButtonsContainer, 
+	LandmarkContainer, 
+	LandmarkSidebarContainer, 
+	MarkerIconContainer 
+} from "./style";
+
+import SelectClient from "../SelectClient";
 
 interface LandmarkSidebarProps {
   	/** 
@@ -33,56 +41,6 @@ export default function LandmarkSidebar({ onClose, onSave, clients } : LandmarkS
 		setCurrentlandmarkClient,
 		setCurrentCanSaveLandmark
 	} = useContext(LandmarkContext);
-
-	const [clientOptions, setClientOptions] = useState<{ key: string, value: string }[]>(formatedOptions(clients));
-
-	function formatedOptions(clients: Client[]): {key: string, value: string}[] {
-		const options = clients.map((option: Client) => {
-			return {
-				key: option.client_description,
-				value: option.client_id.toString()
-			}
-		});
-
-		if(options.length === 0) {
-			return [{
-				key: "Nenhum cliente disponível",
-				value: ""
-			}]
-		}
-
-		return options;
-	}
-
-	const [clientValue, setClientValue] = useState("");
-
-	const onClientChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-		const value = event.target.value;
-		setClientValue(value);
-		const newOptions = clients.filter((client: Client) => 
-			client.client_description.toLocaleLowerCase().includes(value.toLocaleLowerCase()));
-
-		if(newOptions.length === 0) {
-			setClientOptions([{
-				key: "Nenhum cliente disponível",
-				value: ""
-			}]);
-		}
-
-		const op = formatedOptions(newOptions)
-
-		setClientOptions(op);
-	}
-
-	const handleSetClient = (value: string) => {
-		const client = clients.filter((client: Client) => client.client_id.toString() === value);
-		if(client.length === 0) {	
-			return;
-		}
-		setClientValue(client[0].client_description);
-		setCurrentlandmarkClient(client[0]);
-	}
-
 
 	const onDescriptionChange = (event: React.ChangeEvent<HTMLInputElement>) => {
 		const description = event.target.value;
@@ -110,13 +68,10 @@ export default function LandmarkSidebar({ onClose, onSave, clients } : LandmarkS
 				label={t("add_object.description")}
 			/>
 
-			<Select 
-				label={t("Cliente")}
-				options={clientOptions}
-				onSetValue={handleSetClient}
-				value={clientValue}
-				onChange={onClientChange}
-			/>
+			<SelectClient 
+              clients={clients}
+              onSetClient={setCurrentlandmarkClient}
+            />
 
 			<Input 
 				placeholder="Endereço"

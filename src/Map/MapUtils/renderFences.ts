@@ -13,7 +13,16 @@ export default function renderFences(map: H.Map) {
 
     storageObj.forEach((fence: Fence) => {
         const newFence = new H.map.Circle(fence.position, fence.radius, {
-            data: {}
+            data: {...fence.data}
+        });
+
+        newFence.setStyle({
+            fillColor: fence.data.colors.fillColor,
+            strokeColor: fence.data.colors.strokeColor
+        })
+
+        newFence.addEventListener("tap", () => {
+            console.log(newFence.getData());
         })
 
         fences.push(newFence);

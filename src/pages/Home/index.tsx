@@ -25,7 +25,7 @@ import LandmarkSidebar from "../../Components/LandmarkSIdeBar";
 
 export default function Home() {
   	const { t } = useTranslation();
-  	// const {vehicles} = useGetvehicles();
+  	const {vehicles} = useGetvehicles();
   	const {authTokens} = useContext(AuthContext);
   	const [resizeMap, setResizeMap] = useState(false);
 	const [searchValue, setSearchValue ] = useState("");
@@ -41,7 +41,7 @@ export default function Home() {
 
 	const [saveRef, setSaveRef] = useState(false);
 	const [cancelAddingLandmark, setCancelAddingLandmark] = useState(false);
-	const [clients, setClients] = useState<Client[] | null>(null);
+	const [clients, setClients] = useState<Client[] | []>([]);
 
 
 	const menu: MenuLink[] = [
@@ -59,48 +59,47 @@ export default function Home() {
 
 	const isFirstRender = useRef(true);
 	
-	// useEffect(() => {
-	//   if(isFirstRender.current) {
-	//     setIsLoading(true);
-	//     async function getAllData() {
-	//       if(authTokens) {
-	//           if(vehicles) {
-	//               const clients: Client[] = await getClients(authTokens.authToken);
-	//               setClients(clients);
+	useEffect(() => {
+	  if(isFirstRender.current) {
+	    setIsLoading(true);
+	    async function getAllData() {
+	      if(authTokens) {
+	          if(vehicles) {
+	              const clients: Client[] = await getClients(authTokens.authToken);
+	              setClients(clients);
 
-	//               const addressData: AddressRequestParams[] = vehicles.map((vehicle: Vehicle) => {
-	//                 const addressParams: AddressRequestParams = {              
-	//                   "code": vehicle.ativo_id,
-	//                   "latitude": vehicle.lat_lng[0].toString(),
-	//                   "longitude": vehicle.lat_lng[1].toString(),
-	//                 }
-	//                 return addressParams;
-	//               });
+	              const addressData: AddressRequestParams[] = vehicles.map((vehicle: Vehicle) => {
+	                const addressParams: AddressRequestParams = {              
+	                  "code": vehicle.ativo_id,
+	                  "latitude": vehicle.lat_lng[0].toString(),
+	                  "longitude": vehicle.lat_lng[1].toString(),
+	                }
+	                return addressParams;
+	              });
 			
-	//               const address: Address[] = await getAddress(authTokens.authToken, addressData);
+	              const address: Address[] = await getAddress(authTokens.authToken, addressData);
 			
-	//               const forrmatedVehicles: FormatedVehicle[] = vehicles.map((vehicle: Vehicle) => {
-	//                 const vehicleAddress: Address = address.filter((address: Address) => address.code == vehicle.ativo_id)[0];
-	//                 const vehicleCLient: Client = clients.filter((client: Client) => client.client_id === vehicle.client_id)[0];
-	//                 return {
-	//                   ...vehicle,
-	//                   address: vehicleAddress ? vehicleAddress.label : t("not_specified") ,
-	//                   client: vehicleCLient.client_description
-	//                 }
-	//               });
+	              const forrmatedVehicles: FormatedVehicle[] = vehicles.map((vehicle: Vehicle) => {
+	                const vehicleAddress: Address = address.filter((address: Address) => address.code == vehicle.ativo_id)[0];
+	                const vehicleCLient: Client = clients.filter((client: Client) => client.client_id === vehicle.client_id)[0];
+	                return {
+	                  ...vehicle,
+	                  address: vehicleAddress ? vehicleAddress.label : t("not_specified") ,
+	                  client: vehicleCLient.client_description
+	                }
+	              });
 					
 					
-	//               setFormatedVehicles(forrmatedVehicles.slice(0,100));
-	//               console.log(formatedVehicles)
-	//               setIsLoading(false);
-	//           }
-	//       }
-	//     }
+	              setFormatedVehicles(forrmatedVehicles.slice(0,100));
+	              setIsLoading(false);
+	          }
+	      }
+	    }
 			
-	//     getAllData();
+	    getAllData();
 			
-	//   }
-	// }, [vehicles]);
+	  }
+	}, [vehicles]);
 
 	const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
 
@@ -111,17 +110,13 @@ export default function Home() {
 		vehicle.ativo.ativo_name.toLowerCase().startsWith(newSearchValue.toLowerCase())
 		);
 
-	
 		setSearchResults([...filteredVehicles]);
-		
-		
 	}
 
 	const handleSearch = () => console.log(searchValue);
 
 	const handleToggleSidebar = () => {
 		setResizeMap(previous => !previous);
-
 	}
 
 	const handleFenceSidebarClose = () => {
@@ -145,12 +140,6 @@ export default function Home() {
 		setCancelAddingLandmark(false);
 		setResizeMap(previous => !previous);
 	}
-
-	const onFenceDescChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-		const description = event.target.value;
-		setFenceDescription(description);
-	}
-
 
 	const handleFanceSave = () => {
 		setSaveFence((previous) => !previous);
@@ -215,25 +204,14 @@ export default function Home() {
 			<FenceSidebar 
 				onClose={handleFenceSidebarClose}
 				onSave={handleFanceSave}
-				onDescChange={onFenceDescChange}
+				clients={clients}
 			/>
 			}
 			{showLandmarkSidebar && 
 				<LandmarkSidebar
 					onClose={handleLandmarkSidebarClose}
 					onSave={handleLandmarkSave}
-					clients={[
-						{ client_id: 1, client_description: "Cliente A" },
-						{ client_id: 2, client_description: "Cliente B" },
-						{ client_id: 3, client_description: "Cliente X" },
-						{ client_id: 4, client_description: "Empresa Y" },
-						{ client_id: 5, client_description: "Loja Z" },
-						{ client_id: 6, client_description: "Distribuidora W" },
-						{ client_id: 7, client_description: "Restaurante M" },
-						{ client_id: 8, client_description: "Fábrica N" },
-						{ client_id: 9, client_description: "Hospital P" },
-						{ client_id: 10, client_description: "Escola Q" },
-					]}
+					clients={clients}
 				/>
 			}
 		</SideBarContainer>
@@ -245,17 +223,6 @@ export default function Home() {
 				vehicles={formatedVehicles}
 				cancelAddingFence={cancelAddingFence}
 				showFenceSidebar={handleShowFenceSidebar}
-				fenceData={{
-					description: "",
-					colors: {
-						fillColor: "",
-						strokeColor: ""
-					},
-					client: {
-						client_description: "",
-						client_id: -1
-					}
-				}}
 				saveFence={saveFence}
 				cancelAddingLandmark={cancelAddingLandmark}
 				showRefPointSidebar={handleShowLandmarkSidebar}

@@ -7,7 +7,8 @@ import { useTranslation } from "react-i18next";
 import SelectColor from "../SelectColor";
 import { useContext } from "react";
 import { FenceContext } from "../../Contexts/FenceContext";
-import Select from "../Select";
+import Client from "../../interfaces/Client";
+import SelectClient from "../SelectClient";
 
 interface FenceSidebarProps {
     /**
@@ -15,19 +16,30 @@ interface FenceSidebarProps {
      */
     onClose?: () => void,
     /**
-     * Executa quando o valor do input de descrição mudar.
-     */
-    onDescChange?: (event: React.ChangeEvent<HTMLInputElement>) => void,
-    /**
      * Acionada o botão de salvar for clicado.
      */
-    onSave?: () => void
+    onSave?: () => void,
+    /**
+     * Lista com os clientes.
+     */
+    clients: Client[] | []
 }
 
-export default function FenceSidebar({ onClose, onDescChange, onSave } : FenceSidebarProps) {
+export default function FenceSidebar({ onClose, onSave, clients } : FenceSidebarProps) {
     const { t } = useTranslation();
 
-    const {setCurrentFenceColor} = useContext(FenceContext);
+    const {
+      setCurrentFenceColor, 
+      setCurrentFenceDescription, 
+      fenceDescription,
+      changeFenceClient
+    } = useContext(FenceContext);
+
+    const onDescriptionChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+      const description = event.target.value;
+      setCurrentFenceDescription(description);
+    }
+
 
     return(
         <FenceSidebarContainer>
@@ -38,21 +50,21 @@ export default function FenceSidebar({ onClose, onDescChange, onSave } : FenceSi
             </BarContainer>
           </DividerBox>
           <FenceContainer>
-            <Input 
-              placeholder={t("add_object.description")} 
-              onChange={onDescChange} 
-              label={t("add_object.description")} 
+
+            <SelectClient 
+              clients={clients}
+              onSetClient={changeFenceClient}
             />
-            <Select 
-              label={t("Cliente")}
-              options={[]}
-              onSetValue={() => {}}
-              value={""}  
-              onChange={() => {}}
+
+            <Input 
+              placeholder={t("Local de referência")} 
+              onChange={onDescriptionChange} 
+              label={t("add_object.description")}
+              value={fenceDescription}
             />
 
           <MarkerIconContainer>
-            <label>Ícone do marcador</label>
+            <label>Cor da cerca</label>
             <SelectColor setColor={setCurrentFenceColor}/>
           </MarkerIconContainer>
            

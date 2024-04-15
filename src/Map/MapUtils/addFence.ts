@@ -1,21 +1,48 @@
-export default function Add(
+import hexToRgba from "../../utils/hexToRgba";
+
+export default function addFence(
 	map: H.Map, 
 	behavior: H.mapevents.Behavior, 
-	position: H.geo.Point, 
-	color?: string):  
-Promise<H.map.Circle> {
+	position: H.geo.Point
+): Promise<H.map.Circle> 
+{
 	return new Promise((resolve) => {
+		const zoomLevel = map.getZoom();
+		const baseRadius = 150;
+		const maxZoom = 20; 
+		const growthFactor = 1.75;
+		const radius = baseRadius * Math.pow(growthFactor, maxZoom - zoomLevel);
+
+		const color = "#85919E";
+		const fillColor = hexToRgba(color, 0.5);
+		
 		const circle = new H.map.Circle(
 			position, 
-			1000000 * (1/(map.getZoom() + 0.5)),
+			radius,
 			{
 				volatility: true,
-				data: {}
+				data: {
+					description: "",
+					colors: {
+						strokeColor: color,
+						fillColor: fillColor
+					},
+					client: {
+						client_id: -1,
+						client_description: ""
+					}
+				}
 			}
 		);
+
+		circle.setStyle({
+			fillColor: fillColor,
+			strokeColor: color
+		})
 	
 		circle.draggable = true;
 		map.addObject(circle);
+		map.setCenter(circle.getCenter(), true)
 	
 		const dragStartListener = (event: H.mapevents.Event) => {
 			document.body.style.cursor = "grabbing";

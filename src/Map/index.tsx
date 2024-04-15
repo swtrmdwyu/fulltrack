@@ -15,7 +15,6 @@ import { createNoiseMarker } from "./MapClustering/createNoiseMarker";
 import stringBubbleContent from "./MapUtils/stringBubbleContent";
 import addFence from "./MapUtils/addFence";
 import selectFencePosition from "./MapUtils/selectFencePosition";
-import FenceData from "../interfaces/FenceData";
 import Fence from "../interfaces/Fence";
 import renderFences from "./MapUtils/renderFences";
 import renderLandmarks from "./MapUtils/renderLandmarks";
@@ -25,6 +24,7 @@ import LandmarkData from "../interfaces/LandmarkData";
 import Landmark from "../interfaces/Landmark";
 import addLandmark from "./MapUtils/addLandmark";
 import { FenceContext } from "../Contexts/FenceContext";
+import hexToRgba from "../utils/hexToRgba";
 
 interface MapProps {
     /**
@@ -38,7 +38,6 @@ interface MapProps {
 	size: boolean,
 	cancelAddingFence?: boolean,
 	saveFence?: boolean,
-	fenceData: FenceData,
 	showFenceSidebar: () => void,
 	cancelAddingLandmark?: boolean,
 	showRefPointSidebar: () => void
@@ -52,7 +51,6 @@ export default function Map({
 	cancelAddingFence, 
 	showFenceSidebar, 
 	saveFence, 
-	fenceData,
 	showRefPointSidebar,
 	cancelAddingLandmark,
 }: MapProps) {
@@ -78,7 +76,10 @@ export default function Map({
 	} = useContext(LandmarkContext);
 	const {
 		fenceColor,
-		changeFenceColor
+		changeFenceColor,
+		fenceDescription,
+		fenceClient,
+		resetFence
 	} = useContext(FenceContext);
 
     useEffect(
@@ -95,6 +96,7 @@ export default function Map({
 						size: 512,
 					}
 				});
+
 				const rasterTileProvider = new H.service.rasterTile.Provider(rasterTileService);
 
 				const rasterTileLayer = new H.map.layer.TileLayer(rasterTileProvider);
@@ -314,7 +316,9 @@ export default function Map({
 		if(!fenceRef.current) {
 			return;
 		}
-		
+
+		resetFence();
+
 		map.current.removeObject(fenceRef.current)
 		isAddingRef.current = false;
 		
@@ -330,25 +334,39 @@ export default function Map({
 		}
 		const storage = localStorage.getItem("fences");
 
+		resetFence();
+
 		const newFence: Fence =  {
 			position: fenceRef.current.getCenter(),
 			radius: fenceRef.current.getRadius(),
 			data: {
-				description: fenceData.description,
+				description: fenceDescription,
 				colors: {
-					fillColor: "",
-					strokeColor: ""
+					fillColor: hexToRgba(fenceColor, 0.5),
+					strokeColor: fenceColor
 				},
-				client: {
-					client_description: "",
-					client_id: -1
-				}
+				client: fenceClient
 			}
 		}
 
 		map.current.getViewPort().resize();
 
-		const fence = new H.map.Circle(fenceRef.current.getCenter(), fenceRef.current.getRadius());
+		//cria uma copia porem sem os listeners da outra
+		const fence = new H.map.Circle(fenceRef.current.getCenter(), fenceRef.current.getRadius(), {
+			data: {
+				...newFence.data
+			}
+		});
+
+		fence.setStyle({
+			fillColor: newFence.data.colors.fillColor,
+			strokeColor: newFence.data.colors.strokeColor
+		});
+
+		fence.addEventListener("tap", () => {
+			console.log(fence.getData());
+		});
+
 		map.current.removeObject(fenceRef.current);
 		map.current.addObject(fence);
 
