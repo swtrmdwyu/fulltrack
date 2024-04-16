@@ -9,6 +9,7 @@ import { useContext } from "react";
 import { FenceContext } from "../../Contexts/FenceContext";
 import Client from "../../interfaces/Client";
 import SelectClient from "../SelectClient";
+import ListBox from "../ListBox";
 
 interface FenceSidebarProps {
     /**
@@ -63,10 +64,15 @@ export default function FenceSidebar({ onClose, onSave, clients } : FenceSidebar
               value={fenceDescription}
             />
 
-          <MarkerIconContainer>
-            <label>Cor da cerca</label>
-            <SelectColor setColor={setCurrentFenceColor}/>
-          </MarkerIconContainer>
+            <ListBox 
+              label="Veículos" 
+              options={[]}
+            />
+
+            <MarkerIconContainer>
+              <label>Cor da cerca</label>
+              <SelectColor setColor={setCurrentFenceColor}/>
+            </MarkerIconContainer>
            
           </FenceContainer>
           <FenceButtonsContainer>
