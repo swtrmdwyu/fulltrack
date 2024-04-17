@@ -12,16 +12,16 @@ export default interface Vehicle {
     is_bloqued: number,
     ativo_id: number,
     ativo: {
-		type: number,
-		horimeter: number,
-		odometer: number,
-		model: string,
-		plate: string,
-		description: string,
-		consume: number,
-		ativo_name: string,
-		producer: string,
-		fuel: string,
-		color: string
+      type: number,
+      horimeter: number,
+      odometer: number,
+      model: string,
+      plate: string,
+      description: string,
+      consume: number,
+      ativo_name: string,
+      producer: string,
+      fuel: string,
+      color: string
     }
 }

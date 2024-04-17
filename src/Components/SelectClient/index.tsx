@@ -1,11 +1,7 @@
 import { useState } from "react";
 import Select from "../Select";
 import Client from "../../interfaces/Client";
-
-interface Option {
-    key: string, 
-    value: string
-}
+import Option from "../../interfaces/Option";
 
 interface SelectClientProps {
     clients: Client[] | [],

@@ -4,6 +4,7 @@ import styled from "styled-components";
 export const SelectContainer = styled.div`
     position: relative;
 `;
+
 export const InputContainer = styled.div`
     display: flex;
     color: var(--primary-color);
@@ -37,6 +38,7 @@ export const InputContainer = styled.div`
 
     label {
         font-size: .875rem;
+        font-weight: 600;
     }
 `;
 

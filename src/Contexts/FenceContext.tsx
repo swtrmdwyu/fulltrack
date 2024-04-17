@@ -3,6 +3,11 @@ import FenceData from "../interfaces/FenceData";
 import hexToRgba from "../utils/hexToRgba";
 import Client from "../interfaces/Client";
 
+export interface FenceVehicle {
+    ativo_name: string,
+    ativo_id: number,
+}
+
 interface FenceContextType {
     /**
      * Cor da cerca.
@@ -33,6 +38,14 @@ interface FenceContextType {
     */
     changeFenceClient: (client: Client) => void,
     /**
+     * Armazena os veículos da cerca.
+     */
+    fenceVehicles: FenceVehicle[],
+    /**
+     * Altera os veúclos da cerca.
+     */
+    changeFenceVehicles: (vehicles: FenceVehicle[]) => void,
+    /**
      * Restaura todos os estados para o padrão.
      */
     resetFence: () => void
@@ -47,7 +60,7 @@ const FenceProvider =({ children }: { children: React.ReactNode}) => {
         client_description: "",
         client_id: -1,
     });
-    const [fenceVehicles, setFenceVehicles] = useState([]);
+    const [fenceVehicles, setFenceVehicles] = useState<FenceVehicle[] | []>([]);
 
     const setCurrentFenceColor = (color: string) => {
         setFenceColor(color);
@@ -78,8 +91,11 @@ const FenceProvider =({ children }: { children: React.ReactNode}) => {
     }
 
     const changeFenceClient = (client: Client) => {
-        console.log(fenceClient)
         setFenceClient(client);
+    }
+
+    const changeFenceVehicles = (vehicles: FenceVehicle[]) => {
+        setFenceVehicles(vehicles);
     }
 
     return (
@@ -91,6 +107,8 @@ const FenceProvider =({ children }: { children: React.ReactNode}) => {
             setCurrentFenceDescription,
             fenceClient,
             changeFenceClient,
+            fenceVehicles,
+            changeFenceVehicles,
             resetFence
         }}>
             {children}

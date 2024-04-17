@@ -25,7 +25,7 @@ import LandmarkSidebar from "../../Components/LandmarkSIdeBar";
 
 export default function Home() {
   	const { t } = useTranslation();
-  	// const {vehicles} = useGetvehicles();
+  	const {vehicles} = useGetvehicles();
   	const {authTokens} = useContext(AuthContext);
   	const [resizeMap, setResizeMap] = useState(false);
 	const [searchValue, setSearchValue ] = useState("");
@@ -53,49 +53,49 @@ export default function Home() {
 	];
 
 
-	// const isFirstRender = useRef(true);
+	const isFirstRender = useRef(true);
 	
-	// useEffect(() => {
-	//   if(isFirstRender.current) {
-	//     setIsLoading(true);
-	//     async function getAllData() {
-	//       if(authTokens) {
-	//           if(vehicles) {
-	//               const clients: Client[] = await getClients(authTokens.authToken);
-	//               setClients(clients);
+	useEffect(() => {
+	  if(isFirstRender.current) {
+	    setIsLoading(true);
+	    async function getAllData() {
+	      if(authTokens) {
+	          if(vehicles) {
+	              const clients: Client[] = await getClients(authTokens.authToken);
+	              setClients(clients);
 
-	//               const addressData: AddressRequestParams[] = vehicles.map((vehicle: Vehicle) => {
-	//                 const addressParams: AddressRequestParams = {              
-	//                   "code": vehicle.ativo_id,
-	//                   "latitude": vehicle.lat_lng[0].toString(),
-	//                   "longitude": vehicle.lat_lng[1].toString(),
-	//                 }
-	//                 return addressParams;
-	//               });
+	              const addressData: AddressRequestParams[] = vehicles.map((vehicle: Vehicle) => {
+	                const addressParams: AddressRequestParams = {              
+	                  "code": vehicle.ativo_id,
+	                  "latitude": vehicle.lat_lng[0].toString(),
+	                  "longitude": vehicle.lat_lng[1].toString(),
+	                }
+	                return addressParams;
+	              });
 			
-	//               const address: Address[] = await getAddress(authTokens.authToken, addressData);
+	              const address: Address[] = await getAddress(authTokens.authToken, addressData);
 			
-	//               const forrmatedVehicles: FormatedVehicle[] = vehicles.map((vehicle: Vehicle) => {
-	//                 const vehicleAddress: Address = address.filter((address: Address) => address.code == vehicle.ativo_id)[0];
-	//                 const vehicleCLient: Client = clients.filter((client: Client) => client.client_id === vehicle.client_id)[0];
-	//                 return {
-	//                   ...vehicle,
-	//                   address: vehicleAddress ? vehicleAddress.label : t("not_specified") ,
-	//                   client: vehicleCLient.client_description
-	//                 }
-	//               });
+	              const forrmatedVehicles: FormatedVehicle[] = vehicles.map((vehicle: Vehicle) => {
+	                const vehicleAddress: Address = address.filter((address: Address) => address.code == vehicle.ativo_id)[0];
+	                const vehicleCLient: Client = clients.filter((client: Client) => client.client_id === vehicle.client_id)[0];
+	                return {
+	                  ...vehicle,
+	                  address: vehicleAddress ? vehicleAddress.label : t("not_specified") ,
+	                  client: vehicleCLient.client_description
+	                }
+	              });
 					
 					
-	//               setFormatedVehicles(forrmatedVehicles.slice(0,100));
-	//               setIsLoading(false);
-	//           }
-	//       }
-	//     }
+	              setFormatedVehicles(forrmatedVehicles.slice(0,100));
+	              setIsLoading(false);
+	          }
+	      }
+	    }
 			
-	//     getAllData();
+	    getAllData();
 			
-	//   }
-	// }, [vehicles]);
+	  }
+	}, [vehicles]);
 	
 	const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
 
@@ -200,6 +200,7 @@ export default function Home() {
 				onClose={handleFenceSidebarClose}
 				onSave={handleFanceSave}
 				clients={clients}
+				vehicles={formatedVehicles}
 			/>
 			}
 			{showLandmarkSidebar && 

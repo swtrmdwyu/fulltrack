@@ -79,6 +79,7 @@ export default function Map({
 		changeFenceColor,
 		fenceDescription,
 		fenceClient,
+		fenceVehicles,
 		resetFence
 	} = useContext(FenceContext);
 
@@ -345,7 +346,8 @@ export default function Map({
 					fillColor: hexToRgba(fenceColor, 0.5),
 					strokeColor: fenceColor
 				},
-				client: fenceClient
+				client: fenceClient,
+				vehicles: fenceVehicles
 			}
 		}
 

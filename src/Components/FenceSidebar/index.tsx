@@ -6,10 +6,12 @@ import close from "../../assets/icons/close-side.svg";
 import { useTranslation } from "react-i18next";
 import SelectColor from "../SelectColor";
 import { useContext } from "react";
-import { FenceContext } from "../../Contexts/FenceContext";
+import { FenceContext, FenceVehicle } from "../../Contexts/FenceContext";
 import Client from "../../interfaces/Client";
 import SelectClient from "../SelectClient";
 import ListBox from "../ListBox";
+import { FormatedVehicle } from "../../interfaces/FormatedVehicle";
+import Option from "../../interfaces/Option";
 
 interface FenceSidebarProps {
     /**
@@ -23,17 +25,22 @@ interface FenceSidebarProps {
     /**
      * Lista com os clientes.
      */
-    clients: Client[] | []
+    clients: Client[] | [],
+    /**
+     * Lista com os Veículos.
+     */
+    vehicles: FormatedVehicle[] | [],
 }
 
-export default function FenceSidebar({ onClose, onSave, clients } : FenceSidebarProps) {
+export default function FenceSidebar({ onClose, onSave, clients, vehicles } : FenceSidebarProps) {
     const { t } = useTranslation();
 
     const {
       setCurrentFenceColor, 
       setCurrentFenceDescription, 
       fenceDescription,
-      changeFenceClient
+      changeFenceClient,
+      changeFenceVehicles
     } = useContext(FenceContext);
 
     const onDescriptionChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -41,6 +48,27 @@ export default function FenceSidebar({ onClose, onSave, clients } : FenceSidebar
       setCurrentFenceDescription(description);
     }
 
+    const options: Option[] = vehicles.map((vehicle: FormatedVehicle) => {
+      const option: Option = {
+        key: vehicle.ativo.ativo_name,
+        value: vehicle.ativo_id.toString()
+      }
+
+      return option;
+    })
+
+    const onAddFenceVehicle = (items: Option[]) => {
+      const vehicles: FenceVehicle[] = items.map((item: Option) => {
+        const vehicle: FenceVehicle = {
+          ativo_name: item.key,
+          ativo_id: parseInt(item.value)
+        }
+
+        return vehicle;
+      });
+
+      changeFenceVehicles(vehicles);
+    }
 
     return(
         <FenceSidebarContainer>
@@ -64,9 +92,11 @@ export default function FenceSidebar({ onClose, onSave, clients } : FenceSidebar
               value={fenceDescription}
             />
 
-            <ListBox 
+            <ListBox
+              onChangeItems={onAddFenceVehicle}
               label="Veículos" 
-              options={[]}
+              placeholder="Clique para adicionar um veículo"
+              options={options.length > 0 ? options : []}
             />
 
             <MarkerIconContainer>

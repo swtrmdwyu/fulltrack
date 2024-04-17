@@ -1,11 +1,7 @@
 import { InputContainer, SelectContainer, SelectListContainer, StyledButton } from "./style";
 import arrow from "../../assets/icons/arrow-select.svg";
 import { useState } from "react";
-
-interface Option {
-    key: string,
-    value: string
-}
+import Option from "../../interfaces/Option";
 
 interface SelectProps {
     label?: string,

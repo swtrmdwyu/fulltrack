@@ -31,6 +31,7 @@ export const InputContainer = styled.div`
     }
 
     label {
+        font-weight: 600;
         font-size: .875rem;
     }
 

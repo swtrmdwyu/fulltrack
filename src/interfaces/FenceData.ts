@@ -1,3 +1,4 @@
+import { FenceVehicle } from "../Contexts/FenceContext"
 import Client from "./Client"
 
 export default interface FanceData {
@@ -6,5 +7,6 @@ export default interface FanceData {
         strokeColor: string,
         fillColor: string
     },
-    client: Client
+    client: Client,
+    vehicles: FenceVehicle[]
 }
