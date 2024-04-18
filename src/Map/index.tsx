@@ -12,19 +12,19 @@ import ReferenceControl from "./MapControls/ReferenceControl";
 import FenceControl from "./MapControls/FenceControl";
 import createClusterMarker from "./MapClustering/createClusterMarker";
 import { createNoiseMarker } from "./MapClustering/createNoiseMarker";
-import stringBubbleContent from "./MapUtils/stringBubbleContent";
-import addFence from "./MapUtils/addFence";
-import selectFencePosition from "./MapUtils/selectFencePosition";
 import Fence from "../interfaces/Fence";
-import renderFences from "./MapUtils/renderFences";
-import renderLandmarks from "./MapUtils/renderLandmarks";
 import vehicleMarkerSVG from "./MapMarkers/vehicleMarker";
 import { LandmarkContext } from "../Contexts/LandmarkContext";
 import LandmarkData from "../interfaces/LandmarkData";
 import Landmark from "../interfaces/Landmark";
-import addLandmark from "./MapUtils/addLandmark";
 import { FenceContext } from "../Contexts/FenceContext";
 import hexToRgba from "../utils/hexToRgba";
+import selectFencePosition from "./MapFence/selectFencePosition";
+import addFence from "./MapFence/addFence";
+import renderFences from "./MapFence/renderFences";
+import renderLandmarks from "./MapLandmark/renderLandmarks";
+import { stringBubbleContent } from "../Components/BubbleContent";
+import addLandmark from "./MapLandmark/addLandmark";
 
 interface MapProps {
     /**
@@ -145,7 +145,7 @@ export default function Map({
 						
 						isAddingRef.current  = true;
 						const landmark = await addLandmark(map.current);
-						changeLandmarkAddress(landmark)
+						changeLandmarkAddress(landmark);
 						landmarkRef.current = landmark;
 						showRefPointSidebar();
 					}
@@ -441,7 +441,7 @@ export default function Map({
 			localStorage.setItem("landmarks", JSON.stringify(storageObj));
 			isAddingRef.current = false;
 			landmarkRef.current = null;
-
+			resetLandmark();
 			return;
 		}
 

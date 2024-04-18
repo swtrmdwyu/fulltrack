@@ -1,3 +1,4 @@
+import { renderToString } from "react-dom/server";
 import { FormatedVehicle } from "../../interfaces/FormatedVehicle";
 import VehicleCard from "../VehicleCard";
 import { BubbleContentContainer, StyledButton } from "./style";
@@ -16,4 +17,12 @@ export default function BubbleContent({ vehicle }: BubbleContentProps) {
             <StyledButton>Ver detalhes</StyledButton>
         </BubbleContentContainer>
     );
+}
+
+export function stringBubbleContent(vehicle: FormatedVehicle): string {
+    const convertedComponent = renderToString(
+        <BubbleContent vehicle={vehicle}/>
+    );
+
+    return convertedComponent;
 }

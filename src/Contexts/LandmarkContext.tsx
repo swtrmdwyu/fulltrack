@@ -3,6 +3,7 @@ import Client from "../interfaces/Client";
 import LandmarkData from "../interfaces/LandmarkData";
 import landmarkIcon from "../Map/MapMarkers/landmarkIcon";
 import getAddress, { AddressRequestParams } from "../services/getAddress";
+import { stringLandmarkBubbleContent } from "../Components/LandmarkBubbleContent";
 interface LandmarkContextType {
     /**
      * Armazena a cor do ponto de referência.
@@ -49,7 +50,8 @@ interface LandmarkContextType {
      */
     setCurrentCanSaveLandmark: (can: boolean) => void,
     landmarkAddress: string,
-    changeLandmarkAddress: (landmark: H.map.Marker) => void
+    changeLandmarkAddress: (landmark: H.map.Marker) => void,
+    addLandmarkBubble: (landmark: H.map.Marker, ui: H.ui.UI) => H.ui.InfoBubble,
     /**
      * Reseta as informações do contexto para o padrão.
      */
@@ -114,6 +116,7 @@ const LandmarkProvider =({ children }: { children: React.ReactNode}) => {
         setCurrentlandmarkClient(defaultClient);
         setCurrentLandmarkDescription("");
         setLandmarkAddress("");
+        setCanSaveLandmark(false);
     }
 
     const changeLandmarkAddress = async (landmark: H.map.Marker) => {
@@ -126,7 +129,22 @@ const LandmarkProvider =({ children }: { children: React.ReactNode}) => {
         }
         
         const address = await getAddress([addressParams]);
-        setLandmarkAddress(address[0].description)
+        setLandmarkAddress(address[0].description);
+    }
+
+    const addLandmarkBubble = (landmark: H.map.Marker, ui: H.ui.UI): H.ui.InfoBubble => {
+        console.log(landmark)
+        const position = landmark.getGeometry() as H.geo.Point;
+        const { description, address } = landmark.getData();
+        const content  = stringLandmarkBubbleContent(description, address);
+
+        const bubble = new H.ui.InfoBubble(position, {
+            content: content
+        });
+
+        ui.addBubble(bubble);
+
+        return bubble;
     }
 
     return (
@@ -144,6 +162,7 @@ const LandmarkProvider =({ children }: { children: React.ReactNode}) => {
             setCurrentCanSaveLandmark,
             landmarkAddress,
             changeLandmarkAddress,
+            addLandmarkBubble,
             resetLandmark
         }}>
             {children}
