@@ -7,16 +7,16 @@ export interface AddressRequestParams {
     "longitude": string
 }
 
-export default async function getAddress(token: string, data: AddressRequestParams[]) {
+export default async function getAddress(data: AddressRequestParams[]) {
     const address: Address[] = [];
 
     await api
     .post("address/v1/reverse/", 
         data, 
         {
-            headers: {
-                Authorization: `Bearer ${token}`,
-            }
+            // headers: {
+            //     Authorization: `Bearer ${token}`,
+            // }
         }
     )
     .then((response) => {

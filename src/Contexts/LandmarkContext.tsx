@@ -2,6 +2,7 @@ import { createContext, useState } from "react";
 import Client from "../interfaces/Client";
 import LandmarkData from "../interfaces/LandmarkData";
 import landmarkIcon from "../Map/MapMarkers/landmarkIcon";
+import getAddress, { AddressRequestParams } from "../services/getAddress";
 interface LandmarkContextType {
     /**
      * Armazena a cor do ponto de referência.
@@ -47,6 +48,8 @@ interface LandmarkContextType {
      * Troca o estado de "canSaveLandmark" para true ou false.
      */
     setCurrentCanSaveLandmark: (can: boolean) => void,
+    landmarkAddress: string,
+    changeLandmarkAddress: (landmark: H.map.Marker) => void
     /**
      * Reseta as informações do contexto para o padrão.
      */
@@ -64,6 +67,7 @@ const LandmarkProvider =({ children }: { children: React.ReactNode}) => {
     const [landmarkColor, setlandmarkColor] = useState("#85919E");
     const [landmarkClient, setLandmarkClient] = useState<Client>(defaultClient);
     const [landmarkDescription, setLandmarkDescription] = useState("");
+    const [landmarkAddress, setLandmarkAddress] = useState("");
     const [canSaveLandmark, setCanSaveLandmark] = useState(false);
     
     const setCurrentColor = (color: string) => {
@@ -109,6 +113,20 @@ const LandmarkProvider =({ children }: { children: React.ReactNode}) => {
         setCurrentColor("#85919E");
         setCurrentlandmarkClient(defaultClient);
         setCurrentLandmarkDescription("");
+        setLandmarkAddress("");
+    }
+
+    const changeLandmarkAddress = async (landmark: H.map.Marker) => {
+        const {lat, lng} = landmark.getGeometry() as  H.geo.Point;
+
+        const addressParams: AddressRequestParams = {              
+            "code": 1234,
+            "latitude": lat.toString(),
+            "longitude": lng.toString(),
+        }
+        
+        const address = await getAddress([addressParams]);
+        setLandmarkAddress(address[0].description)
     }
 
     return (
@@ -124,6 +142,8 @@ const LandmarkProvider =({ children }: { children: React.ReactNode}) => {
             changeLandmarkDescription,
             canSaveLandmark,
             setCurrentCanSaveLandmark,
+            landmarkAddress,
+            changeLandmarkAddress,
             resetLandmark
         }}>
             {children}

@@ -39,7 +39,8 @@ export default function LandmarkSidebar({ onClose, onSave, clients } : LandmarkS
 		setCurrentColor,
 		setCurrentLandmarkDescription, 
 		setCurrentlandmarkClient,
-		setCurrentCanSaveLandmark
+		setCurrentCanSaveLandmark,
+		landmarkAddress
 	} = useContext(LandmarkContext);
 
 	const onDescriptionChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -77,7 +78,7 @@ export default function LandmarkSidebar({ onClose, onSave, clients } : LandmarkS
 				placeholder="Endereço"
 				onChange={onDescriptionChange} 
 				label={"Endereço"}
-				value="Av. Pres. Vargas, 70 - Centro, Garça - SP, 17400"
+				value={landmarkAddress}
 			/>
 
 			<MarkerIconContainer>

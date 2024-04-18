@@ -72,7 +72,9 @@ export default function Map({
 		landmarkClient, 
 		landmarkDescription, 
 		canSaveLandmark, 
-		resetLandmark
+		resetLandmark,
+		landmarkAddress,
+		changeLandmarkAddress
 	} = useContext(LandmarkContext);
 	const {
 		fenceColor,
@@ -142,8 +144,9 @@ export default function Map({
 					if(map.current) {
 						
 						isAddingRef.current  = true;
-						const referenceMarker = await addLandmark(map.current);
-						landmarkRef.current = referenceMarker;
+						const landmark = await addLandmark(map.current);
+						changeLandmarkAddress(landmark)
+						landmarkRef.current = landmark;
 						showRefPointSidebar();
 					}
 						
@@ -420,7 +423,8 @@ export default function Map({
 		const data: LandmarkData = {
 			description: landmarkDescription,
 			color: landmarkColor,
-			client: landmarkClient
+			client: landmarkClient,
+			address: landmarkAddress
 		}
 
 		const newLandmark =  {

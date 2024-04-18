@@ -73,7 +73,7 @@ export default function Home() {
 	                return addressParams;
 	              });
 			
-	              const address: Address[] = await getAddress(authTokens.authToken, addressData);
+	              const address: Address[] = await getAddress(addressData);
 			
 	              const forrmatedVehicles: FormatedVehicle[] = vehicles.map((vehicle: Vehicle) => {
 	                const vehicleAddress: Address = address.filter((address: Address) => address.code == vehicle.ativo_id)[0];
