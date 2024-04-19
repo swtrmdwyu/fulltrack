@@ -25,6 +25,7 @@ import renderFences from "./MapFence/renderFences";
 import renderLandmarks from "./MapLandmark/renderLandmarks";
 import { stringBubbleContent } from "../Components/BubbleContent";
 import addLandmark from "./MapLandmark/addLandmark";
+import { MapContext } from "../Contexts/MapContext";
 
 interface MapProps {
     /**
@@ -35,7 +36,10 @@ interface MapProps {
      * Array com os veículos a serem renderizados no mapa.
      */
 	vehicles: FormatedVehicle[],
-	size: boolean,
+	/**
+	 * 
+	 */
+	updateView: boolean,
 	cancelAddingFence?: boolean,
 	saveFence?: boolean,
 	showFenceSidebar: () => void,
@@ -47,7 +51,7 @@ interface MapProps {
 export default function Map({ 
 	apikey, 
 	vehicles, 
-	size, 
+	updateView, 
 	cancelAddingFence, 
 	showFenceSidebar, 
 	saveFence, 
@@ -74,7 +78,7 @@ export default function Map({
 		canSaveLandmark, 
 		resetLandmark,
 		landmarkAddress,
-		changeLandmarkAddress
+		changeLandmarkAddress,
 	} = useContext(LandmarkContext);
 	const {
 		fenceColor,
@@ -84,6 +88,8 @@ export default function Map({
 		fenceVehicles,
 		resetFence
 	} = useContext(FenceContext);
+
+	const {setCurrentMap, setCurrentUi, toggleIsClustering} = useContext(MapContext)
 
     useEffect(
         () => {
@@ -120,6 +126,7 @@ export default function Map({
 				);
 				
 				map.current = newMap;
+				setCurrentMap(newMap)
 				map.current.setZoom(8);
 
 				// Atualiza o tamanho do mapa quando a janela muda de tamanho.
@@ -133,6 +140,7 @@ export default function Map({
 
 				// Adição dos controles ao mapa.
 				const ui = new H.ui.UI(map.current);
+				setCurrentUi(ui);
 				ui.addControl("zoomControl", ZoomControl());
 				ui.addControl("mapSettingsControl", MapSettingsControl(rasterTileLayer, defaultLayers));
 				ui.addControl("landmarkControl", ReferenceControl({onStateChange: async () => {
@@ -148,8 +156,7 @@ export default function Map({
 						changeLandmarkAddress(landmark);
 						landmarkRef.current = landmark;
 						showRefPointSidebar();
-					}
-						
+					}	
 				}}));
 
 
@@ -167,7 +174,10 @@ export default function Map({
 					}
 				}}));
 
-				ui.addControl("agroupControl", AgroupControl({onStateChange: () => { toggleClustering() }}));
+				ui.addControl("agroupControl", AgroupControl({onStateChange: () => { 
+					toggleIsClustering()
+					
+				 }}));
 				
 				uiRef.current = ui;
 
@@ -181,7 +191,7 @@ export default function Map({
 				if(map.current) {
 					map.current.getViewPort().resize();
 				}
-			}, 500)
+			}, 500);
 
 			// Verificação e adicção de cluster.
 			if(clusterLayer.current) {
@@ -239,7 +249,7 @@ export default function Map({
 			}
 			
 		},
-			[apikey, size, vehicles, isClustering]
+			[apikey, vehicles, isClustering]
 	);
 
 	if(uiRef.current) {
@@ -294,21 +304,36 @@ export default function Map({
 	};
 
 	function addVehicleBubble( ui: H.ui.UI, vehicle: FormatedVehicle) {
-			const content  = stringBubbleContent(vehicle);
-			const bubble = VehicleBubble(vehicle, content);
-			bubble.addEventListener("statechange", () => {
-				if(bubble.getState() === "closed") {
-					ui.removeBubble(bubble)
-					bubblesRef.current = null;
-				}
-			})
-
-			if(!bubblesRef.current) {
-				ui.addBubble(bubble);
-				bubblesRef.current = bubble;
+		const content  = stringBubbleContent(vehicle);
+		const bubble = VehicleBubble(vehicle, content);
+		bubble.addEventListener("statechange", () => {
+			if(bubble.getState() === "closed") {
+				ui.removeBubble(bubble)
+				bubblesRef.current = null;
 			}
+		})
+
+		if(!bubblesRef.current) {
+			ui.addBubble(bubble);
+			bubblesRef.current = bubble;
+		}
 
 	}
+
+	//atualiza o mapa quando o tamanho mudar
+	useEffect(() => {
+		if(!map.current) {
+			return;
+		}
+
+		setTimeout(() => {
+			if(map.current) {
+				map.current.getViewPort().resize();
+			}
+		},400);
+
+	}, [updateView])
+	
 
 	useEffect(() => {
 		if(!map.current || !cancelAddingFence) {
@@ -323,7 +348,7 @@ export default function Map({
 
 		resetFence();
 
-		map.current.removeObject(fenceRef.current)
+		map.current.removeObject(fenceRef.current);
 		isAddingRef.current = false;
 		
 	}, [cancelAddingFence]);
@@ -433,6 +458,10 @@ export default function Map({
 		}
 
 		landmarkRef.current.setData(data);
+
+		landmarkRef.current.addEventListener("tap", (event: H.mapevents.Event) => {
+			console.log(event.target);
+		})
 
 		if(storage) {
 			const storageObj: Landmark[] = JSON.parse(storage);

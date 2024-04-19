@@ -128,12 +128,11 @@ const LandmarkProvider =({ children }: { children: React.ReactNode}) => {
             "longitude": lng.toString(),
         }
         
-        const address = await getAddress([addressParams]);
-        setLandmarkAddress(address[0].description);
+        // const address = await getAddress([addressParams]);
+        // setLandmarkAddress(address[0].description);
     }
 
     const addLandmarkBubble = (landmark: H.map.Marker, ui: H.ui.UI): H.ui.InfoBubble => {
-        console.log(landmark)
         const position = landmark.getGeometry() as H.geo.Point;
         const { description, address } = landmark.getData();
         const content  = stringLandmarkBubbleContent(description, address);

@@ -23,6 +23,8 @@ import Loading from "../../Components/Loading";
 import FenceSidebar from "../../Components/FenceSidebar";
 import LandmarkSidebar from "../../Components/LandmarkSIdeBar";
 import LandmarkBubbleContent from "../../Components/LandmarkBubbleContent";
+import { MapContext, MapProvider } from "../../Contexts/MapContext";
+import Cluster from "../../Map/Cluster";
 
 export default function Home() {
   	const { t } = useTranslation();
@@ -214,16 +216,20 @@ export default function Home() {
 		</SideBarContainer>
 		<MapContainer>
 			{
-			<Map 
-				size={resizeMap}
-				apikey="v3XFar3gKIuWv7fn4sNSVWtQy9MD9-yq5rCh5f0tpfA"
-				vehicles={formatedVehicles}
-				cancelAddingFence={cancelAddingFence}
-				showFenceSidebar={handleShowFenceSidebar}
-				saveFence={saveFence}
-				cancelAddingLandmark={cancelAddingLandmark}
-				showRefPointSidebar={handleShowLandmarkSidebar}
-			/> 
+				<MapProvider>
+					<Map 
+						updateView={resizeMap}
+						apikey="v3XFar3gKIuWv7fn4sNSVWtQy9MD9-yq5rCh5f0tpfA"
+						vehicles={formatedVehicles}
+						cancelAddingFence={cancelAddingFence}
+						showFenceSidebar={handleShowFenceSidebar}
+						saveFence={saveFence}
+						cancelAddingLandmark={cancelAddingLandmark}
+						showRefPointSidebar={handleShowLandmarkSidebar}
+					>
+					</Map>
+					<Cluster />
+				</MapProvider>
 			}
 		</MapContainer>
 		

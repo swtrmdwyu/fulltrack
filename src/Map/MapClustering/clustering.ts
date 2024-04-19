@@ -22,7 +22,6 @@ export default function startClustering(
     });
 
     var layer = new H.map.layer.ObjectLayer(clusteredDataProvider);
-    map.addLayer(layer);
 
     return layer;
   }
