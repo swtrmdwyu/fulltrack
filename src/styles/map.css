@@ -167,6 +167,15 @@
     left: -1rem;
 }
 
+.text-cluster {
+    color: var(--quartiary-color);
+    cursor: pointer;
+    font-family: var(--primary-font);
+    font-size: .875rem;
+    font-weight: 600;
+    display: none;
+}
+
 .map-settings-control-here {
     background-image: url("../src/assets/icons/Layers.svg");
     top: 8rem;
@@ -222,4 +231,30 @@
     line-height: 18px;
     font-weight: 500;
     gap: 1rem;
+}
+
+/* landmarkBubble */
+
+.landmark-bubble {
+    background-color: var(--quartiary-color);
+    border-radius: 6px;
+    box-shadow: 0px 8px 16px 0px #6B757C52;
+    display: flex;
+    flex-direction: column;
+    left: -8.4rem;
+    padding: 1rem 1rem .2rem 1rem;
+    position: absolute;
+    top: -13.574rem;
+
+}
+.landmark-bubble .H_ib_close {
+    display: none;
+} 
+
+.landmark-bubble .H_ib_body {
+    align-items: flex-end;
+    display: flex;
+    flex-direction: column;
+    width: 15.75rem;
+    height: 9.063rem;
 }

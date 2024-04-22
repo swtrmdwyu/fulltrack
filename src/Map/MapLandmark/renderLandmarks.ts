@@ -1,11 +1,11 @@
 import Landmark from "../../interfaces/Landmark";
 import landmarkIcon from "../MapMarkers/landmarkIcon";
 
-export default function renderLandmarks(map: H.Map) {
+export default function renderLandmarks(map: H.Map): H.map.Marker[] {
     const storage = localStorage.getItem("landmarks");
 
     if(!storage) {
-        return;
+        return [];
     }
 
     const storageObj: Landmark[] = JSON.parse(storage);
@@ -18,10 +18,9 @@ export default function renderLandmarks(map: H.Map) {
             icon: landmarkIcon(reference.data.color)
         })
 
-        newLandmark.addEventListener("tap", () => console.log(newLandmark.getData()));
-
         landmarks.push(newLandmark);
     })
 
     map.addObjects(landmarks);
+    return landmarks;
 }

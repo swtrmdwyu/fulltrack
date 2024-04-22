@@ -22,11 +22,10 @@ import SearchNotFound from "../../Components/SearchNotFound";
 import Loading from "../../Components/Loading";
 import FenceSidebar from "../../Components/FenceSidebar";
 import LandmarkSidebar from "../../Components/LandmarkSIdeBar";
-import LandmarkBubbleContent from "../../Components/LandmarkBubbleContent";
 
 export default function Home() {
   	const { t } = useTranslation();
-  	// const {vehicles} = useGetvehicles();
+  	const {vehicles} = useGetvehicles();
   	const {authTokens} = useContext(AuthContext);
   	const [resizeMap, setResizeMap] = useState(false);
 	const [searchValue, setSearchValue ] = useState("");
@@ -54,49 +53,49 @@ export default function Home() {
 	];
 
 
-	// const isFirstRender = useRef(true);
+	const isFirstRender = useRef(true);
 	
-	// useEffect(() => {
-	//   if(isFirstRender.current) {
-	//     setIsLoading(true);
-	//     async function getAllData() {
-	//       if(authTokens) {
-	//           if(vehicles) {
-	//               const clients: Client[] = await getClients(authTokens.authToken);
-	//               setClients(clients);
+	useEffect(() => {
+	  if(isFirstRender.current) {
+	    setIsLoading(true);
+	    async function getAllData() {
+	      if(authTokens) {
+	          if(vehicles) {
+	              const clients: Client[] = await getClients(authTokens.authToken);
+	              setClients(clients);
 
-	//               const addressData: AddressRequestParams[] = vehicles.map((vehicle: Vehicle) => {
-	//                 const addressParams: AddressRequestParams = {              
-	//                   "code": vehicle.ativo_id,
-	//                   "latitude": vehicle.lat_lng[0].toString(),
-	//                   "longitude": vehicle.lat_lng[1].toString(),
-	//                 }
-	//                 return addressParams;
-	//               });
+	              const addressData: AddressRequestParams[] = vehicles.map((vehicle: Vehicle) => {
+	                const addressParams: AddressRequestParams = {              
+	                  "code": vehicle.ativo_id,
+	                  "latitude": vehicle.lat_lng[0].toString(),
+	                  "longitude": vehicle.lat_lng[1].toString(),
+	                }
+	                return addressParams;
+	              });
 			
-	//               const address: Address[] = await getAddress(addressData);
+	              const address: Address[] = await getAddress(addressData);
 			
-	//               const forrmatedVehicles: FormatedVehicle[] = vehicles.map((vehicle: Vehicle) => {
-	//                 const vehicleAddress: Address = address.filter((address: Address) => address.code == vehicle.ativo_id)[0];
-	//                 const vehicleCLient: Client = clients.filter((client: Client) => client.client_id === vehicle.client_id)[0];
-	//                 return {
-	//                   ...vehicle,
-	//                   address: vehicleAddress ? vehicleAddress.label : t("not_specified") ,
-	//                   client: vehicleCLient.client_description
-	//                 }
-	//               });
+	              const forrmatedVehicles: FormatedVehicle[] = vehicles.map((vehicle: Vehicle) => {
+	                const vehicleAddress: Address = address.filter((address: Address) => address.code == vehicle.ativo_id)[0];
+	                const vehicleCLient: Client = clients.filter((client: Client) => client.client_id === vehicle.client_id)[0];
+	                return {
+	                  ...vehicle,
+	                  address: vehicleAddress ? vehicleAddress.label : t("not_specified") ,
+	                  client: vehicleCLient.client_description
+	                }
+	              });
 					
 					
-	//               setFormatedVehicles(forrmatedVehicles.slice(0,100));
-	//               setIsLoading(false);
-	//           }
-	//       }
-	//     }
+	              setFormatedVehicles(forrmatedVehicles);
+	              setIsLoading(false);
+	          }
+	      }
+	    }
 			
-	//     getAllData();
+	    getAllData();
 			
-	//   }
-	// }, [vehicles]);
+	  }
+	}, [vehicles]);
 	
 	const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
 
@@ -157,53 +156,56 @@ export default function Home() {
 			
 		<MenuContainer>
 			<Menu 
-			menuLinks={menu}
+				menuLinks={menu}
 			/>
 		</MenuContainer>
 
 		<SideBarContainer>
 			<Sidebar onClick={handleToggleSidebar}>
-			<DividerBox>
-				<Searchbar
-				placeholder={t("searchbar_placeholder")}
-				value={searchValue}
-				onChange={handleSearchChange}
-				handleSearch={handleSearch}
-				/>
-			</DividerBox>
 
-			<VehiclesCardsContainer>
-				{(!isLoading && !searchValue) && formatedVehicles.map((vehicle: FormatedVehicle) => 
-					<DividerBox key={vehicle.ativo_id}>
-					<VehicleCard vehicle={vehicle}></VehicleCard>
-					</DividerBox>
-				)}
+				<DividerBox>
+					<Searchbar
+						placeholder={t("searchbar_placeholder")}
+						value={searchValue}
+						onChange={handleSearchChange}
+						handleSearch={handleSearch}
+					/>
+				</DividerBox>
 
-				{(!isLoading && searchValue) && searchResults.map((vehicle: FormatedVehicle) => 
-					<DividerBox key={vehicle.ativo_id}>
-					<VehicleCard vehicle={vehicle}></VehicleCard>
-					</DividerBox>
-				)}
+				<VehiclesCardsContainer>
+					{(!isLoading && !searchValue) && formatedVehicles.map((vehicle: FormatedVehicle) => 
+						<DividerBox key={vehicle.ativo_id}>
+							<VehicleCard vehicle={vehicle}></VehicleCard>
+						</DividerBox>
+					)}
 
-				{(searchValue && searchResults.length === 0) && <SearchNotFound />}
+					{(!isLoading && searchValue) && searchResults.map((vehicle: FormatedVehicle) => 
+						<DividerBox key={vehicle.ativo_id}>
+							<VehicleCard vehicle={vehicle}></VehicleCard>
+						</DividerBox>
+					)}
 
-			{isLoading && 
-				<LoadingContainer>
-					<Loading />
-				</LoadingContainer>
-				}
-				
-			</VehiclesCardsContainer>
+					{(searchValue && searchResults.length === 0) && <SearchNotFound />}
+
+					{isLoading && 
+						<LoadingContainer>
+							<Loading />
+						</LoadingContainer>
+					}
+					
+				</VehiclesCardsContainer>
+
 			</Sidebar>
 
 			{showFenceSideBar && 
-			<FenceSidebar 
-				onClose={handleFenceSidebarClose}
-				onSave={handleFanceSave}
-				clients={clients}
-				vehicles={formatedVehicles}
-			/>
+				<FenceSidebar 
+					onClose={handleFenceSidebarClose}
+					onSave={handleFanceSave}
+					clients={clients}
+					vehicles={formatedVehicles}
+				/>
 			}
+
 			{showLandmarkSidebar && 
 				<LandmarkSidebar
 					onClose={handleLandmarkSidebarClose}
@@ -212,18 +214,19 @@ export default function Home() {
 				/>
 			}
 		</SideBarContainer>
+
 		<MapContainer>
 			{
-			<Map 
-				size={resizeMap}
-				apikey="v3XFar3gKIuWv7fn4sNSVWtQy9MD9-yq5rCh5f0tpfA"
-				vehicles={formatedVehicles}
-				cancelAddingFence={cancelAddingFence}
-				showFenceSidebar={handleShowFenceSidebar}
-				saveFence={saveFence}
-				cancelAddingLandmark={cancelAddingLandmark}
-				showRefPointSidebar={handleShowLandmarkSidebar}
-			/> 
+				<Map 
+					size={resizeMap}
+					apikey="v3XFar3gKIuWv7fn4sNSVWtQy9MD9-yq5rCh5f0tpfA"
+					vehicles={formatedVehicles}
+					cancelAddingFence={cancelAddingFence}
+					showFenceSidebar={handleShowFenceSidebar}
+					saveFence={saveFence}
+					cancelAddingLandmark={cancelAddingLandmark}
+					showRefPointSidebar={handleShowLandmarkSidebar}
+				/> 
 			}
 		</MapContainer>
 		

@@ -50,7 +50,7 @@ export default function FenceSidebar({ onClose, onSave, clients, vehicles } : Fe
 
     const options: Option[] = vehicles.map((vehicle: FormatedVehicle) => {
       const option: Option = {
-        key: vehicle.ativo.ativo_name,
+        key: vehicle.ativo.description,
         value: vehicle.ativo_id.toString()
       }
 

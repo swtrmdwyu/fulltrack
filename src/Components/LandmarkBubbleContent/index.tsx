@@ -18,8 +18,8 @@ export default function LandmarkBubbleContent({ address, description }: Landmarl
 export function stringLandmarkBubbleContent(description: string, address: string): string {
     const stringComponent = renderToString(
         <LandmarkBubbleContent
-            address={address}
             description={description}
+            address={address}
         />
     );
     

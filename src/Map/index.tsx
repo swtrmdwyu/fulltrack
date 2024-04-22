@@ -66,6 +66,8 @@ export default function Map({
 	const isAddingRef = useRef(false);
 	const fenceRef = useRef<H.map.Circle | null>(null);
 	const landmarkRef = useRef<H.map.Marker | null>(null);
+	const landmarkBubbleRef = useRef<H.ui.InfoBubble | null>(null);
+	const fenceBubble = useRef<H.ui.InfoBubble | null>(null);
 	const { 
 		landmarkColor, 
 		changeLandmarkColor, 
@@ -74,7 +76,8 @@ export default function Map({
 		canSaveLandmark, 
 		resetLandmark,
 		landmarkAddress,
-		changeLandmarkAddress
+		changeLandmarkAddress,
+		landmarkBubble
 	} = useContext(LandmarkContext);
 	const {
 		fenceColor,
@@ -172,7 +175,41 @@ export default function Map({
 				uiRef.current = ui;
 
 				renderFences(map.current);
-				renderLandmarks(map.current);
+				const landmarks = renderLandmarks(map.current);
+
+				landmarks.forEach((landmark: H.map.Marker) => {
+					landmark.addEventListener("tap", (event: H.mapevents.Event) => {
+						const target = event.target as H.map.Marker;
+						const bubble = landmarkBubble(target);
+						
+						bubble.addClass("landmark-bubble");
+
+						bubble.setData({
+							target: target
+						});
+			
+						if(!uiRef.current) {
+							return;
+						}
+			
+						if(landmarkBubbleRef.current) {
+							if(landmarkBubbleRef.current.getData().target !== bubble.getData().target) {
+								uiRef.current.removeBubble(landmarkBubbleRef.current);
+								uiRef.current.addBubble(bubble);
+								landmarkBubbleRef.current = bubble;
+								return;
+							}
+
+							uiRef.current.removeBubble(landmarkBubbleRef.current);
+							landmarkBubbleRef.current = null;
+			
+							return;
+						}
+
+						uiRef.current.addBubble(bubble);
+						landmarkBubbleRef.current = bubble;
+					})
+				})
 				
 			}
 
@@ -336,6 +373,7 @@ export default function Map({
 		if(!fenceRef.current) {
 			return;
 		}
+
 		const storage = localStorage.getItem("fences");
 
 		resetFence();
@@ -369,7 +407,7 @@ export default function Map({
 		});
 
 		fence.addEventListener("tap", () => {
-			console.log(fence.getData());
+
 		});
 
 		map.current.removeObject(fenceRef.current);
@@ -433,6 +471,34 @@ export default function Map({
 		}
 
 		landmarkRef.current.setData(data);
+		landmarkRef.current.addEventListener("tap", (event: H.mapevents.Event) => {
+			const target = event.target as H.map.Marker;
+			const bubble = landmarkBubble(target);
+			bubble.setData({
+				target: target
+			})
+
+			if(!uiRef.current) {
+				return;
+			}
+
+			if(landmarkBubbleRef.current) {
+				if(landmarkBubbleRef.current.getData().target !== bubble.getData().target) {
+					uiRef.current.removeBubble(landmarkBubbleRef.current);
+					uiRef.current.addBubble(bubble);
+					landmarkBubbleRef.current = bubble;
+					return;
+				}
+
+				uiRef.current.removeBubble(landmarkBubbleRef.current);
+				landmarkBubbleRef.current = null;
+
+				return;
+			}
+
+			uiRef.current.addBubble(bubble);
+			landmarkBubbleRef.current = bubble;
+		})
 
 		if(storage) {
 			const storageObj: Landmark[] = JSON.parse(storage);

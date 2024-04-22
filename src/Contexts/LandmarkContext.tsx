@@ -51,7 +51,7 @@ interface LandmarkContextType {
     setCurrentCanSaveLandmark: (can: boolean) => void,
     landmarkAddress: string,
     changeLandmarkAddress: (landmark: H.map.Marker) => void,
-    addLandmarkBubble: (landmark: H.map.Marker, ui: H.ui.UI) => H.ui.InfoBubble,
+    landmarkBubble: (landmark: H.map.Marker) => H.ui.InfoBubble,
     /**
      * Reseta as informações do contexto para o padrão.
      */
@@ -132,17 +132,14 @@ const LandmarkProvider =({ children }: { children: React.ReactNode}) => {
         setLandmarkAddress(address[0].description);
     }
 
-    const addLandmarkBubble = (landmark: H.map.Marker, ui: H.ui.UI): H.ui.InfoBubble => {
-        console.log(landmark)
+    const landmarkBubble = (landmark: H.map.Marker): H.ui.InfoBubble => {
         const position = landmark.getGeometry() as H.geo.Point;
-        const { description, address } = landmark.getData();
-        const content  = stringLandmarkBubbleContent(description, address);
+        const { address, description } = landmark.getData();
+        const content  = stringLandmarkBubbleContent(address, description);
 
         const bubble = new H.ui.InfoBubble(position, {
             content: content
         });
-
-        ui.addBubble(bubble);
 
         return bubble;
     }
@@ -162,7 +159,7 @@ const LandmarkProvider =({ children }: { children: React.ReactNode}) => {
             setCurrentCanSaveLandmark,
             landmarkAddress,
             changeLandmarkAddress,
-            addLandmarkBubble,
+            landmarkBubble,
             resetLandmark
         }}>
             {children}
