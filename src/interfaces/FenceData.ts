@@ -8,5 +8,6 @@ export default interface FanceData {
         fillColor: string
     },
     client: Client,
-    vehicles: FenceVehicle[]
+    vehicles: FenceVehicle[],
+    currentZoom?: number
 }

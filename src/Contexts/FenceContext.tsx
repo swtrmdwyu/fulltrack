@@ -2,6 +2,7 @@ import { createContext, useState } from "react";
 import FenceData from "../interfaces/FenceData";
 import hexToRgba from "../utils/hexToRgba";
 import Client from "../interfaces/Client";
+import { stringFenceBubbleContent } from "../Components/FenceBubbleContent";
 
 export interface FenceVehicle {
     ativo_name: string,
@@ -45,6 +46,7 @@ interface FenceContextType {
      * Altera os veúclos da cerca.
      */
     changeFenceVehicles: (vehicles: FenceVehicle[]) => void,
+    createFenceBubble: (fence: H.map.Circle) => H.ui.InfoBubble,
     /**
      * Restaura todos os estados para o padrão.
      */
@@ -98,6 +100,17 @@ const FenceProvider =({ children }: { children: React.ReactNode}) => {
         setFenceVehicles(vehicles);
     }
 
+    const createFenceBubble = (fence: H.map.Circle) => {
+        const { description, client }: FenceData = fence.getData();
+        console.log(description);
+
+        const bubble = new H.ui.InfoBubble(fence.getCenter(), {
+            content: stringFenceBubbleContent(client.client_description, description)
+        })
+
+        return bubble;
+    }
+
     return (
         <FenceContext.Provider value={{
             fenceColor,
@@ -109,7 +122,8 @@ const FenceProvider =({ children }: { children: React.ReactNode}) => {
             changeFenceClient,
             fenceVehicles,
             changeFenceVehicles,
-            resetFence
+            resetFence,
+            createFenceBubble
         }}>
             {children}
         </FenceContext.Provider>

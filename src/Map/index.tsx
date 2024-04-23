@@ -67,7 +67,8 @@ export default function Map({
 	const fenceRef = useRef<H.map.Circle | null>(null);
 	const landmarkRef = useRef<H.map.Marker | null>(null);
 	const landmarkBubbleRef = useRef<H.ui.InfoBubble | null>(null);
-	const fenceBubble = useRef<H.ui.InfoBubble | null>(null);
+	const fenceBubbleRef = useRef<H.ui.InfoBubble | null>(null);
+
 	const { 
 		landmarkColor, 
 		changeLandmarkColor, 
@@ -85,6 +86,7 @@ export default function Map({
 		fenceDescription,
 		fenceClient,
 		fenceVehicles,
+		createFenceBubble,
 		resetFence
 	} = useContext(FenceContext);
 
@@ -174,7 +176,7 @@ export default function Map({
 				
 				uiRef.current = ui;
 
-				renderFences(map.current);
+				const fences = renderFences(map.current);
 				const landmarks = renderLandmarks(map.current);
 
 				landmarks.forEach((landmark: H.map.Marker) => {
@@ -208,6 +210,40 @@ export default function Map({
 
 						uiRef.current.addBubble(bubble);
 						landmarkBubbleRef.current = bubble;
+					})
+				})
+
+				fences.forEach((fence: H.map.Circle) => {
+					fence.addEventListener("tap", (event: H.mapevents.Event) => {
+						const target = event.target as H.map.Circle;
+						const bubble = createFenceBubble(target);
+						
+						bubble.addClass("landmark-bubble");
+
+						bubble.setData({
+							target: target
+						});
+			
+						if(!uiRef.current) {
+							return;
+						}
+			
+						if(fenceBubbleRef.current) {
+							if(fenceBubbleRef.current.getData().target !== bubble.getData().target) {
+								uiRef.current.removeBubble(fenceBubbleRef.current);
+								uiRef.current.addBubble(bubble);
+								fenceBubbleRef.current = bubble;
+								return;
+							}
+
+							uiRef.current.removeBubble(fenceBubbleRef.current);
+							fenceBubbleRef.current = null;
+			
+							return;
+						}
+
+						uiRef.current.addBubble(bubble);
+						fenceBubbleRef.current = bubble;
 					})
 				})
 				
@@ -388,7 +424,8 @@ export default function Map({
 					strokeColor: fenceColor
 				},
 				client: fenceClient,
-				vehicles: fenceVehicles
+				vehicles: fenceVehicles,
+				currentZoom: map.current.getZoom(),
 			}
 		}
 
@@ -406,9 +443,6 @@ export default function Map({
 			strokeColor: newFence.data.colors.strokeColor
 		});
 
-		fence.addEventListener("tap", () => {
-
-		});
 
 		map.current.removeObject(fenceRef.current);
 		map.current.addObject(fence);
