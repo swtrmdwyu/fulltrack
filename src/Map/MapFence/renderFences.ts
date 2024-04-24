@@ -28,20 +28,18 @@ export default function renderFences(map: H.Map): H.map.Circle[] {
 
     map.addObjects(fences);
 
-    
-
     fences.forEach((fence: H.map.Circle) => {
         const zoom = fence.getData().currentZoom;
         const min = zoom - 3;
 
-        const svg = `<svg width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg"> 
-        <circle opacity="0.24" cx="24" cy="24" r="24" fill="#26333B"/>
-        <circle cx="24" cy="24" r="15.2727" fill="#26333B"/>
-        <text x="24" y="24" text-anchor="middle" dominant-baseline="central" fill="white" font-family="Inter Bold">{weight}</text>
-    </svg>`
+        const svg = `<svg  width="24" height="24" xmlns="http://www.w3.org/2000/svg">
+                        <text x="12" y="18" font-size="16" font-family="Arial" font-weight="bold" text-anchor="middle" fill="white" >C</text>
+                    </svg>`;
 
-    const icon = new H.map.Icon(svg, {
-    })
+        const icon = new H.map.Icon(svg, {
+            size: { w: 32, h: 32 },
+            anchor: { y: 16, x: 16 }
+        });
 
         const label = new H.map.Marker(fence.getCenter(), {
             data: {},
@@ -51,9 +49,24 @@ export default function renderFences(map: H.Map): H.map.Circle[] {
         });
 
         labels.push(label)
-    })
+    });
 
-    map.addObjects(labels)
+    map.addObjects(labels);
+
+    map.addEventListener("wheel", () => {
+        const svg = `<svg  width="24" height="24" xmlns="http://www.w3.org/2000/svg">
+                        <text x="12" y="18" font-size="16" font-family="Arial" font-weight="bold" text-anchor="middle" fill="white" >C</text>
+                    </svg>`;
+
+        const icon = new H.map.Icon(svg, {
+            size: { w: 32, h: 32 },
+            anchor: { y: 16, x: 16 }
+        });
+
+        labels.forEach((label: H.map.Marker) => {
+            label.setIcon(icon);
+        });
+    })
 
     return fences;
 }
